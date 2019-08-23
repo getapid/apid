@@ -1,0 +1,51 @@
+--- 
+apid_key: test-api-key
+variables:
+  api_url: https://jsonplaceholder.typicode.com
+transactions: 
+  - id: transaction-one
+    variables:
+      api_url: https://jsonplaceholder.typicode.com
+    steps:
+      - id: hello-endpoint-test
+        request: 
+          type: GET
+          endpoint: "${variables.api_url}/posts/1"
+
+      - id: hello-endpoint-two
+        request: 
+          type: GET
+          endpoint: "${variables.api_url}/todos/1"
+        response:
+          code: 200
+          headers:
+            "name_regex": "value_regex"
+            "name_regex_two": "value_regex_two"
+          body:
+            type: "json"
+            content: "{
+                'first_name': 'Boaty',
+                'last_name': 'McBoatface'
+                'addresses': [
+                  {
+                    'first_line': 'Lane McLaneface'
+                  }
+                ]
+              }"
+            exact: false
+        export:
+          auth_cookie: response.headers.X-APIDAUTH
+          first_address: response.body.addresses[0].first_line
+
+      - id: hello-endpoint-test
+        request: 
+          type: GET
+          endpoint: "${variables.api_url}/posts/1"
+          headers:
+            "X-APIDAUTH": "${hello-endpoint-two.auth_cookie}"
+        response:
+          code: 201
+          body:
+            type: "text"
+            content: "OK"
+            exact: true

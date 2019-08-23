@@ -1,13 +1,11 @@
 package step
 
-import "github.com/iv-p/apiping/svc/client/variables"
-
 // Step is the data for a single endpoint
 type Step struct {
-	ID        string              `yaml:"id"`
-	Variables variables.Variables `yaml:"variables"`
-	Request   Request             `yaml:"request"`
-	Response  ExpectedResponse    `yaml:"response"`
+	ID        string                 `yaml:"id"`
+	Variables map[string]interface{} `yaml:"variables"`
+	Request   Request                `yaml:"request"`
+	Response  ExpectedResponse       `yaml:"response"`
 }
 
 // Request is a single step request data

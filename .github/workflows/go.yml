@@ -19,6 +19,7 @@ jobs:
     - name: Set up s3cmd 2.0.2
       run: |
         wget -q -O - "https://github.com/s3tools/s3cmd/releases/download/v2.0.2/s3cmd-2.0.2.tar.gz" | sudo tar xzf - -C /usr/local/bin
+        sudo chmod +x /usr/local/bin/s3cmd
 
     - name: Check out code
       uses: actions/checkout@v1
@@ -32,18 +33,20 @@ jobs:
       run: |
         export VERSION=$(cat version)
         cd go
-        GOOS=darwin GOARCH=amd64 go build -v -o build/cli-${VERSION}-darwin-amd64 svc/client/main.go
-        GOOS=linux GOARCH=amd64 go build -v -o build/cli-${VERSION}-linux-amd64 svc/client/main.go
-        GOOS=linux GOARCH=386 go build -v -o build/cli-${VERSION}-linux-386 svc/client/main.go
-        GOOS=linux GOARCH=arm go build -v -o build/cli-${VERSION}-linux-arm svc/client/main.go
-        GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64 svc/client/main.go
-        GOOS=freebsd GOARCH=386 go build -v -o build/cli-${VERSION}-freebsd-386 svc/client/main.go
-        GOOS=freebsd GOARCH=arm go build -v -o build/cli-${VERSION}-freebsd-arm svc/client/main.go
-        GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64 svc/client/main.go
-        GOOS=openbsd GOARCH=386 go build -v -o build/cli-${VERSION}-openbsd-386 svc/client/main.go
-        GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64 svc/client/main.go
-        GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64 svc/client/main.go
-        GOOS=windows GOARCH=386 go build -v -o build/cli-${VERSION}-windows-386 svc/client/main.go
+        go build -v -o build/cli-${VERSION}-darwin-amd64 svc/client/main.go
+        # Uncomment at a later stage on per need basis. Takes about 3 mins to build all of the below.
+        # GOOS=darwin GOARCH=amd64 go build -v -o build/cli-${VERSION}-darwin-amd64 svc/client/main.go
+        # GOOS=linux GOARCH=amd64 go build -v -o build/cli-${VERSION}-linux-amd64 svc/client/main.go
+        # GOOS=linux GOARCH=386 go build -v -o build/cli-${VERSION}-linux-386 svc/client/main.go
+        # GOOS=linux GOARCH=arm go build -v -o build/cli-${VERSION}-linux-arm svc/client/main.go
+        # GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64 svc/client/main.go
+        # GOOS=freebsd GOARCH=386 go build -v -o build/cli-${VERSION}-freebsd-386 svc/client/main.go
+        # GOOS=freebsd GOARCH=arm go build -v -o build/cli-${VERSION}-freebsd-arm svc/client/main.go
+        # GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64 svc/client/main.go
+        # GOOS=openbsd GOARCH=386 go build -v -o build/cli-${VERSION}-openbsd-386 svc/client/main.go
+        # GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64 svc/client/main.go
+        # GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64 svc/client/main.go
+        # GOOS=windows GOARCH=386 go build -v -o build/cli-${VERSION}-windows-386 svc/client/main.go
 
     - name: Build static site
       env:

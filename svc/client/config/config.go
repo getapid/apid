@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/iv-p/apiping/svc/client/transaction"
-	"github.com/iv-p/apiping/svc/client/variables"
 )
 
 const (
@@ -15,6 +14,6 @@ const (
 // Config holds all the config data from the config yaml file
 type Config struct {
 	APIKey       string                    `yaml:"apikey"`
-	Variables    variables.Variables       `yaml:"variables"`
+	Variables    map[string]interface{}    `yaml:"variables"`
 	Transactions []transaction.Transaction `yaml:"transactions"`
 }

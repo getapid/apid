@@ -7,7 +7,7 @@ transactions:
     variables:
       api_url: https://jsonplaceholder.typicode.com
     steps:
-      - id: hello-endpoint-test
+      - id: hello-endpoint-test-get
         request: 
           type: GET
           endpoint: "${variables.api_url}/posts/1"
@@ -37,7 +37,7 @@ transactions:
           auth_cookie: response.headers.X-APIDAUTH
           first_address: response.body.addresses[0].first_line
 
-      - id: hello-endpoint-test
+      - id: hello-endpoint-test-post
         request: 
           type: GET
           endpoint: "${variables.api_url}/posts/1"

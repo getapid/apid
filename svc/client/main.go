@@ -8,6 +8,7 @@ import (
 	"github.com/iv-p/apiping/svc/client/http"
 	"github.com/iv-p/apiping/svc/client/step"
 	"github.com/iv-p/apiping/svc/client/transaction"
+	"github.com/iv-p/apiping/svc/client/variables"
 
 	"github.com/iv-p/apiping/svc/client/config"
 	"gopkg.in/yaml.v3"
@@ -34,6 +35,8 @@ func main() {
 	transactionChecker := transaction.NewStepChecker(stepChecker, stepInterpolator)
 	transactionService := transaction.NewTransactionService(transactionChecker)
 
-	res := transactionService.Check(c.Transactions, c.Variables)
+	vars := variables.NewVariables()
+	vars = vars.Merge("variables", c.Variables)
+	res := transactionService.Check(c.Transactions, vars)
 	log.Print(res)
 }

@@ -34,13 +34,13 @@ func NewStepChecker(stepChecker step.Checker, interpolator Interpolator) Checker
 	}
 }
 
-func (c *TransactionChecker) check(transaction Transaction, variables variables.Variables) SingleTransactionResult {
+func (c *TransactionChecker) check(transaction Transaction, vars variables.Variables) SingleTransactionResult {
 	res := SingleTransactionResult{
 		Steps: make(map[string]StepResult),
 	}
 	for _, step := range transaction.Steps {
-		vars := variables.Merge(step.Variables)
-		prepared := c.stepInterpolator.interpolate(step, vars)
+		vars = vars.Merge("variables", step.Variables)
+		prepared := c.stepInterpolator.interpolate(step, vars.Get())
 		response, result := c.stepChecker.Check(prepared)
 		res.SequenceIds = append(res.SequenceIds, prepared.ID)
 		res.Steps[prepared.ID] = StepResult{prepared, response, result}

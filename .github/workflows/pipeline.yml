@@ -32,7 +32,8 @@ jobs:
       run: |
         export VERSION=$(cat version)
         cd go
-        go build -v -o build/cli-${VERSION}-darwin-amd64 svc/client/main.go
+        go build -v -o build/cli-${VERSION}-linux-amd64 svc/client/main.go
+
         # Uncomment at a later stage on per need basis. Takes about 3 mins to build all of the below.
         # GOOS=darwin GOARCH=amd64 go build -v -o build/cli-${VERSION}-darwin-amd64 svc/client/main.go
         # GOOS=linux GOARCH=amd64 go build -v -o build/cli-${VERSION}-linux-amd64 svc/client/main.go
@@ -63,7 +64,10 @@ jobs:
       run: |
         export VERSION=$(cat version)
         cd go/build
-        s3cmd put * s3://apid-production-space/cli/${VERSION}/ --recursive \
+        s3cmd put * s3://apid-production-space/cli/${VERSION}/ \
+        --acl-public \
+        --add-header=Cache-Control:max-age=86400 \
+        --recursive \
         --access_key=${ACCESS_KEY} \
         --secret_key=${SECRET_KEY} \
         --host=${HOST_NAME} \

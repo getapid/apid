@@ -18,8 +18,7 @@ jobs:
 
     - name: Set up s3cmd 2.0.2
       run: |
-        wget -q -O - "https://github.com/s3tools/s3cmd/releases/download/v2.0.2/s3cmd-2.0.2.tar.gz" | sudo tar xzf - -C /usr/local/bin
-        sudo chmod +x /usr/local/bin/s3cmd
+        sudo apt install s3cmd
 
     - name: Check out code
       uses: actions/checkout@v1

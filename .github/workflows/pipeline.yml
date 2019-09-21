@@ -61,6 +61,7 @@ jobs:
         HOST_NAME: "fra1.digitaloceanspaces.com"
         HOST_BUCKET: "%(bucket)s.fra1.digitaloceanspaces.com"
       run: |
+        export VERSION=$(cat version)
         cd go/build
         s3cmd put * s3://apid-production-space/cli/${VERSION}/ --recursive \
         --access_key=${ACCESS_KEY} \

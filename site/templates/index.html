@@ -1,7 +1,9 @@
-<html>
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
 
-<body>
-    landing page, it works, yay!
-</body>
+{% block header %}
+{{ macros::header(section="") }}
+{% endblock header %}
 
-</html>
+{% block content %}
+{% endblock content %}

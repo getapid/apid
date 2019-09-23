@@ -1,1 +1,9 @@
-blog root template
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block header %}
+{{ macros::header(section="blog") }}
+{% endblock header %}
+
+{% block content %}
+{% endblock content %}

@@ -1,3 +1,9 @@
-doc article template
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
 
-{{ page.content }}
+{% block header %}
+{{ macros::header(section="docs") }}
+{% endblock header %}
+
+{% block content %}
+{% endblock content %}

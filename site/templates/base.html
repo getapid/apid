@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <meta charset="utf-8" />
+    <title>APId - health and performance monitoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    {% endblock head %}
+</head>
+
+<body>
+    {% block header %}
+    {% endblock header %}
+
+    {% block content %} {% endblock content %}
+    {% block pagination %} {% endblock pagination %}
+
+    {% block footer %}
+    {% endblock footer %}
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery.easing.min.js"></script>
+    <!-- Main Js -->
+    <script src="/js/app.js"></script>
+</body>
+
+</html>

@@ -5,12 +5,12 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/iv-p/apiping/svc/client/http"
-	"github.com/iv-p/apiping/svc/client/step"
-	"github.com/iv-p/apiping/svc/client/transaction"
-	"github.com/iv-p/apiping/svc/client/variables"
+	"github.com/iv-p/apiping/svc/cli/http"
+	"github.com/iv-p/apiping/svc/cli/step"
+	"github.com/iv-p/apiping/svc/cli/transaction"
+	"github.com/iv-p/apiping/svc/cli/variables"
 
-	"github.com/iv-p/apiping/svc/client/config"
+	"github.com/iv-p/apiping/svc/cli/config"
 	"gopkg.in/yaml.v3"
 )
 

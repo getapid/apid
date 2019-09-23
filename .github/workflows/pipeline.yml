@@ -28,22 +28,29 @@ jobs:
         cd go
         go get -v -t -d ./...
 
-    - name: Build CLI
+    - name: Build CLI executables
       run: |
         export VERSION=$(cat version)
         cd go
-        GOOS=darwin GOARCH=amd64 go build -v -o build/cli-${VERSION}-darwin-amd64 svc/client/main.go
-        GOOS=linux GOARCH=amd64 go build -v -o build/cli-${VERSION}-linux-amd64 svc/client/main.go
-        GOOS=linux GOARCH=386 go build -v -o build/cli-${VERSION}-linux-386 svc/client/main.go
-        GOOS=linux GOARCH=arm go build -v -o build/cli-${VERSION}-linux-arm svc/client/main.go
-        GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64 svc/client/main.go
-        GOOS=freebsd GOARCH=386 go build -v -o build/cli-${VERSION}-freebsd-386 svc/client/main.go
-        GOOS=freebsd GOARCH=arm go build -v -o build/cli-${VERSION}-freebsd-arm svc/client/main.go
-        GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64 svc/client/main.go
-        GOOS=openbsd GOARCH=386 go build -v -o build/cli-${VERSION}-openbsd-386 svc/client/main.go
-        GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64 svc/client/main.go
-        GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64 svc/client/main.go
-        GOOS=windows GOARCH=386 go build -v -o build/cli-${VERSION}-windows-386 svc/client/main.go
+        GOOS=darwin GOARCH=amd64 go build -v -o build/cli-${VERSION}-darwin-amd64 svc/cli/main.go
+        GOOS=linux GOARCH=amd64 go build -v -o build/cli-${VERSION}-linux-amd64 svc/cli/main.go
+        GOOS=linux GOARCH=386 go build -v -o build/cli-${VERSION}-linux-386 svc/cli/main.go
+        GOOS=linux GOARCH=arm go build -v -o build/cli-${VERSION}-linux-arm svc/cli/main.go
+        GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64 svc/cli/main.go
+        GOOS=freebsd GOARCH=386 go build -v -o build/cli-${VERSION}-freebsd-386 svc/cli/main.go
+        GOOS=freebsd GOARCH=arm go build -v -o build/cli-${VERSION}-freebsd-arm svc/cli/main.go
+        GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64 svc/cli/main.go
+        GOOS=openbsd GOARCH=386 go build -v -o build/cli-${VERSION}-openbsd-386 svc/cli/main.go
+        GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64 svc/cli/main.go
+        GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64.exe svc/cli/main.go
+        GOOS=windows GOARCH=386 go build -v -o build/cli-${VERSION}-windows-386.exe svc/cli/main.go
+
+    - name: Build docker cli images
+      run: |
+        export VERSION=$(cat version)
+        cd go
+        docker build -t getapid/apid:${VERSION} -f svc/cli/dockerfile .
+        docker tag getapid/apid:${VERSION} getapid/apid:latest
 
     - name: Build static site
       env:
@@ -81,3 +88,13 @@ jobs:
           -H "Authorization: Bearer ${NETLIFY_PERSONAL_TOKEN}" \
           --data-binary "@site.zip" \
           https://api.netlify.com/api/v1/sites/${SITE_NAME}.netlify.com/deploys
+
+    - name: Publish docker cli images
+      env:
+        DOCKER_HUB_USERNAME: getapid
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      run: |
+        export VERSION=$(cat version)
+        echo "${DOCKER_HUB_PASSWORD}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
+        docker push getapid/apid:${VERSION}
+        docker push getapid/apid:latest

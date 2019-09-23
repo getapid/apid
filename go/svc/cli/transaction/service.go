@@ -1,6 +1,6 @@
 package transaction
 
-import "github.com/iv-p/apiping/svc/client/variables"
+import "github.com/iv-p/apiping/svc/cli/variables"
 
 type Service interface {
 	Check([]Transaction, variables.Variables) MultipleTransactionsResults

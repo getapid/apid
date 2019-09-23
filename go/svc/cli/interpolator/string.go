@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/iv-p/apiping/svc/client/json"
+	"github.com/iv-p/apiping/svc/cli/json"
 )
 
 type StringInterpolator interface {

@@ -1,0 +1,9 @@
+FROM golang:1.13-alpine AS builder
+WORKDIR /code
+COPY . .
+RUN go get -v -t -d ./...
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -ldflags="-w -s" -o /build/cli svc/cli/main.go
+
+FROM scratch
+COPY --from=builder /build/cli /apid/cli
+ENTRYPOINT ["/apid/cli"]

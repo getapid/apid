@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"github.com/iv-p/apiping/svc/client/interpolator"
-	"github.com/iv-p/apiping/svc/client/step"
+	"github.com/iv-p/apiping/svc/cli/interpolator"
+	"github.com/iv-p/apiping/svc/cli/step"
 )
 
 type Interpolator interface {

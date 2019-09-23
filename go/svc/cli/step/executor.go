@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/iv-p/apiping/svc/client/http"
+	"github.com/iv-p/apiping/svc/cli/http"
 )
 
 type Executor interface {

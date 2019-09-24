@@ -19,8 +19,8 @@ func main() {
 	var configFileLocation = flag.String("c", config.DefaultConfigFileLocation, "location of the config yaml file")
 	flag.Parse()
 
-	logger.Init(0)
-	logger.L.Info("starting apid")
+	logger.Init(-1)
+	logger.L.Debug("starting apid")
 	defer logger.L.Sync()
 
 	var c config.Config

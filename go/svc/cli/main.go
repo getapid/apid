@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/iv-p/apiping/pkg/logger"
 	"github.com/iv-p/apiping/svc/cli/http"
 	"github.com/iv-p/apiping/svc/cli/step"
 	"github.com/iv-p/apiping/svc/cli/transaction"
@@ -17,6 +18,10 @@ import (
 func main() {
 	var configFileLocation = flag.String("c", config.DefaultConfigFileLocation, "location of the config yaml file")
 	flag.Parse()
+
+	logger.Init(0)
+	logger.L.Info("starting apid")
+	defer logger.L.Sync()
 
 	var c config.Config
 	cfd, err := ioutil.ReadFile(*configFileLocation)

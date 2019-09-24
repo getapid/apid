@@ -3,9 +3,8 @@ package main
 import (
 	"flag"
 	"io/ioutil"
-	"log"
 
-	"github.com/iv-p/apiping/pkg/logger"
+	"github.com/iv-p/apiping/pkg/log"
 	"github.com/iv-p/apiping/svc/cli/http"
 	"github.com/iv-p/apiping/svc/cli/step"
 	"github.com/iv-p/apiping/svc/cli/transaction"
@@ -19,15 +18,15 @@ func main() {
 	var configFileLocation = flag.String("c", config.DefaultConfigFileLocation, "location of the config yaml file")
 	flag.Parse()
 
-	logger.Init(-1)
-	logger.L.Debug("starting apid")
-	defer logger.L.Sync()
+	log.Init(-1)
+	log.L.Debug("starting apid")
+	defer log.L.Sync()
 
 	var c config.Config
 	cfd, err := ioutil.ReadFile(*configFileLocation)
 	err = yaml.Unmarshal([]byte(cfd), &c)
 	if err != nil {
-		log.Fatalf("could not load config file: %v", err)
+		log.L.Fatalf("could not load config file: %v", err)
 	}
 
 	httpClient := http.NewTimedClient()
@@ -43,5 +42,5 @@ func main() {
 	vars := variables.NewVariables()
 	vars = vars.Merge("variables", c.Variables)
 	res := transactionService.Check(c.Transactions, vars)
-	log.Print(res)
+	log.L.Debug(res)
 }

@@ -25,7 +25,7 @@ func Init(lvl int) {
 	consoleInfos := zapcore.Lock(os.Stdout)
 	consoleErrors := zapcore.Lock(os.Stderr)
 	ecfg := zap.NewProductionEncoderConfig()
-	consoleEncoder := zapcore.NewJSONEncoder(ecfg)
+	consoleEncoder := zapcore.NewConsoleEncoder(ecfg)
 	core := zapcore.NewTee(
 		zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),
 		zapcore.NewCore(consoleEncoder, consoleInfos, lowPriority),

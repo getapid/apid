@@ -16,9 +16,10 @@ import (
 
 func main() {
 	var configFileLocation = flag.String("c", config.DefaultConfigFileLocation, "location of the config yaml file")
+	var defaultLogLevel = flag.Int("v", -1, "default log level")
 	flag.Parse()
 
-	log.Init(-1)
+	log.Init(*defaultLogLevel)
 	log.L.Debug("starting apid")
 	defer log.L.Sync()
 

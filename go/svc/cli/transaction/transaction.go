@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/iv-p/apiping/svc/cli/step"
+	"github.com/iv-p/apid/svc/cli/step"
 )
 
 // Transaction is the definition of a transaction

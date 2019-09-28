@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"github.com/iv-p/apiping/svc/cli/step"
-	"github.com/iv-p/apiping/svc/cli/variables"
+	"github.com/iv-p/apid/svc/cli/step"
+	"github.com/iv-p/apid/svc/cli/variables"
 )
 
 type Checker interface {

@@ -4,13 +4,12 @@ import (
 	"flag"
 	"io/ioutil"
 
-	"github.com/iv-p/apiping/pkg/log"
-	"github.com/iv-p/apiping/svc/cli/http"
-	"github.com/iv-p/apiping/svc/cli/step"
-	"github.com/iv-p/apiping/svc/cli/transaction"
-	"github.com/iv-p/apiping/svc/cli/variables"
-
-	"github.com/iv-p/apiping/svc/cli/config"
+	"github.com/iv-p/apid/pkg/log"
+	"github.com/iv-p/apid/svc/cli/config"
+	"github.com/iv-p/apid/svc/cli/http"
+	"github.com/iv-p/apid/svc/cli/step"
+	"github.com/iv-p/apid/svc/cli/transaction"
+	"github.com/iv-p/apid/svc/cli/variables"
 	"gopkg.in/yaml.v3"
 )
 

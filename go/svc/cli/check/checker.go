@@ -1,7 +1,7 @@
 package check
 
 // import (
-// 	"github.com/iv-p/apiping/svc/cli/http"
+// 	"github.com/iv-p/apid/svc/cli/http"
 // )
 
 // // Checker is the service that checks all the checks

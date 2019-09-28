@@ -11,8 +11,11 @@ import (
 	"github.com/iv-p/apid/svc/cli/variables"
 )
 
+// defaultConfigFileLocation is the location of the yaml file holding all the config
+const defaultConfigFileLocation = "config.yaml"
+
 func main() {
-	var configFileLocation = flag.String("c", config.DefaultConfigFileLocation, "location of the config yaml file")
+	var configFileLocation = flag.String("c", defaultConfigFileLocation, "location of the config yaml file")
 	var defaultLogLevel = flag.Int("v", -1, "default log level")
 	flag.Parse()
 

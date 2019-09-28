@@ -1,6 +1,6 @@
-module github.com/iv-p/apiping
+module github.com/iv-p/apid
 
-go 1.12
+go 1.13
 
 require (
 	github.com/mitchellh/gox v1.0.1 // indirect

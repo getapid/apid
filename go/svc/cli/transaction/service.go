@@ -1,9 +1,12 @@
 package transaction
 
-import "github.com/iv-p/apid/svc/cli/variables"
+import (
+	"github.com/iv-p/apid/pkg/transaction"
+	"github.com/iv-p/apid/svc/cli/variables"
+)
 
 type Service interface {
-	Check([]Transaction, variables.Variables) MultipleTransactionsResults
+	Check([]transaction.Transaction, variables.Variables) MultipleTransactionsResults
 }
 
 type TransactionService struct {
@@ -20,7 +23,7 @@ func NewTransactionService(checker Checker) Service {
 	}
 }
 
-func (s *TransactionService) Check(transactions []Transaction, vars variables.Variables) MultipleTransactionsResults {
+func (s *TransactionService) Check(transactions []transaction.Transaction, vars variables.Variables) MultipleTransactionsResults {
 	res := make(map[string]SingleTransactionResult)
 	for _, transaction := range transactions {
 		vars = vars.Merge("variables", transaction.Variables)

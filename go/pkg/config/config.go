@@ -7,8 +7,6 @@ import (
 const (
 	// AppName is the name of the project
 	AppName = "apid"
-	// DefaultConfigFileLocation is the location of the yaml file holding all the config
-	DefaultConfigFileLocation = "config.yaml"
 )
 
 // Config holds all the config data from the config yaml file

@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
 
 	"github.com/iv-p/apid/pkg/log"
 	"github.com/iv-p/apid/svc/cli/config"
@@ -10,7 +9,6 @@ import (
 	"github.com/iv-p/apid/svc/cli/step"
 	"github.com/iv-p/apid/svc/cli/transaction"
 	"github.com/iv-p/apid/svc/cli/variables"
-	"gopkg.in/yaml.v3"
 )
 
 func main() {
@@ -22,9 +20,8 @@ func main() {
 	log.L.Debug("starting apid")
 	defer log.L.Sync()
 
-	var c config.Config
-	cfd, err := ioutil.ReadFile(*configFileLocation)
-	err = yaml.Unmarshal([]byte(cfd), &c)
+	loader := config.FileLoader{Path: *configFileLocation}
+	c, err := loader.Load()
 	if err != nil {
 		log.L.Fatalf("could not load config file: %v", err)
 	}

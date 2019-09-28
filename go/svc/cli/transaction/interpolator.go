@@ -1,8 +1,8 @@
 package transaction
 
 import (
+	"github.com/iv-p/apid/pkg/step"
 	"github.com/iv-p/apid/svc/cli/interpolator"
-	"github.com/iv-p/apid/svc/cli/step"
 )
 
 type Interpolator interface {

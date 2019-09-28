@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	stepType "github.com/iv-p/apid/pkg/step" // TODO: remove the alias once everything is moved to pkg
 	"github.com/iv-p/apid/svc/cli/step"
 	"github.com/iv-p/apid/svc/cli/variables"
 )
@@ -17,7 +18,7 @@ type TransactionChecker struct {
 }
 
 type StepResult struct {
-	Step     step.Step
+	Step     stepType.Step
 	Response step.HTTPResponse
 	Result   step.ValidationResult
 }

@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/iv-p/apid/pkg/step"
+	"github.com/iv-p/apid/common/step"
 )
 
 // Transaction is the definition of a transaction

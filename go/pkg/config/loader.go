@@ -6,18 +6,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Loader interface {
-	Load() (Config, error)
-}
-
-type FileLoader struct {
-	Path string
-}
-
-func (f FileLoader) Load() (Config, error) {
+func Load(path string) (Config, error) {
 	cfg := Config{}
 
-	contents, err := ioutil.ReadFile(f.Path)
+	contents, err := ioutil.ReadFile(path)
 	if err != nil {
 		return cfg, err
 	}

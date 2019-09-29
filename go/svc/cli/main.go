@@ -23,8 +23,7 @@ func main() {
 	log.L.Debug("starting apid")
 	defer log.L.Sync()
 
-	loader := config.FileLoader{Path: *configFileLocation}
-	c, err := loader.Load()
+	c, err := config.Load(*configFileLocation)
 	if err != nil {
 		log.L.Fatalf("could not load config file: %v", err)
 	}

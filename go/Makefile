@@ -7,3 +7,6 @@ run: build
 
 install:
 	go mod download
+
+test:
+	go test $(GOFLAGS) ./...

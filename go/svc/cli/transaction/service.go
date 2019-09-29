@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/iv-p/apid/pkg/transaction"
+	"github.com/iv-p/apid/common/transaction"
 	"github.com/iv-p/apid/svc/cli/variables"
 )
 

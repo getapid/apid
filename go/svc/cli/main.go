@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"github.com/iv-p/apid/pkg/config"
-	"github.com/iv-p/apid/pkg/log"
+	"github.com/iv-p/apid/common/config"
+	"github.com/iv-p/apid/common/log"
 	"github.com/iv-p/apid/svc/cli/http"
 	"github.com/iv-p/apid/svc/cli/step"
 	"github.com/iv-p/apid/svc/cli/transaction"

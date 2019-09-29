@@ -10,19 +10,19 @@ type Step struct {
 
 // Request is a single step request data
 type Request struct {
-	Type     string            `yaml:"type"`
-	Endpoint string            `yaml:"endpoint"`
-	Headers  map[string]string `yaml:"headers"`
-	Body     string            `yaml:"body"`
+	Type     string  `yaml:"type"`
+	Endpoint string  `yaml:"endpoint"`
+	Headers  Headers `yaml:"headers"`
+	Body     string  `yaml:"body"`
 }
 
 type ExpectedResponse struct {
-	Code    *int             `yaml:"code"`
-	Headers *ExpectedHeaders `yaml:"headers"`
-	Body    *ExpectBody      `yaml:"body"`
+	Code    *int        `yaml:"code"`
+	Headers *Headers    `yaml:"headers"`
+	Body    *ExpectBody `yaml:"body"`
 }
 
-type ExpectedHeaders map[string]string
+type Headers map[string]string
 
 type ExpectBody struct {
 	Type    *string `yaml:"type"`

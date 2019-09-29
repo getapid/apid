@@ -4,11 +4,13 @@ import (
 	"log"
 	"time"
 
+	"github.com/iv-p/apid/pkg/step"
+
 	"github.com/iv-p/apid/svc/cli/http"
 )
 
 type Executor interface {
-	do(Request) HTTPResponse
+	do(step.Request) HTTPResponse
 }
 
 type RequestExecutor struct {
@@ -41,7 +43,7 @@ func NewRequestExecutor(client http.Client) Executor {
 	return &RequestExecutor{client: client}
 }
 
-func (e *RequestExecutor) do(request Request) HTTPResponse {
+func (e *RequestExecutor) do(request step.Request) HTTPResponse {
 	req := http.Request{
 		Method:  request.Type,
 		Url:     request.Endpoint,

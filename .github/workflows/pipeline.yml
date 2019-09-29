@@ -28,25 +28,24 @@ jobs:
 
     - name: Get Go dependencies
       run: |
-        cd go
-        go get -v -t -d ./...
+        make go-install
 
     - name: Build CLI executables
       run: |
         export VERSION=$(cat version)
         cd go
-        GOOS=darwin GOARCH=amd64 go build -v -o build/cli-${VERSION}-darwin-amd64 svc/cli/main.go
-        GOOS=linux GOARCH=amd64 go build -v -o build/cli-${VERSION}-linux-amd64 svc/cli/main.go
-        GOOS=linux GOARCH=386 go build -v -o build/cli-${VERSION}-linux-386 svc/cli/main.go
-        GOOS=linux GOARCH=arm go build -v -o build/cli-${VERSION}-linux-arm svc/cli/main.go
-        GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64 svc/cli/main.go
-        GOOS=freebsd GOARCH=386 go build -v -o build/cli-${VERSION}-freebsd-386 svc/cli/main.go
-        GOOS=freebsd GOARCH=arm go build -v -o build/cli-${VERSION}-freebsd-arm svc/cli/main.go
-        GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64 svc/cli/main.go
-        GOOS=openbsd GOARCH=386 go build -v -o build/cli-${VERSION}-openbsd-386 svc/cli/main.go
-        GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64 svc/cli/main.go
+        GOOS=darwin GOARCH=amd64  go build -v -o build/cli-${VERSION}-darwin-amd64      svc/cli/main.go
+        GOOS=linux GOARCH=amd64   go build -v -o build/cli-${VERSION}-linux-amd64       svc/cli/main.go
+        GOOS=linux GOARCH=386     go build -v -o build/cli-${VERSION}-linux-386         svc/cli/main.go
+        GOOS=linux GOARCH=arm     go build -v -o build/cli-${VERSION}-linux-arm         svc/cli/main.go
+        GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64     svc/cli/main.go
+        GOOS=freebsd GOARCH=386   go build -v -o build/cli-${VERSION}-freebsd-386       svc/cli/main.go
+        GOOS=freebsd GOARCH=arm   go build -v -o build/cli-${VERSION}-freebsd-arm       svc/cli/main.go
+        GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64     svc/cli/main.go
+        GOOS=openbsd GOARCH=386   go build -v -o build/cli-${VERSION}-openbsd-386       svc/cli/main.go
+        GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64     svc/cli/main.go
         GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64.exe svc/cli/main.go
-        GOOS=windows GOARCH=386 go build -v -o build/cli-${VERSION}-windows-386.exe svc/cli/main.go
+        GOOS=windows GOARCH=386   go build -v -o build/cli-${VERSION}-windows-386.exe   svc/cli/main.go
 
     - name: Build docker cli images
       run: |

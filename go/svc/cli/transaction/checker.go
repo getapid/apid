@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	stepType "github.com/iv-p/apid/pkg/step" // TODO: remove the alias once everything is moved to pkg
-	"github.com/iv-p/apid/pkg/transaction"
+	stepType "github.com/iv-p/apid/common/step" // TODO: remove the alias once everything is moved to pkg
+	"github.com/iv-p/apid/common/transaction"
 	"github.com/iv-p/apid/svc/cli/step"
 	"github.com/iv-p/apid/svc/cli/variables"
 )

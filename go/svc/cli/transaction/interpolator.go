@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/iv-p/apid/pkg/step"
+	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/svc/cli/interpolator"
 )
 

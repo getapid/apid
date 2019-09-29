@@ -1,6 +1,6 @@
 package step
 
-import "github.com/iv-p/apid/pkg/step"
+import "github.com/iv-p/apid/common/step"
 
 // - name: login-endpoint-test
 // request:

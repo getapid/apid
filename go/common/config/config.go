@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/iv-p/apid/pkg/transaction"
+	"github.com/iv-p/apid/common/transaction"
 )
 
 const (

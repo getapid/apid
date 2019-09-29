@@ -11,6 +11,7 @@ const (
 
 // Config holds all the config data from the config yaml file
 type Config struct {
+	Version      string                    `yaml:"version"`
 	APIKey       string                    `yaml:"apikey"`
 	Variables    map[string]interface{}    `yaml:"variables"`
 	Transactions []transaction.Transaction `yaml:"transactions"`

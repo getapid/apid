@@ -1,19 +1,20 @@
---- 
+---
+version: 1
 apid_key: test-api-key
 variables:
   api_url: https://jsonplaceholder.typicode.com
-transactions: 
+transactions:
   - id: transaction-one
     variables:
       api_url: https://jsonplaceholder.typicode.com
     steps:
       - id: hello-endpoint-test-get
-        request: 
+        request:
           type: GET
           endpoint: "${variables.api_url}/posts/1"
 
       - id: hello-endpoint-two
-        request: 
+        request:
           type: GET
           endpoint: "${variables.api_url}/todos/1"
         response:
@@ -38,7 +39,7 @@ transactions:
           first_address: response.body.addresses[0].first_line
 
       - id: hello-endpoint-test-post
-        request: 
+        request:
           type: GET
           endpoint: "${variables.api_url}/posts/1"
           headers:

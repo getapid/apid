@@ -6,9 +6,9 @@ import (
 
 // Transaction is the definition of a transaction
 type Transaction struct {
-	ID        string                 `yaml:"id"`
+	ID        string                 `yaml:"id" validate:"required"`
 	Variables map[string]interface{} `yaml:"variables"`
-	Steps     []step.Step            `yaml:"steps"`
+	Steps     []step.Step            `yaml:"steps" validate:"required,unique=ID"`
 }
 
 // Result holds information for the result of a transaction

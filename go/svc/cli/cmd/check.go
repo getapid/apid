@@ -36,6 +36,11 @@ func checkRun(*cobra.Command, []string) {
 		log.L.Fatalf("could not load config file: %v", err)
 	}
 
+	err = config.Validate(c)
+	if err != nil {
+		log.L.Panic("the config failed validation: ", err)
+	}
+
 	httpClient := http.NewTimedClient()
 
 	stepExecutor := step.NewRequestExecutor(httpClient)

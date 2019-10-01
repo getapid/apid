@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/iv-p/apid/svc/cli/step"
-	"github.com/iv-p/apid/svc/cli/transaction"
+	"github.com/iv-p/apid/common/step"
+	"github.com/iv-p/apid/common/transaction"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v2"
 )
@@ -89,7 +89,7 @@ func newConfig() Config {
 						},
 						Response: step.ExpectedResponse{
 							Code:    pint(1),
-							Headers: &step.ExpectedHeaders{},
+							Headers: &step.Headers{},
 							Body: &step.ExpectBody{
 								Type:    pstring("typ"),
 								Content: pstring("content"),

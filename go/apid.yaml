@@ -11,12 +11,12 @@ transactions:
       - id: hello-endpoint-test-get
         request:
           type: GET
-          endpoint: "${variables.api_url}/posts/1"
+          endpoint: "{{ variables.api_url }}/posts/1"
 
       - id: hello-endpoint-two
         request:
           type: GET
-          endpoint: "${variables.api_url}/todos/1"
+          endpoint: "{{ variables.api_url }}/todos/1"
         response:
           code: 200
           headers:
@@ -41,9 +41,9 @@ transactions:
       - id: hello-endpoint-test-post
         request:
           type: GET
-          endpoint: "${variables.api_url}/posts/1"
+          endpoint: "{{ variables.api_url }}/posts/1"
           headers:
-            "X-APIDAUTH": "${hello-endpoint-two.auth_cookie}"
+            "X-APIDAUTH": "{{ hello-endpoint-two.auth_cookie }}"
         response:
           code: 201
           body:

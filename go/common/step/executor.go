@@ -1,16 +1,16 @@
 package step
 
 import (
+	"context"
 	"log"
+	"strings"
 	"time"
 
-	"github.com/iv-p/apid/common/step"
-
-	"github.com/iv-p/apid/svc/cli/http"
+	"github.com/iv-p/apid/common/http"
 )
 
 type Executor interface {
-	do(step.Request) HTTPResponse
+	do(Request) *http.Response
 }
 
 type RequestExecutor struct {
@@ -43,24 +43,17 @@ func NewRequestExecutor(client http.Client) Executor {
 	return &RequestExecutor{client: client}
 }
 
-func (e *RequestExecutor) do(request step.Request) HTTPResponse {
-	req := http.Request{
-		Method:  request.Type,
-		Url:     request.Endpoint,
-		Headers: http.Headers(request.Headers),
-		Body:    request.Body,
+func (e *RequestExecutor) do(request Request) *http.Response {
+	req, err := http.NewRequest(request.Type, request.Endpoint, strings.NewReader(request.Body))
+	for k, v := range request.Headers {
+		req.Header.Set(k, v)
 	}
-	res, err := e.client.Do(req)
+	res, err := e.client.Do(context.Background(), req)
 	if err != nil {
 		log.Print(err)
 	}
 
-	return HTTPResponse{
-		StatusCode: res.StatusCode,
-		Body:       res.Body,
-		Headers:    res.Headers,
-		Timings:    transformTimings(res.Timings),
-	}
+	return res
 }
 
 func transformTimings(t http.Timings) Timings {
@@ -70,10 +63,5 @@ func transformTimings(t http.Timings) Timings {
 		TLSHandshake:     int64(t.TLSHandshake / time.Millisecond),
 		ServerProcessing: int64(t.ServerProcessing / time.Millisecond),
 		ContentTransfer:  int64(t.ContentTransfer / time.Millisecond),
-		NameLookup:       int64(t.NameLookup / time.Millisecond),
-		Connect:          int64(t.Connect / time.Millisecond),
-		PreTransfer:      int64(t.PreTransfer / time.Millisecond),
-		StartTransfer:    int64(t.StartTransfer / time.Millisecond),
-		Total:            int64(t.Total / time.Millisecond),
 	}
 }

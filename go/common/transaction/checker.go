@@ -1,14 +1,14 @@
 package transaction
 
 import (
+	"github.com/iv-p/apid/common/http"
+	"github.com/iv-p/apid/common/step"
 	stepType "github.com/iv-p/apid/common/step" // TODO: remove the alias once everything is moved to pkg
-	"github.com/iv-p/apid/common/transaction"
-	"github.com/iv-p/apid/svc/cli/step"
-	"github.com/iv-p/apid/svc/cli/variables"
+	"github.com/iv-p/apid/common/variables"
 )
 
 type Checker interface {
-	check(transaction.Transaction, variables.Variables) SingleTransactionResult
+	check(Transaction, variables.Variables) SingleTransactionResult
 }
 
 type TransactionChecker struct {
@@ -20,7 +20,7 @@ type TransactionChecker struct {
 
 type StepResult struct {
 	Step     stepType.Step
-	Response step.HTTPResponse
+	Response *http.Response
 	Result   step.ValidationResult
 }
 
@@ -36,7 +36,7 @@ func NewStepChecker(stepChecker step.Checker, interpolator Interpolator) Checker
 	}
 }
 
-func (c *TransactionChecker) check(transaction transaction.Transaction, vars variables.Variables) SingleTransactionResult {
+func (c *TransactionChecker) check(transaction Transaction, vars variables.Variables) SingleTransactionResult {
 	res := SingleTransactionResult{
 		Steps: make(map[string]StepResult),
 	}

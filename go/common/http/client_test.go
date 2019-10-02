@@ -25,11 +25,10 @@ func testingClient(code int, body string, sleep time.Duration) (*http.Client, fu
 				return net.Dial(network, s.Listener.Addr().String())
 			},
 		},
-		Timeout: sleep - 1*time.Millisecond,
 	}
 
 	if sleep > 0*time.Millisecond {
-		cli.Timeout = sleep - time.Millisecond
+		cli.Timeout = sleep - 5*time.Millisecond
 	}
 	return cli, s.Close
 }

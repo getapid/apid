@@ -1,9 +1,9 @@
 package step
 
-import "github.com/iv-p/apid/common/step"
+import "github.com/iv-p/apid/common/http"
 
 type Validator interface {
-	validate(step.ExpectedResponse, HTTPResponse) ValidationResult
+	validate(ExpectedResponse, *http.Response) ValidationResult
 }
 
 type ResponseValidator struct {
@@ -19,7 +19,7 @@ func NewResponseValidator() Validator {
 	return &ResponseValidator{}
 }
 
-func (v *ResponseValidator) validate(step.ExpectedResponse, HTTPResponse) ValidationResult {
+func (v *ResponseValidator) validate(ExpectedResponse, *http.Response) ValidationResult {
 	return ValidationResult{
 		OK:     true,
 		Errors: make(map[string]string),

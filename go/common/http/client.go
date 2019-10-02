@@ -31,7 +31,7 @@ type Response struct {
 
 // Client is the interface of a http client
 type Client interface {
-	Do(*Request) (*Response, error)
+	Do(context.Context, *Request) (*Response, error)
 }
 
 // TimedClient adds http request timings as part of the http response
@@ -56,6 +56,11 @@ type DefaultTracer struct {
 	tlsDone,
 	firstResponseByte,
 	wroteRequest time.Time
+}
+
+// NewTimedClient creates a default timed client
+func NewTimedClient() *TimedClient {
+	return &TimedClient{http.DefaultClient, &DefaultTracer{}}
 }
 
 // Tracer returns a new httptrace.ClientTrace

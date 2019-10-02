@@ -3,7 +3,6 @@ package transaction
 import (
 	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/step"
-	stepType "github.com/iv-p/apid/common/step" // TODO: remove the alias once everything is moved to pkg
 	"github.com/iv-p/apid/common/variables"
 )
 
@@ -19,7 +18,7 @@ type TransactionChecker struct {
 }
 
 type StepResult struct {
-	Step     stepType.Step
+	Step     step.Step
 	Response *http.Response
 	Result   step.ValidationResult
 }

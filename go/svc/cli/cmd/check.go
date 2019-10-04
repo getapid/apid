@@ -14,7 +14,7 @@ var configFilepath string
 
 var checkCmd = &cobra.Command{
 	Use:   "check",
-	Short: "executes a config",
+	Short: "Executes a config",
 	Long: `Check gets the default config or the one you have provided and executes it.
 It will run all the transactions in you config, verify the responses,
 and record the time it took to action each request`,

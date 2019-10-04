@@ -8,33 +8,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	configFilepath string
-	logVerbosity   int
+var logVerbosity int
 
-	RootCmd = &cobra.Command{
-		Use:   "apid",
-		Short: "Apid is a command to help you test and verify the performance of you API",
-		Long: `The tool will make sure all your API's endpoints agree with the spec you have provided.
-Along with that it will record the time it took for your app to complete the requests and break down its
-lifecycle so you know where to improve.`,
-		PersistentPostRun: func(*cobra.Command, []string) {
-			_ = log.L.Sync()
-		},
-	}
-)
-
-func init() {
-	cobra.OnInitialize(setupLog)
-
-	RootCmd.AddCommand(checkCmd)
-
-	RootCmd.PersistentFlags().StringVar(&configFilepath, "config", "./apid.yaml", "file with config to run")
-	RootCmd.PersistentFlags().IntVar(&logVerbosity, "v", -1, "log verbosity")
+var RootCmd = &cobra.Command{
+	Use:  "apid",
+	Long: "Apid is a command to help you test and verify the performance of you APIs",
+	PersistentPostRun: func(*cobra.Command, []string) {
+		_ = log.L.Sync()
+	},
 }
 
-func setupLog() {
-	log.Init(logVerbosity)
+func init() {
+	cobra.OnInitialize(func() {
+		log.Init(logVerbosity) // the value isn't available until after the init is finished
+	})
+
+	RootCmd.PersistentFlags().IntVar(&logVerbosity, "v", -1, "log verbosity")
 }
 
 func Execute() {

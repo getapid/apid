@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io"
 	"log"
 	"os"
 
@@ -24,10 +25,10 @@ To configure your bash shell to load completions for each session add to your ba
 . <(apid completion <shell>)
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		destination := os.Stdout
+		var destination io.Writer = os.Stdout
 
 		if completionFilepath != "" {
-			f, err := os.Open(completionFilepath)
+			f, err := os.Create(completionFilepath)
 			if err != nil {
 				log.Fatal(err)
 			}

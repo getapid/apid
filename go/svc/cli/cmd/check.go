@@ -26,7 +26,7 @@ and record the time it took to action each request`,
 }
 
 func init() {
-	RootCmd.AddCommand(checkCmd)
+	rootCmd.AddCommand(checkCmd)
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 }
 

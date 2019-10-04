@@ -38,11 +38,11 @@ To configure your bash shell to load completions for each session add to your ba
 		var err error
 		switch args[1] {
 		case "bash":
-			err = RootCmd.GenBashCompletion(destination)
+			err = rootCmd.GenBashCompletion(destination)
 		case "zsh":
-			err = RootCmd.GenZshCompletion(destination)
+			err = rootCmd.GenZshCompletion(destination)
 		case "powershell":
-			err = RootCmd.GenPowerShellCompletion(destination)
+			err = rootCmd.GenPowerShellCompletion(destination)
 		}
 		if err != nil {
 			log.Fatal(err)
@@ -51,6 +51,6 @@ To configure your bash shell to load completions for each session add to your ba
 }
 
 func init() {
-	RootCmd.AddCommand(completionCmd)
+	rootCmd.AddCommand(completionCmd)
 	completionCmd.Flags().StringVarP(&completionFilepath, "file", "f", "", "the file to output the completion script to (defaults to stdout)")
 }

@@ -1,6 +1,6 @@
 GOFLAGS:=-v
 build:
-	go build $(GOFLAGS) svc/cli/main.go
+	go build $(GOFLAGS) -o bin/apid svc/cli/main.go
 
 run: build
 	go run $(GOFLAGS) svc/cli/main.go

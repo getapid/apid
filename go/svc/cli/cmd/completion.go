@@ -36,7 +36,7 @@ To configure your bash shell to load completions for each session add to your ba
 		}
 
 		var err error
-		switch args[1] {
+		switch args[0] {
 		case "bash":
 			err = rootCmd.GenBashCompletion(destination)
 		case "zsh":

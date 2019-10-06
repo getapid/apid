@@ -16,30 +16,21 @@ type Validator interface {
 
 // Returns validator struct corresponding to validation type
 func getValidatorFromTag(tag string, fieldType reflect.Type) Validator {
-	args := strings.Split(tag, ",")
-
-	requirements := make(map[string]bool)
-	for _, req := range args {
-		requirements[req] = true
-	}
-
-	switch fieldType.Kind() {
-	case reflect.Slice:
-		validator := SliceValidator{requirements: requirements, unique: make([]string, 0)}
-
-		for _, req := range args {
-			if strings.HasPrefix(req, "unique") {
-				validator.unique = append(validator.unique, strings.TrimPrefix(req, "unique="))
-			}
-		}
-
-		return validator
-
-	case reflect.String:
-		return StringValidator{requirements: requirements}
-
-	case reflect.Struct:
-		return StructValidator{requirements: requirements}
+	switch t := tag; {
+	case t == "string":
+		return StringValidator{}
+	case t == "required":
+		return RequiredValidator{}
+	case t == "slice":
+		return SliceValidator{}
+	case strings.HasPrefix(t, "unique"):
+		return UniqueValidator{prop: strings.TrimPrefix(t, "unique=")}
+	case t == "recurse":
+		return RecurseValidator{}
+	case t == "struct":
+		return StructValidator{}
+	case t == "version":
+		return VersionValidator{}
 	}
 
 	return DefaultValidator{}
@@ -56,13 +47,17 @@ func validateStruct(s interface{}, accErr error) error {
 		if tag == "-" {
 			continue
 		}
-		// Get a validator that corresponds to a tag
-		validator := getValidatorFromTag(tag, v.Type().Field(i).Type)
-		// Perform validation
-		valid, err := validator.Validate(v.Field(i).Interface())
-		// Append error to results
-		if !valid && err != nil {
-			accErr = multierr.Append(accErr, fmt.Errorf("%s %s", v.Type().Field(i).Name, err.Error()))
+
+		args := strings.Split(tag, ",")
+		for _, arg := range args {
+			// Get a validator that corresponds to a tag
+			validator := getValidatorFromTag(arg, v.Type().Field(i).Type)
+			// Perform validation
+			valid, err := validator.Validate(v.Field(i).Interface())
+			// Append error to results
+			if !valid && err != nil {
+				accErr = multierr.Append(accErr, fmt.Errorf("%s %s", v.Type().Field(i).Name, err.Error()))
+			}
 		}
 	}
 	return accErr

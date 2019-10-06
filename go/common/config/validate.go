@@ -17,18 +17,10 @@ type Validator interface {
 // Returns validator struct corresponding to validation type
 func getValidatorFromTag(tag string, fieldType reflect.Type) Validator {
 	switch t := tag; {
-	case t == "string":
-		return StringValidator{}
 	case t == "required":
 		return RequiredValidator{}
-	case t == "slice":
-		return SliceValidator{}
 	case strings.HasPrefix(t, "unique"):
 		return UniqueValidator{prop: strings.TrimPrefix(t, "unique=")}
-	case t == "recurse":
-		return RecurseValidator{}
-	case t == "struct":
-		return StructValidator{}
 	case t == "version":
 		return VersionValidator{}
 	}
@@ -41,8 +33,12 @@ func validateStruct(s interface{}, accErr error) error {
 	// ValueOf returns a Value representing the run-time data
 	v := reflect.ValueOf(s)
 	for i := 0; i < v.NumField(); i++ {
+		typeField := v.Type().Field(i)
+		typeOfTypeField := typeField.Type
+		field := v.Field(i).Interface()
+
 		// Get the field tag value
-		tag := v.Type().Field(i).Tag.Get("validate")
+		tag := typeField.Tag.Get("validate")
 		// Skip if tag is ignored
 		if tag == "-" {
 			continue
@@ -51,12 +47,21 @@ func validateStruct(s interface{}, accErr error) error {
 		args := strings.Split(tag, ",")
 		for _, arg := range args {
 			// Get a validator that corresponds to a tag
-			validator := getValidatorFromTag(arg, v.Type().Field(i).Type)
+			validator := getValidatorFromTag(arg, typeOfTypeField)
 			// Perform validation
-			valid, err := validator.Validate(v.Field(i).Interface())
+			valid, err := validator.Validate(field)
 			// Append error to results
 			if !valid && err != nil {
 				accErr = multierr.Append(accErr, fmt.Errorf("%s %s", v.Type().Field(i).Name, err.Error()))
+			}
+		}
+
+		if typeOfTypeField.Kind() == reflect.Struct {
+			accErr = validateStruct(field, accErr)
+		} else if typeOfTypeField.Kind() == reflect.Slice {
+			f := v.Field(i)
+			for i := 0; i < f.Len(); i++ {
+				accErr = validateStruct(f.Index(i).Interface(), accErr)
 			}
 		}
 	}

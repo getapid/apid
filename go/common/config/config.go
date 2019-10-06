@@ -11,8 +11,8 @@ const (
 
 // Config holds all the config data from the config yaml file
 type Config struct {
-	Version      string                    `yaml:"version" validate:"string,version"`
+	Version      string                    `yaml:"version" validate:"version"`
 	APIKey       string                    `yaml:"apikey"`
 	Variables    map[string]interface{}    `yaml:"variables"`
-	Transactions []transaction.Transaction `yaml:"transactions" validate:"slice,required,recurse,unique=ID"`
+	Transactions []transaction.Transaction `yaml:"transactions" validate:"required,unique=ID"`
 }

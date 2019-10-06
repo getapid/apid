@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"github.com/iv-p/apid/common/config"
+	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/log"
-	"github.com/iv-p/apid/svc/cli/http"
-	"github.com/iv-p/apid/svc/cli/step"
-	"github.com/iv-p/apid/svc/cli/transaction"
-	"github.com/iv-p/apid/svc/cli/variables"
+	"github.com/iv-p/apid/common/step"
+	"github.com/iv-p/apid/common/transaction"
+	"github.com/iv-p/apid/common/variables"
 	"github.com/spf13/cobra"
 )
 

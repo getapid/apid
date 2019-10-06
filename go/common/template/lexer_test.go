@@ -24,21 +24,8 @@ var (
 	iRightDelim = mkItem(itemRightDelim, "")
 )
 
-var lexTests = []lexTest{
-	{"empty", "", []item{iEOF}},
-	{"only text", "simple text", []item{mkItem(itemText, "simple text"), iEOF}},
-	{"simple key between text", "text {{ key }} more", []item{mkItem(itemText, "text "), iLeftDelim, mkItem(itemIdentifier, "key"), iRightDelim, mkItem(itemText, " more"), iEOF}},
-	{"complex key no text", "{{ one.two[12].three }}", []item{iLeftDelim, mkItem(itemIdentifier, "one.two[12].three"), iRightDelim, iEOF}},
-	{"multiple complex keys no text", "{{ one.two[12].three }} {{ four.five[6].seven }}", []item{iLeftDelim, mkItem(itemIdentifier, "one.two[12].three"), iRightDelim, mkItem(itemText, " "), iLeftDelim, mkItem(itemIdentifier, "four.five[6].seven"), iRightDelim, iEOF}},
-	{"multiple complex keys between text", "some {{ one.two[12].three }} random {{ four.five[6].seven }} text", []item{mkItem(itemText, "some "), iLeftDelim, mkItem(itemIdentifier, "one.two[12].three"), iRightDelim, mkItem(itemText, " random "), iLeftDelim, mkItem(itemIdentifier, "four.five[6].seven"), iRightDelim, mkItem(itemText, " text"), iEOF}},
-
-	{"invalid key", "{{ asd!() }}", []item{iLeftDelim, mkItem(itemIdentifier, "asd"), iError}},
-	{"invalid key with text", "text {{ asd!() }}", []item{mkItem(itemText, "text "), iLeftDelim, mkItem(itemIdentifier, "asd"), iError}},
-	{"missing key with text", "text {{  }}", []item{mkItem(itemText, "text "), iLeftDelim, iError}},
-}
-
-// collect gathers the emitted items into a slice.
-func collect(t *lexTest) (items []item) {
+// collectItems gathers the emitted items into a slice.
+func collectItems(t *lexTest) (items []item) {
 	l := lex(t.input, leftDelim, rightDelim)
 	for {
 		item := l.nextItem()
@@ -50,7 +37,7 @@ func collect(t *lexTest) (items []item) {
 	return
 }
 
-func equal(i1, i2 []item, checkPos bool) bool {
+func itemsEqual(i1, i2 []item) bool {
 	if len(i1) != len(i2) {
 		return false
 	}
@@ -66,9 +53,108 @@ func equal(i1, i2 []item, checkPos bool) bool {
 }
 
 func TestLex(t *testing.T) {
+	lexTests := []lexTest{
+		{
+			"empty",
+			"",
+			[]item{
+				iEOF,
+			},
+		},
+		{
+			"only text",
+			"simple text",
+			[]item{
+				mkItem(itemText, "simple text"),
+				iEOF,
+			},
+		},
+		{
+			"simple key between text",
+			"text {{ key }} more",
+			[]item{
+				mkItem(itemText, "text "),
+				iLeftDelim,
+				mkItem(itemIdentifier, "key"),
+				iRightDelim,
+				mkItem(itemText, " more"),
+				iEOF,
+			},
+		},
+		{
+			"complex key no text",
+			"{{ one.two[12].three }}",
+			[]item{
+				iLeftDelim,
+				mkItem(itemIdentifier, "one.two[12].three"),
+				iRightDelim,
+				iEOF,
+			},
+		},
+		{
+			"multiple complex keys no text",
+			"{{ one.two[12].three }} {{ four.five[6].seven }}",
+			[]item{
+				iLeftDelim,
+				mkItem(itemIdentifier, "one.two[12].three"),
+				iRightDelim,
+				mkItem(itemText, " "),
+				iLeftDelim,
+				mkItem(itemIdentifier, "four.five[6].seven"),
+				iRightDelim,
+				iEOF,
+			},
+		},
+		{
+			"multiple complex keys between text",
+			"some {{ one.two[12].three }} random {{ four.five[6].seven }} text",
+			[]item{
+				mkItem(itemText, "some "),
+				iLeftDelim,
+				mkItem(itemIdentifier, "one.two[12].three"),
+				iRightDelim,
+				mkItem(itemText, " random "),
+				iLeftDelim,
+				mkItem(itemIdentifier, "four.five[6].seven"),
+				iRightDelim,
+				mkItem(itemText, " text"),
+				iEOF,
+			},
+		},
+
+		{
+			"invalid key",
+			"{{ asd!() }}",
+			[]item{
+				iLeftDelim,
+				mkItem(itemIdentifier, "asd"),
+				iError,
+			},
+		},
+		{
+			"invalid key with text",
+			"text {{ asd!() }}",
+			[]item{
+				mkItem(itemText, "text "),
+				iLeftDelim,
+				mkItem(itemIdentifier, "asd"),
+				iError,
+			},
+		},
+		{
+			"missing key with text",
+			"text {{  }}",
+			[]item{
+				mkItem(itemText, "text "),
+				iLeftDelim,
+				iError,
+			},
+		},
+	}
+
 	for _, test := range lexTests {
-		items := collect(&test)
-		if !equal(items, test.items, false) {
+		items := collectItems(&test)
+		if !itemsEqual(items, test.items) {
 			t.Errorf("%s: got\n\t%+v\nexpected\n\t%v", test.name, items, test.items)
 		}
 	}

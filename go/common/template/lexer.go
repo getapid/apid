@@ -22,9 +22,12 @@ const (
 	itemText
 	itemLeftDelim
 	itemRightDelim
-)
 
-const eof = -1
+	leftDelim  = "{{"
+	rightDelim = "}}"
+
+	eof = -1
+)
 
 // lexStateFn represents the state of the scanner as a function that returns the next state.
 type lexStateFn func(*lexer) lexStateFn
@@ -42,7 +45,7 @@ type lexer struct {
 
 // next returns the next rune in the input.
 func (l *lexer) next() rune {
-	if int(l.pos) >= len(l.input) {
+	if l.pos >= len(l.input) {
 		l.width = 0
 		return eof
 	}
@@ -130,18 +133,11 @@ func lex(input, leftDelim, rightDelim string) *lexer {
 
 // run the state machine for the lexer.
 func (l *lexer) run() {
+	defer close(l.items)
 	for state := lexText; state != nil; {
 		state = state(l)
 	}
-	close(l.items)
 }
-
-const (
-	leftDelim    = "{{"
-	rightDelim   = "}}"
-	leftComment  = "/*"
-	rightComment = "*/"
-)
 
 func lexText(l *lexer) lexStateFn {
 	l.width = 0
@@ -186,7 +182,7 @@ func lexIdentifier(l *lexer) lexStateFn {
 			if l.input[l.pos:l.pos+x] == rightDelim {
 				return lexRightDelim
 			}
-			l.errorf("expected right delimeter")
+			l.errorf("expected right delimiter")
 			return nil
 		}
 	}
@@ -197,11 +193,6 @@ func lexRightDelim(l *lexer) lexStateFn {
 	l.ignore()
 	l.emit(itemRightDelim)
 	return lexText
-}
-
-// isSpace reports whether r is a space character.
-func isSpace(r rune) bool {
-	return r == ' ' || r == '\t'
 }
 
 // isAlphaNumeric reports whether r is an alphabetic, digit, or underscore.

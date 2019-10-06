@@ -12,7 +12,7 @@ type token struct {
 type parser struct {
 	tokens chan token // channel of parsed token
 	items  chan item  // chan to send tokens for client
-	buf    *item      // have a buffer of 1 item for parser
+	buf    *item      // have a buffer for peeking values
 	lex    *lexer     // input lexer
 }
 
@@ -23,8 +23,6 @@ const (
 	tokenEnd
 	tokenIdentifier
 	tokenText
-	tokenLeftDelim
-	tokenRightDelim
 )
 
 type parseStateFn func(*parser) parseStateFn
@@ -64,7 +62,7 @@ func (p *parser) peek() item {
 	return *p.buf
 }
 
-func (p *parser) getBufOrNext() item {
+func (p *parser) getNext() item {
 	if p.buf != nil {
 		item := *p.buf
 		p.buf = nil
@@ -74,36 +72,34 @@ func (p *parser) getBufOrNext() item {
 }
 
 func (p *parser) run() {
+	defer close(p.tokens)
 	for state := parseStart; state != nil; {
 		state = state(p)
 	}
-	close(p.tokens)
 }
 
-// parseStart scans for either an identifier, or an array index
+// parseStart scans for either an left delim, text or end of file
 func parseStart(p *parser) parseStateFn {
-	for p.peek().typ != itemEOF {
-		switch p.peek().typ {
-		case itemLeftDelim:
-			return parseLeftDelim
-		case itemText:
-			return parseText
-		default:
-			return p.errorf("expected text or left delim")
-		}
+	switch p.peek().typ {
+	case itemLeftDelim:
+		return parseLeftDelim
+	case itemText:
+		return parseText
+	case itemEOF:
+		return parseEOF
+	default:
+		return p.errorf("expected text or left delim")
 	}
-	p.emit(token{tokenEnd, ""})
-	return nil
 }
 
 // parseText scans for left delim
 func parseText(p *parser) parseStateFn {
-	i := p.getBufOrNext()
+	i := p.getNext()
 	if i.typ == itemText {
 		p.emit(token{tokenText, i.val})
 		switch p.peek().typ {
 		case itemEOF:
-			return parseStart
+			return parseEOF
 		default:
 			return parseLeftDelim
 		}
@@ -111,9 +107,18 @@ func parseText(p *parser) parseStateFn {
 	return p.errorf("expected text")
 }
 
+// parseEOF scans for end of file
+func parseEOF(p *parser) parseStateFn {
+	if p.getNext().typ != itemEOF {
+		return p.errorf("expected end of file")
+	}
+	p.emit(token{tokenEnd, ""})
+	return nil
+}
+
 // parseLeftDelim scans for left delim
 func parseLeftDelim(p *parser) parseStateFn {
-	if p.getBufOrNext().typ == itemLeftDelim {
+	if p.getNext().typ == itemLeftDelim {
 		return parseIdentifier
 	}
 	return p.errorf("expected identifier")
@@ -121,7 +126,7 @@ func parseLeftDelim(p *parser) parseStateFn {
 
 // parseIdentifier scans for identifier
 func parseIdentifier(p *parser) parseStateFn {
-	i := p.getBufOrNext()
+	i := p.getNext()
 	if i.typ == itemIdentifier {
 		p.emit(token{tokenIdentifier, i.val})
 		return parseRightDelim
@@ -131,7 +136,7 @@ func parseIdentifier(p *parser) parseStateFn {
 
 // parseRightDelim scans for left delim
 func parseRightDelim(p *parser) parseStateFn {
-	if p.getBufOrNext().typ == itemRightDelim {
+	if p.getNext().typ == itemRightDelim {
 		return parseStart
 	}
 	return p.errorf("expected right delim")

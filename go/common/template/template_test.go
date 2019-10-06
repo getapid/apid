@@ -25,14 +25,70 @@ func TestGet(t *testing.T) {
 		want    interface{}
 		wantErr bool
 	}{
-		{"only text", args{"text", data}, "text", false},
-		{"simple root variable", args{"{{ one }}", data}, "two", false},
-		{"simple array variable", args{"{{ array[0] }}", data}, "value", false},
-		{"nested variable", args{"{{ nested.array[0] }}", data}, "four", false},
-		{"text variable", args{"pre {{ nested.key}} post", data}, "pre three post", false},
-		{"nil data only text", args{"text", nil}, "text", false},
+		{
+			"only text",
+			args{
+				"text",
+				data,
+			},
+			"text",
+			false,
+		},
+		{
+			"simple root variable",
+			args{
+				"{{ one }}",
+				data,
+			},
+			"two",
+			false,
+		},
+		{
+			"simple array variable",
+			args{
+				"{{ array[0] }}",
+				data,
+			},
+			"value",
+			false,
+		},
+		{
+			"nested variable",
+			args{
+				"{{ nested.array[0] }}",
+				data,
+			},
+			"four",
+			false,
+		},
+		{
+			"text variable",
+			args{
+				"pre {{ nested.key}} post",
+				data,
+			},
+			"pre three post",
+			false,
+		},
+		{
+			"nil data only text",
+			args{
+				"text",
+				nil,
+			},
+			"text",
+			false,
+		},
 
-		{"nil data variable text", args{"text {{ key }}", nil}, "", true},
+		{
+			"nil data variable text",
+			args{
+				"text {{ key }}",
+				nil,
+			},
+			"",
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

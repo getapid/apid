@@ -9,14 +9,14 @@ import (
 )
 
 // Render parses the string and returns the interpolated result
-func Render(template string, data interface{}) (interface{}, error) {
+func Render(template string, data interface{}) (string, error) {
 	var res strings.Builder
 	parser := parse(template, leftDelim, rightDelim)
 	for {
 		token := parser.nextItem()
 		switch token.typ {
 		case tokenError:
-			return nil, errors.New(token.val)
+			return res.String(), errors.New(token.val)
 		case tokenEnd:
 			return res.String(), nil
 		case tokenText:

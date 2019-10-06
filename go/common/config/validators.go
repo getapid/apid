@@ -16,24 +16,6 @@ func (v DefaultValidator) Validate(val interface{}) (bool, error) {
 	return true, nil
 }
 
-// StringValidator validates string presence and/or its length.
-type StringValidator struct{}
-
-// Validate method performs validation and returns result and optional error.
-func (v StringValidator) Validate(val interface{}) (b bool, err error) {
-	if val == nil {
-		return true, nil
-	}
-
-	_, ok := val.(string)
-
-	if !ok {
-		return false, fmt.Errorf("must be a string")
-	}
-
-	return true, nil
-}
-
 // VersionValidator validates string if it is a valid version
 type VersionValidator struct{}
 
@@ -47,47 +29,6 @@ func (v VersionValidator) Validate(val interface{}) (bool, error) {
 
 	if s != "1" {
 		return false, fmt.Errorf("supported versions: \"1\"")
-	}
-
-	return true, nil
-}
-
-// RecurseValidator calls the validation on each element of a slice
-type RecurseValidator struct{}
-
-// Validate method performs validation and returns result and optional error.
-func (v RecurseValidator) Validate(val interface{}) (bool, error) {
-	if val == nil {
-		return true, nil
-	}
-
-	slice := reflect.ValueOf(val)
-
-	if slice.Kind() != reflect.Slice {
-		return false, fmt.Errorf("must be a slice")
-	}
-
-	var err error
-	for i := 0; i < slice.Len(); i++ {
-		err = validateStruct(slice.Index(i).Interface(), err)
-	}
-
-	return err == nil, err
-}
-
-// SliceValidator validates slices
-type SliceValidator struct{}
-
-// Validate method performs validation and returns result and optional error.
-func (v SliceValidator) Validate(val interface{}) (b bool, err error) {
-	if val == nil {
-		return true, nil
-	}
-
-	slice := reflect.ValueOf(val)
-
-	if slice.Kind() != reflect.Slice {
-		return false, fmt.Errorf("must be a slice")
 	}
 
 	return true, nil
@@ -119,25 +60,6 @@ func (v UniqueValidator) Validate(val interface{}) (b bool, err error) {
 		seen[valueInQuestion] = true
 	}
 
-	return err == nil, err
-}
-
-// StructValidator validates recursively the struct
-type StructValidator struct{}
-
-// Validate method performs validation and returns result and optional error.
-func (v StructValidator) Validate(val interface{}) (bool, error) {
-	if val == nil {
-		return true, nil
-	}
-
-	struc := reflect.ValueOf(val)
-
-	if struc.Kind() != reflect.Struct {
-		return false, fmt.Errorf("must be a struct")
-	}
-
-	err := validateStruct(val, nil)
 	return err == nil, err
 }
 

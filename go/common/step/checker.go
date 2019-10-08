@@ -1,39 +1,42 @@
 package step
 
-import "github.com/iv-p/apid/common/http"
+import (
+	"github.com/iv-p/apid/common/variables"
+)
 
-// - name: login-endpoint-test
-// request:
-//   type: post
-//   endpoint: "https://my.awesome.api/login"
-//   headers:
-// 	   - X-API-KEY: 1402ed3a-43b7-4b59-8845-be60ede2accc
-//   body: '{"username":"john.wick","password": "ultra-secure-password" }'
-// expect:
-//   code: 200
-//   body:
-// 	   contains:
-// 	     json:
-// 		   - key: "jwt"
-// 		     value: "\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b"
-
+// Checker is the interface for different types of step checkers
 type Checker interface {
-	Check(Step) (*http.Response, ValidationResult)
+	Check(Step, variables.Variables) (Result, error)
 }
 
-type StepChecker struct {
-	executor  Executor
-	validator Validator
+// HTTPChecker interpolates, executes and validates an HTTP step
+type HTTPChecker struct {
+	executor     Executor
+	validator    Validator
+	interpolator Interpolator
 }
 
-type Result struct{}
-
-func NewStepChecker(executor Executor, validator Validator) Checker {
-	return &StepChecker{executor, validator}
+// Result has all the data about the step execution
+type Result struct {
+	Step       Step
+	Validation Validation
 }
 
-func (c *StepChecker) Check(step Step) (*http.Response, ValidationResult) {
-	response := c.executor.do(step.Request)
-	result := c.validator.validate(step.Response, response)
-	return response, result
+// NewHTTPChecker instantiates a new HTTPChecker
+func NewHTTPChecker(executor Executor, validator Validator, interpolator Interpolator) Checker {
+	return &HTTPChecker{executor, validator, interpolator}
+}
+
+// Check interpolates, executes and validates an HTTP step
+func (c *HTTPChecker) Check(step Step, vars variables.Variables) (Result, error) {
+	prepared, err := c.interpolator.interpolate(step, vars)
+	if err != nil {
+		return Result{}, err
+	}
+	response, err := c.executor.do(step.Request)
+	if err != nil {
+		return Result{}, err
+	}
+	validation, err := c.validator.validate(step.Response, response)
+	return Result{prepared, validation}, err
 }

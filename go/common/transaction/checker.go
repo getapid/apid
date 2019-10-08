@@ -1,7 +1,6 @@
 package transaction
 
 import (
-	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/variables"
 )
@@ -11,40 +10,34 @@ type Checker interface {
 }
 
 type TransactionChecker struct {
-	stepChecker      step.Checker
-	stepInterpolator Interpolator
+	stepChecker step.Checker
 
 	Checker
 }
 
-type StepResult struct {
-	Step     step.Step
-	Response *http.Response
-	Result   step.ValidationResult
-}
-
 type SingleTransactionResult struct {
 	SequenceIds []string
-	Steps       map[string]StepResult
+	Steps       map[string]step.Result
 }
 
-func NewStepChecker(stepChecker step.Checker, interpolator Interpolator) Checker {
+func NewStepChecker(stepChecker step.Checker) Checker {
 	return &TransactionChecker{
-		stepChecker:      stepChecker,
-		stepInterpolator: interpolator,
+		stepChecker: stepChecker,
 	}
 }
 
 func (c *TransactionChecker) check(transaction Transaction, vars variables.Variables) SingleTransactionResult {
 	res := SingleTransactionResult{
-		Steps: make(map[string]StepResult),
+		Steps: make(map[string]step.Result),
 	}
 	for _, step := range transaction.Steps {
 		vars = vars.Merge("variables", step.Variables)
-		prepared := c.stepInterpolator.interpolate(step, vars.Get())
-		response, result := c.stepChecker.Check(prepared)
-		res.SequenceIds = append(res.SequenceIds, prepared.ID)
-		res.Steps[prepared.ID] = StepResult{prepared, response, result}
+		res.SequenceIds = append(res.SequenceIds, step.ID)
+		result, err := c.stepChecker.Check(step, vars)
+		res.Steps[step.ID] = result
+		if err != nil {
+			break
+		}
 	}
 	return res
 }

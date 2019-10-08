@@ -10,7 +10,7 @@ type Checker interface {
 }
 
 type TransactionChecker struct {
-	stepChecker step.Checker
+	stepChecker step.Runner
 
 	Checker
 }
@@ -20,7 +20,7 @@ type SingleTransactionResult struct {
 	Steps       map[string]step.Result
 }
 
-func NewStepChecker(stepChecker step.Checker) Checker {
+func NewStepChecker(stepChecker step.Runner) Checker {
 	return &TransactionChecker{
 		stepChecker: stepChecker,
 	}

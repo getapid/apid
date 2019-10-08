@@ -7,41 +7,22 @@ import (
 	"github.com/iv-p/apid/common/http"
 )
 
+// Executor is the interface for step executors
 type Executor interface {
 	do(Request) (*http.Response, error)
 }
 
-type RequestExecutor struct {
+// HTTPExecutor sends steps as HTTP requests
+type HTTPExecutor struct {
 	client http.Client
-
-	Executor
 }
 
-type HTTPResponse struct {
-	StatusCode int
-	Body       string
-	Headers    map[string]string
-	Timings    Timings
+// NewHTTPExecutor instantiates a new http executor
+func NewHTTPExecutor(client http.Client) Executor {
+	return &HTTPExecutor{client: client}
 }
 
-type Timings struct {
-	DNSLookup,
-	TCPConnection,
-	TLSHandshake,
-	ServerProcessing,
-	ContentTransfer,
-	NameLookup,
-	Connect,
-	PreTransfer,
-	StartTransfer,
-	Total int64
-}
-
-func NewRequestExecutor(client http.Client) Executor {
-	return &RequestExecutor{client: client}
-}
-
-func (e *RequestExecutor) do(request Request) (*http.Response, error) {
+func (e *HTTPExecutor) do(request Request) (*http.Response, error) {
 	req, err := http.NewRequest(request.Type, request.Endpoint, strings.NewReader(request.Body))
 	if err != nil {
 		return nil, err

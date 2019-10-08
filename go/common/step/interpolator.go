@@ -7,8 +7,11 @@ import (
 
 // Interpolator is the interface for different types of step interpolators
 type Interpolator interface {
-	interpolate(Step, variables.Variables) (Step, error)
+	interpolate(Step, variables.Variables) (PreparedStep, error)
 }
+
+// PreparedStep is the same as step, but with replaced template tokens
+type PreparedStep Step
 
 // TemplateInterpolator uses the template package to interpolate a step
 type TemplateInterpolator struct{}
@@ -18,7 +21,7 @@ func NewTemplateInterpolator() *TemplateInterpolator {
 	return &TemplateInterpolator{}
 }
 
-func (i *TemplateInterpolator) interpolate(step Step, vars variables.Variables) (Step, error) {
+func (i *TemplateInterpolator) interpolate(step Step, vars variables.Variables) (PreparedStep, error) {
 	step.Request.Endpoint, _ = template.Render(step.Request.Endpoint, vars.Get())
 	step.Request.Body, _ = template.Render(step.Request.Body, vars.Get())
 
@@ -29,5 +32,5 @@ func (i *TemplateInterpolator) interpolate(step Step, vars variables.Variables) 
 		headers[key] = value
 	}
 	step.Request.Headers = headers
-	return step, nil
+	return PreparedStep(step), nil
 }

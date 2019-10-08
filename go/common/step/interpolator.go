@@ -28,7 +28,7 @@ func (i *TemplateInterpolator) interpolate(step Step, vars variables.Variables) 
 	headers := make(map[string]string)
 	for k, v := range step.Request.Headers {
 		key, _ := template.Render(k, vars.Get())
-		value, _ := template.Render(v, v)
+		value, _ := template.Render(v, vars.Get())
 		headers[key] = value
 	}
 	step.Request.Headers = headers

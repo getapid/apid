@@ -33,7 +33,7 @@ func (c *HTTPRunner) Check(step Step, vars variables.Variables) (Result, error) 
 	if err != nil {
 		return Result{}, err
 	}
-	response, err := c.executor.do(step.Request)
+	response, err := c.executor.do(prepared.Request)
 	if err != nil {
 		return Result{}, err
 	}

@@ -15,6 +15,6 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v1
 
-    - name: Get Go dependencies
+    - name: Test code
       run: |
         make go-test

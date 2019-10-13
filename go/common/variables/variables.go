@@ -5,56 +5,66 @@ import (
 	"strings"
 )
 
-// TODO test this package
-
 type Variables struct {
 	data map[string]interface{}
-	env  map[string]interface{}
 }
 
-// NewFromMap returns a new Variables instance that has the provided map set as
+// New returns a new Variables instance that has the provided map set as
 // the main variables namespace and an empty environment namespace
-func NewFromMap(m map[string]interface{}) Variables {
+func New(opts ...option) Variables {
+	v := newEmptyVars()
+	for _, o := range opts {
+		o(&v)
+	}
+	return v
+}
+
+func newEmptyVars() Variables {
 	return Variables{
-		data: m,
-		env:  make(map[string]interface{}),
+		data: make(map[string]interface{}),
+	}
+}
+
+type option func(variables *Variables)
+
+// WithVars places the provided map in the variables namespace of the Variables
+func WithVars(v map[string]interface{}) option {
+	return func(vars *Variables) {
+		vars.data["variables"] = v
+	}
+}
+
+// WithRaw places the provided map as the underlying data of the Variables
+func WithRaw(v map[string]interface{}) option {
+	return func(vars *Variables) {
+		vars.data = v
 	}
 }
 
 // NewFromEnv takes all the available environment variables and puts them in
-// the environment namespace of a new Variables instance
-func NewFromEnv() Variables {
-	environ := os.Environ()
-	v := Variables{
-		data: make(map[string]interface{}),
-		env:  make(map[string]interface{}, len(environ)),
+// the environment namespace of the new Variables instance
+func WithEnv() option {
+	return func(vars *Variables) {
+		environ := os.Environ()
+		env := make(map[string]interface{}, len(environ)) // we need map[string]interface{} for mergeMaps() to work
+		for _, e := range environ {
+			pair := strings.Split(e, "=")
+			env[pair[0]] = pair[1]
+		}
+		vars.data["env"] = env
 	}
-
-	for _, e := range environ {
-		pair := strings.Split(e, "=")
-		v.env[pair[0]] = pair[1]
-	}
-
-	return v
 }
 
 // Merge another variable instance with this one and return a copy of the result
 // not modifying the original set of variables
-func (v Variables) Merge(other Variables) Variables {
-	return Variables{
-		data: mergeMaps(v.data, other.data),
-		env:  mergeMaps(v.env, other.env),
-	}
-}
-
-// Get returns the main namespace of the variables
-func (v Variables) Get() map[string]interface{} {
+func (v Variables) Raw() map[string]interface{} {
 	return v.data
 }
 
-// GetEnv returns the environment namespace of the variables
-func (v Variables) GetEnv() map[string]interface{} {
-	return v.env
+func (v Variables) Merge(other Variables) Variables {
+	return Variables{
+		data: mergeMaps(v.data, other.data),
+	}
 }
 
 func mergeMaps(this, other map[string]interface{}) map[string]interface{} {

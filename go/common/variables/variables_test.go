@@ -8,11 +8,17 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+const (
+	varsKey = "variables"
+	envKey  = "env"
+)
+
 type VarsSuite struct {
 	suite.Suite
 }
 
 func (s *VarsSuite) TestNewFromEnv() {
+
 	testCases := []struct {
 		env     map[string]string
 		expVars Variables
@@ -23,18 +29,20 @@ func (s *VarsSuite) TestNewFromEnv() {
 				"env2": "val2",
 			},
 			expVars: Variables{
-				data: make(map[string]interface{}),
-				env: map[string]interface{}{
-					"ENV1": "val1",
-					"env2": "val2",
+				data: map[string]interface{}{
+					envKey: map[string]interface{}{
+						"ENV1": "val1",
+						"env2": "val2",
+					},
 				},
 			},
 		},
 		{
 			env: map[string]string{},
 			expVars: Variables{
-				data: make(map[string]interface{}),
-				env:  make(map[string]interface{}),
+				data: map[string]interface{}{
+					envKey: make(map[string]interface{}),
+				},
 			},
 		},
 	}
@@ -43,7 +51,7 @@ func (s *VarsSuite) TestNewFromEnv() {
 		clearEnv()
 		setupEnv(t.env)
 
-		actualVars := NewFromEnv()
+		actualVars := New(WithEnv())
 		s.Equalf(t.expVars, actualVars, "test case %d/%d", i+1, len(testCases))
 	}
 }
@@ -66,59 +74,83 @@ func (s *VarsSuite) TestMerge() {
 		{
 			v1: newEmptyVars(),
 			v2: Variables{
-				data: arbitraryMap,
-				env:  make(map[string]interface{}),
+				data: map[string]interface{}{
+					varsKey: arbitraryMap,
+					envKey:  make(map[string]interface{}),
+				},
 			},
 			expVars: Variables{
-				data: arbitraryMap,
-				env:  make(map[string]interface{}),
+				data: map[string]interface{}{
+					varsKey: arbitraryMap,
+					envKey:  make(map[string]interface{}),
+				},
 			},
 		},
 		{
 			v1: Variables{
-				data: arbitraryMap,
-				env:  make(map[string]interface{}),
+				data: map[string]interface{}{
+					varsKey: arbitraryMap,
+					envKey:  make(map[string]interface{}),
+				},
 			},
 			v2: newEmptyVars(),
 			expVars: Variables{
-				data: arbitraryMap,
-				env:  make(map[string]interface{}),
+				data: map[string]interface{}{
+					varsKey: arbitraryMap,
+					envKey:  make(map[string]interface{}),
+				},
 			},
 		},
 		{
 			v1: Variables{
-				data: map[string]interface{}{"1": "2"},
-				env:  make(map[string]interface{}),
+				data: map[string]interface{}{
+					varsKey:          map[string]interface{}{"1": "2"},
+					envKey:           make(map[string]interface{}),
+					"some-other-key": make(map[string]interface{}),
+				},
 			},
 			v2: Variables{
-				data: map[string]interface{}{"1": "val1"},
-				env:  map[string]interface{}{"env1": "val1"},
+				data: map[string]interface{}{
+					varsKey: map[string]interface{}{"1": "val1"},
+					envKey:  map[string]interface{}{"env1": "val1"},
+				},
 			},
 			expVars: Variables{
-				data: map[string]interface{}{"1": "2"},
-				env:  map[string]interface{}{"env1": "val1"},
+				data: map[string]interface{}{
+					"some-other-key": make(map[string]interface{}),
+					varsKey:          map[string]interface{}{"1": "2"},
+					envKey:           map[string]interface{}{"env1": "val1"},
+				},
 			},
 		},
 		{
-			v1: Variables{}, // i.e. with nil maps
+			v1: Variables{}, // i.e. with nil map
 			v2: Variables{
-				data: map[string]interface{}{"1": "val1"},
-				env:  map[string]interface{}{"env1": "val1"},
+				data: map[string]interface{}{
+					varsKey: map[string]interface{}{"1": "val1"},
+					envKey:  map[string]interface{}{"env1": "val1"},
+				},
 			},
 			expVars: Variables{
-				data: map[string]interface{}{"1": "val1"},
-				env:  map[string]interface{}{"env1": "val1"},
+				data: map[string]interface{}{
+					varsKey: map[string]interface{}{"1": "val1"},
+					envKey:  map[string]interface{}{"env1": "val1"},
+				},
 			},
 		},
 		{
 			v1: Variables{
-				data: map[string]interface{}{"1": "val1"},
-				env:  map[string]interface{}{"env1": "val1"},
+				data: map[string]interface{}{
+					varsKey: map[string]interface{}{"1": "val1"},
+					envKey:  map[string]interface{}{"env1": "val1"},
+				},
 			},
 			v2: Variables{}, // i.e. with nil maps
 			expVars: Variables{
-				data: map[string]interface{}{"1": "val1"},
-				env:  map[string]interface{}{"env1": "val1"},
+				data: map[string]interface{}{
+					varsKey: map[string]interface{}{"1": "val1"},
+					envKey:  map[string]interface{}{"env1": "val1"},
+				},
 			},
 		},
 		{
@@ -127,8 +159,8 @@ func (s *VarsSuite) TestMerge() {
 					"1": map[string]interface{}{
 						"22": 2,
 					},
+					envKey: make(map[string]interface{}),
 				},
-				env: make(map[string]interface{}),
 			},
 			v2: Variables{
 				data: map[string]interface{}{
@@ -136,8 +168,8 @@ func (s *VarsSuite) TestMerge() {
 						"a":  'a',
 						"22": 5,
 					},
+					envKey: make(map[string]interface{}),
 				},
-				env: make(map[string]interface{}),
 			},
 			expVars: Variables{
 				data: map[string]interface{}{
@@ -145,8 +177,8 @@ func (s *VarsSuite) TestMerge() {
 						"a":  'a',
 						"22": 2,
 					},
+					envKey: make(map[string]interface{}),
 				},
-				env: make(map[string]interface{}),
 			},
 		},
 	}
@@ -166,13 +198,6 @@ func clearEnv() {
 func setupEnv(environ map[string]string) {
 	for k, v := range environ {
 		_ = os.Setenv(k, v)
-	}
-}
-
-func newEmptyVars() Variables {
-	return Variables{
-		data: make(map[string]interface{}),
-		env:  make(map[string]interface{}),
 	}
 }
 

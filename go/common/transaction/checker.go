@@ -39,10 +39,10 @@ func (c *TransactionChecker) check(transaction Transaction, vars variables.Varia
 	res := SingleTransactionResult{
 		Steps: make(map[string]StepResult),
 	}
-	for _, step := range transaction.Steps {
-		stepVars := variables.NewFromMap(step.Variables)
+	for _, s := range transaction.Steps {
+		stepVars := variables.New(variables.WithVars(s.Variables))
 		vars = vars.Merge(stepVars)
-		prepared := c.stepInterpolator.interpolate(step, vars)
+		prepared := c.stepInterpolator.interpolate(s, vars)
 		response, result := c.stepChecker.Check(prepared)
 		res.SequenceIds = append(res.SequenceIds, prepared.ID)
 		res.Steps[prepared.ID] = StepResult{prepared, response, result}

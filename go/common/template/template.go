@@ -25,21 +25,7 @@ func Render(template string, data variables.Variables) (string, error) {
 				return res.String(), err
 			}
 		case tokenIdentifier:
-			var (
-				dataSource = data.Get()
-				tokenVal   = token.val
-			)
-
-			switch t := token.val; {
-			case strings.HasPrefix(t, "variables."):
-				tokenVal = strings.TrimPrefix(t, "variables.")
-				dataSource = data.Get()
-			case strings.HasPrefix(t, "env."):
-				tokenVal = strings.TrimPrefix(t, "env.")
-				dataSource = data.GetEnv()
-			}
-
-			val, err := mapaccess.Get(dataSource, tokenVal)
+			val, err := mapaccess.Get(data.Raw(), token.val)
 			if err != nil {
 				return res.String(), err
 			}

@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	nilData = variables.NewFromMap(nil)
-	data    = variables.NewFromMap(
+	nilData = variables.New(variables.WithRaw(nil))
+	data    = variables.New(variables.WithRaw(
 		map[string]interface{}{
 			"array": []interface{}{"value"},
 			"one":   "two",
@@ -18,7 +18,7 @@ var (
 				"array": []interface{}{"four"},
 			},
 		},
-	)
+	))
 )
 
 func TestGet(t *testing.T) {

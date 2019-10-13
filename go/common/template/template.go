@@ -34,10 +34,9 @@ func Render(template string, data variables.Variables) (string, error) {
 			case strings.HasPrefix(t, "variables."):
 				tokenVal = strings.TrimPrefix(t, "variables.")
 				dataSource = data.Get()
-				// TODO uncomment bellow
-				//case strings.HasPrefix(t, "env."):
-				//	tokenVal = strings.TrimPrefix(t, "env.")
-				//	dataSource = data.GetEnv()
+			case strings.HasPrefix(t, "env."):
+				tokenVal = strings.TrimPrefix(t, "env.")
+				dataSource = data.GetEnv()
 			}
 
 			val, err := mapaccess.Get(dataSource, tokenVal)

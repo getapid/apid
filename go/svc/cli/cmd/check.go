@@ -51,7 +51,7 @@ func checkRun(*cobra.Command, []string) {
 	transactionChecker := transaction.NewStepChecker(stepChecker, stepInterpolator)
 	transactionService := transaction.NewTransactionService(transactionChecker)
 
-	vars := variables.NewFromMap(c.Variables)
+	vars := variables.NewFromMap(c.Variables).Merge(variables.NewFromEnv())
 	res := transactionService.Check(c.Transactions, vars)
 	log.L.Debug(res)
 }

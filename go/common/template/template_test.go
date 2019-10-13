@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	nilData = variables.NewVariablesFromMap(nil)
-	data    = variables.NewVariablesFromMap(
+	nilData = variables.NewFromMap(nil)
+	data    = variables.NewFromMap(
 		map[string]interface{}{
 			"array": []interface{}{"value"},
 			"one":   "two",

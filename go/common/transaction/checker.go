@@ -40,7 +40,7 @@ func (c *TransactionChecker) check(transaction Transaction, vars variables.Varia
 		Steps: make(map[string]StepResult),
 	}
 	for _, step := range transaction.Steps {
-		stepVars := variables.NewVariablesFromMap(step.Variables)
+		stepVars := variables.NewFromMap(step.Variables)
 		vars = vars.Merge(stepVars)
 		prepared := c.stepInterpolator.interpolate(step, vars)
 		response, result := c.stepChecker.Check(prepared)

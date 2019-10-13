@@ -13,10 +13,12 @@ func NewVariables() Variables {
 	}
 }
 
-// TODO rename to just NewWithMap()
-func NewVariablesFromMap(m map[string]interface{}) Variables {
+// NewFromMap returns a new Variables instance that has the provided map set as
+// the main variables namespace and an empty environment namespace
+func NewFromMap(m map[string]interface{}) Variables {
 	return Variables{
 		data: m,
+		env:  make(map[string]interface{}),
 	}
 }
 
@@ -26,7 +28,7 @@ func (v Variables) Merge(other Variables) Variables {
 	return merge(v, other)
 }
 
-// TODO rename to GetData()
+// Get returns the main namespace of the variables
 func (v Variables) Get() map[string]interface{} {
 	return v.data
 }

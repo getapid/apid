@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	listenAddr = "localhost:8080"
+	listenAddr = "0.0.0.0:8080"
 )
 
 func main() {
@@ -28,6 +28,7 @@ func main() {
 
 	go log.L.Error(server.ListenAndServe())
 	defer server.Close()
+	log.L.Info("listening on ", listenAddr)
 
 	sig := make(chan os.Signal)
 	signal.Notify(sig, os.Interrupt, os.Kill)

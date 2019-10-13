@@ -1,0 +1,5 @@
+FROM golang:1.13-alpine
+WORKDIR /go
+COPY ./bin bin/
+EXPOSE 8080
+CMD /go/bin/test-api

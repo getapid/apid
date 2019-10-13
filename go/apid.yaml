@@ -50,3 +50,29 @@ transactions:
             type: "text"
             content: "OK"
             exact: true
+
+  - id: transaction-two
+    variables:
+      api_url: http://localhost:8080
+    steps:
+      - id: health-endpoint-test-get
+        request:
+          type: GET
+          endpoint: "{{ variables.api_url }}/health"
+        response:
+          code: 200
+          body:
+            type: "text"
+            content: "OK"
+            exact: true
+      - id: echo-endpoint-test-post
+        request:
+          type: POST
+          endpoint: "{{ variables.api_url }}/echo"
+          body: "some text h3re"
+        response:
+          code: 200
+          body:
+            type: "text"
+            content: "some text h3re"
+            exact: true

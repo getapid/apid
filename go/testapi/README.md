@@ -6,3 +6,9 @@ Everything except the main is in an [`internal` package](https://golang.org/doc/
 we don't something of it in production by mistake
 
 See `cmd/main.go` for all the available endpoints
+
+## Running E2E tests
+In the root of `apid`:
+```console
+make e2e
+```

@@ -6,8 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type GinHandler struct {
-}
+type GinHandler struct{}
 
 func NewGinHandler() GinHandler {
 	return GinHandler{}

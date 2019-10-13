@@ -41,7 +41,7 @@ func WithRaw(v map[string]interface{}) option {
 	}
 }
 
-// NewFromEnv takes all the available environment variables and puts them in
+// WithEnv takes all the available environment variables and puts them in
 // the environment namespace of the new Variables instance
 func WithEnv() option {
 	return func(vars *Variables) {

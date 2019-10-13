@@ -58,6 +58,9 @@ func (v Variables) GetEnv() map[string]interface{} {
 }
 
 func mergeMaps(this, other map[string]interface{}) map[string]interface{} {
+	if this == nil {
+		return other
+	}
 	for key, newVal := range other {
 		if existingVal, ok := this[key]; ok {
 			// if the existing value isn't mergable we skip it

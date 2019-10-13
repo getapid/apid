@@ -1,35 +1,40 @@
 package variables
 
+// TODO test this package
+
 type Variables struct {
 	data map[string]interface{}
 }
 
+// TODO rename to just New()
 func NewVariables() Variables {
 	return Variables{
 		data: make(map[string]interface{}),
 	}
 }
 
-// Merge another variable instance with this one and return a copy of the result
-// not modigfying the original set of variables
-func (v Variables) Merge(key string, other map[string]interface{}) Variables {
-	this := v.data[key]
-	if this == nil {
-		v.data[key] = other
-		return v
+// TODO rename to just NewWithMap()
+func NewVariablesFromMap(m map[string]interface{}) Variables {
+	return Variables{
+		data: m,
 	}
-
-	v.data[key] = merge(v.data[key].(map[string]interface{}), other)
-	return v
 }
 
+// Merge another variable instance with this one and return a copy of the result
+// not modifying the original set of variables
+func (v Variables) Merge(other Variables) Variables {
+	return merge(v, other)
+}
+
+// TODO rename to GetData()
 func (v Variables) Get() map[string]interface{} {
 	return v.data
 }
 
-func merge(this, other map[string]interface{}) map[string]interface{} {
-	for key, value := range other {
-		this[key] = value
+// TODO make this recursive
+func merge(this, other Variables) Variables {
+	for key, value := range other.data {
+		this.data[key] = value
 	}
 	return this
 }

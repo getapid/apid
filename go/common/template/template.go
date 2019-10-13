@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/iv-p/apid/common/variables"
 	"github.com/iv-p/mapaccess"
 )
 
 // Render parses the string and returns the interpolated result
-func Render(template string, data interface{}) (string, error) {
+func Render(template string, data variables.Variables) (string, error) {
 	var res strings.Builder
 	parser := parse(template, leftDelim, rightDelim)
 	for {
@@ -24,7 +25,22 @@ func Render(template string, data interface{}) (string, error) {
 				return res.String(), err
 			}
 		case tokenIdentifier:
-			val, err := mapaccess.Get(data, token.val)
+			var (
+				dataSource = data.Get()
+				tokenVal   = token.val
+			)
+
+			switch t := token.val; {
+			case strings.HasPrefix(t, "variables."):
+				tokenVal = strings.TrimPrefix(t, "variables.")
+				dataSource = data.Get()
+				// TODO uncomment bellow
+				//case strings.HasPrefix(t, "env."):
+				//	tokenVal = strings.TrimPrefix(t, "env.")
+				//	dataSource = data.GetEnv()
+			}
+
+			val, err := mapaccess.Get(dataSource, tokenVal)
 			if err != nil {
 				return res.String(), err
 			}

@@ -25,7 +25,7 @@ func NewTransactionService(checker Checker) Service {
 func (s *TransactionService) Check(transactions []Transaction, vars variables.Variables) MultipleTransactionsResults {
 	res := make(map[string]SingleTransactionResult)
 	for _, transaction := range transactions {
-		vars = vars.Merge("variables", transaction.Variables)
+		vars = vars.Merge(variables.NewVariablesFromMap(transaction.Variables))
 		res[transaction.ID] = s.checker.check(transaction, vars)
 	}
 	return res

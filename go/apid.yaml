@@ -17,6 +17,7 @@ transactions:
         request:
           type: GET
           endpoint: "{{ variables.api_url }}/todos/1"
+          skip_ssl_verify: true
         response:
           code: 200
           headers:

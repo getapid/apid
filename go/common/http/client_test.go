@@ -92,8 +92,9 @@ func TestTimedClient_Do(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			hc, cl := testingClient(tt.fields.code, tt.fields.body, tt.fields.sleep)
 			c := TimedClient{
-				client: hc,
-				tracer: tt.fields.tracer,
+				client:         hc,
+				insecureClient: hc,
+				tracer:         tt.fields.tracer,
 			}
 
 			req, _ := NewRequest("GET", "http://google.com", nil)

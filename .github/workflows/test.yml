@@ -15,6 +15,6 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v1
 
-    - name: Test code
+    - name: Go Test
       run: |
         make go-test

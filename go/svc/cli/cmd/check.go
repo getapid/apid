@@ -46,7 +46,7 @@ func checkRun(*cobra.Command, []string) {
 	stepInterpolator := step.NewTemplateInterpolator()
 	stepExecutor := step.NewHTTPExecutor(httpClient)
 	stepValidator := step.NewHTTPValidator()
-	stepChecker := step.NewHTTPRunner(stepExecutor, stepValidator, stepInterpolator)
+	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator)
 
 	transactionChecker := transaction.NewStepChecker(stepChecker)
 	transactionService := transaction.NewTransactionService(transactionChecker)

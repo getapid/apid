@@ -1,34 +1,43 @@
 package step
 
 import (
+	"github.com/iv-p/apid/common/log"
 	"github.com/iv-p/apid/common/template"
 	"github.com/iv-p/apid/common/variables"
 )
 
-// Interpolator is the interface for different types of step interpolators
-type Interpolator interface {
+type interpolator interface {
 	interpolate(Step, variables.Variables) (PreparedStep, error)
 }
 
 // PreparedStep is the same as step, but with replaced template tokens
 type PreparedStep Step
 
-// TemplateInterpolator uses the template package to interpolate a step
-type TemplateInterpolator struct{}
+type templateInterpolator struct{}
 
 // NewTemplateInterpolator instantiates a new template interpolator
-func NewTemplateInterpolator() *TemplateInterpolator {
-	return &TemplateInterpolator{}
+func NewTemplateInterpolator() *templateInterpolator {
+	return &templateInterpolator{}
 }
 
-func (i *TemplateInterpolator) interpolate(step Step, vars variables.Variables) (PreparedStep, error) {
-	step.Request.Endpoint, _ = template.Render(step.Request.Endpoint, vars.Get())
-	step.Request.Body, _ = template.Render(step.Request.Body, vars.Get())
+func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) (PreparedStep, error) {
+	var err error
+	if step.Request.Endpoint, err = template.Render(step.Request.Endpoint, vars.Get()); err != nil {
+		log.L.Warnf("interpolating step endpoint: %v", err)
+	}
+	if step.Request.Body, err = template.Render(step.Request.Body, vars.Get()); err != nil {
+		log.L.Warnf("interpolating step body: %v", err)
+	}
 
 	headers := make(map[string]string)
+	var key, value string
 	for k, v := range step.Request.Headers {
-		key, _ := template.Render(k, vars.Get())
-		value, _ := template.Render(v, vars.Get())
+		if key, err = template.Render(k, vars.Get()); err != nil {
+			log.L.Warnf("interpolating step header key: %v", err)
+		}
+		if value, err = template.Render(v, vars.Get()); err != nil {
+			log.L.Warnf("interpolating step header value: %v", err)
+		}
 		headers[key] = value
 	}
 	step.Request.Headers = headers

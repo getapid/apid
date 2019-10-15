@@ -28,12 +28,12 @@ func NewStepChecker(stepChecker step.Runner) Checker {
 
 func (c *TransactionChecker) check(transaction Transaction, vars variables.Variables) SingleTransactionResult {
 	res := SingleTransactionResult{
-		Steps: make(map[string]step.Result),
+		Steps: make(map[string]step.Result, len(transaction.Steps)),
 	}
 	for _, step := range transaction.Steps {
 		vars = vars.Merge("variables", step.Variables)
 		res.SequenceIds = append(res.SequenceIds, step.ID)
-		result, err := c.stepChecker.Check(step, vars)
+		result, err := c.stepChecker.Run(step, vars)
 		res.Steps[step.ID] = result
 		if err != nil {
 			break

@@ -2,16 +2,11 @@ package step
 
 import "github.com/iv-p/apid/common/http"
 
-// Validator is the interface for step validators
-type Validator interface {
+type validator interface {
 	validate(ExpectedResponse, *http.Response) (ValidationResult, error)
 }
 
-// HTTPValidator receives a http.Response and checks if it what's defined
-// in the step's expected block
-type HTTPValidator struct {
-	Validator
-}
+type httpValidator struct{}
 
 // ValidationResult holds information if the validation succeeded or not and what
 // errors were encountered if any
@@ -21,11 +16,11 @@ type ValidationResult struct {
 }
 
 // NewHTTPValidator instantiates a new HTTPValidator
-func NewHTTPValidator() Validator {
-	return &HTTPValidator{}
+func NewHTTPValidator() validator {
+	return &httpValidator{}
 }
 
-func (v *HTTPValidator) validate(ExpectedResponse, *http.Response) (ValidationResult, error) {
+func (v *httpValidator) validate(ExpectedResponse, *http.Response) (ValidationResult, error) {
 	return ValidationResult{
 		OK:     true,
 		Errors: make(map[string]string),

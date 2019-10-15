@@ -14,6 +14,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	validResult = step.ValidationResult{
+		true,
+		map[string]string{},
+	}
+)
+
 func testClient(handler http.Handler) (*http.Client, func()) {
 	s := httptest.NewServer(handler)
 
@@ -83,10 +90,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 						},
 					},
 				},
-				step.ValidationResult{
-					true,
-					map[string]string{},
-				},
+				validResult,
 			},
 			false,
 		},
@@ -96,11 +100,11 @@ func TestHTTPRunner_Check(t *testing.T) {
 			client, teardown := testClient(tt.fields.h)
 			defer teardown()
 			timedClient := httpi.NewTimedClient(client)
-			c := step.NewHTTPRunner(
+			c := step.NewRunner(
 				step.NewHTTPExecutor(timedClient),
 				step.NewHTTPValidator(),
 				step.NewTemplateInterpolator())
-			got, err := c.Check(tt.args.step, tt.args.vars)
+			got, err := c.Run(tt.args.step, tt.args.vars)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("HTTPRunner.Check() error = %v, wantErr %v", err, tt.wantErr)
 				return

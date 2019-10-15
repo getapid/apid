@@ -4,16 +4,16 @@ import (
 	"github.com/iv-p/apid/common/variables"
 )
 
-// Runner is the interface for different types of step runners
+// Runner takes a step and variables and checks if it
+// returns the expected data
 type Runner interface {
-	Check(Step, variables.Variables) (Result, error)
+	Run(Step, variables.Variables) (Result, error)
 }
 
-// HTTPRunner interpolates, executes and validates an HTTP step
-type HTTPRunner struct {
-	executor     Executor
-	validator    Validator
-	interpolator Interpolator
+type runner struct {
+	executor     executor
+	validator    validator
+	interpolator interpolator
 }
 
 // Result has all the data about the step execution
@@ -22,13 +22,13 @@ type Result struct {
 	Valid ValidationResult
 }
 
-// NewHTTPRunner instantiates a new HTTPRunner
-func NewHTTPRunner(executor Executor, validator Validator, interpolator Interpolator) Runner {
-	return &HTTPRunner{executor, validator, interpolator}
+// NewRunner instantiates a new HTTPRunner
+func NewRunner(executor executor, validator validator, interpolator interpolator) Runner {
+	return &runner{executor, validator, interpolator}
 }
 
-// Check interpolates, executes and validates an HTTP step
-func (c *HTTPRunner) Check(step Step, vars variables.Variables) (Result, error) {
+// Run interpolates, executes and validates an HTTP step
+func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
 	prepared, err := c.interpolator.interpolate(step, vars)
 	if err != nil {
 		return Result{}, err

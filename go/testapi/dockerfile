@@ -6,5 +6,5 @@ RUN	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -ldflags="-w -s" -o bin/te
 
 FROM scratch
 COPY --from=builder /code/bin/test-api /bin/test-api
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["/bin/test-api"]

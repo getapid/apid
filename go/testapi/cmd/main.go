@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	listenAddr = "0.0.0.0:8080"
+	listenAddr = "0.0.0.0:80"
 )
 
 func main() {

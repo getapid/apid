@@ -107,21 +107,21 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	}
 
 	var unmarshall func([]byte, interface{}) error
-	//typ := "plaintext" // todo use this
 
 	switch typ {
 	case typeJson:
 		unmarshall = json.Unmarshal
 	case typePlain:
-		unmarshall = func([]byte, interface{}) error {
-			panic("implement me")
+		unmarshall = func(b []byte, v interface{}) error {
+			reflect.ValueOf(v).Elem().Set(reflect.ValueOf(string(b)))
+			return nil
 		}
 	default:
 		return fmt.Errorf("no support for type %q", *exp.Type)
 	}
 
 	var expected interface{}
-	err := unmarshall([]byte(exp.Content), &expected) // todo
+	err := unmarshall([]byte(exp.Content), &expected)
 	if err != nil {
 		return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, exp.Content)
 	}

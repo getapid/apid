@@ -46,6 +46,23 @@ transactions:
         response:
           code: 200
           body:
+            type: "plaintext"
+            content: |-
+              {
+                "userId": 1,
+                "id": 1,
+                "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+                "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+              }
+            exact: true
+
+      - id: hello-endpoint-test-post-1
+        request:
+          type: GET
+          endpoint: "{{ variables.api_url }}/posts/1"
+        response:
+          code: 200
+          body:
             type: "json"
             content: |
               {

@@ -16,16 +16,20 @@ type LoaderSuite struct {
 }
 
 func (s *LoaderSuite) TestLoad() {
-	cfg := newConfig()
-	stringCfg, _ := yaml.Marshal(cfg)
+	yamlCfg, internalCfg := newConfigPair()
+	stringCfg, _ := yaml.Marshal(yamlCfg)
 
 	validFile := s.tempFile()
+	defer validFile.Close()
 	_, err := validFile.Write(stringCfg)
 	s.NoError(err)
 
 	emptyFile := s.tempFile()
+	defer emptyFile.Close()
 
 	invalidYaml := s.tempFile()
+	defer invalidYaml.Close()
+
 	_, err = invalidYaml.Write([]byte("123"))
 	s.NoError(err)
 
@@ -40,7 +44,7 @@ func (s *LoaderSuite) TestLoad() {
 		},
 		{
 			path:      validFile.Name(),
-			expConfig: cfg,
+			expConfig: internalCfg,
 			expErr:    false,
 		},
 		{
@@ -54,7 +58,7 @@ func (s *LoaderSuite) TestLoad() {
 		},
 	}
 
-	for _, t := range testCases {
+	for i, t := range testCases {
 		actualCfg, err := Load(t.path)
 
 		if t.expErr {
@@ -63,13 +67,32 @@ func (s *LoaderSuite) TestLoad() {
 			s.NoError(err)
 		}
 
-		s.Equal(t.expConfig, actualCfg)
+		s.Equalf(t.expConfig, actualCfg, "test case %d/%d", i+1, len(testCases))
 	}
 }
 
-func newConfig() Config {
-	return Config{
-		APIKey: "",
+func (s *LoaderSuite) TestApplySSLFlag() {
+	tx := transaction.Transaction{
+		Steps: []step.Step{
+			{
+				Request: step.Request{
+					SkipSSLVerification: false,
+				},
+			},
+		},
+	}
+
+	applySSLFlag(true, []transaction.Transaction{tx})
+
+	s.True(tx.Steps[0].Request.SkipSSLVerification)
+}
+
+// newConfigPair returns a config that can be marshalled and written to disk
+// and a Config which is supposed to be the equivalent of config in the internal type
+func newConfigPair() (config, Config) {
+	external := config{
+		APIKey:              "",
+		SkipSSLVerification: true,
 		Variables: map[string]interface{}{
 			"key": "some value",
 		},
@@ -101,6 +124,19 @@ func newConfig() Config {
 			},
 		},
 	}
+
+	txs := make([]transaction.Transaction, len(external.Transactions))
+	copy(txs, external.Transactions)
+	applySSLFlag(external.SkipSSLVerification, txs)
+
+	internal := Config{
+		Version:      external.Version,
+		APIKey:       external.APIKey,
+		Variables:    external.Variables,
+		Transactions: txs,
+	}
+
+	return external, internal
 }
 
 func pint(i int) *int {

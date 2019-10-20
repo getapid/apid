@@ -5,7 +5,6 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 
 	httpi "github.com/iv-p/apid/common/http"
@@ -16,8 +15,7 @@ import (
 
 var (
 	validResult = step.ValidationResult{
-		true,
-		map[string]string{},
+		OK: true,
 	}
 )
 
@@ -51,11 +49,10 @@ func TestHTTPRunner_Check(t *testing.T) {
 		vars variables.Variables
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    step.Result
-		wantErr bool
+		name   string
+		fields fields
+		args   args
+		want   step.Result
 	}{
 		{
 			"simple test",
@@ -79,7 +76,8 @@ func TestHTTPRunner_Check(t *testing.T) {
 				vars,
 			},
 			step.Result{
-				step.PreparedStep{
+				OK: true,
+				Step: step.PreparedStep{
 					Request: step.Request{
 						Type:     "GET",
 						Endpoint: "http://test.com/test-endpoint",
@@ -88,9 +86,8 @@ func TestHTTPRunner_Check(t *testing.T) {
 						},
 					},
 				},
-				validResult,
+				Valid: validResult,
 			},
-			false,
 		},
 	}
 	for _, tt := range tests {
@@ -102,14 +99,9 @@ func TestHTTPRunner_Check(t *testing.T) {
 				step.NewHTTPExecutor(timedClient),
 				step.NewHTTPValidator(),
 				step.NewTemplateInterpolator())
-			got, err := c.Run(tt.args.step, tt.args.vars)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("HTTPRunner.Check() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HTTPRunner.Check() = %v, want %v", got, tt.want)
-			}
+			got := c.Run(tt.args.step, tt.args.vars)
+
+			assert.Equal(t, tt.want, got, tt.name) // this displays the diffs more nicely
 		})
 	}
 }

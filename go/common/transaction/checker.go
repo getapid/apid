@@ -34,9 +34,9 @@ func (c *TransactionChecker) check(transaction Transaction, vars variables.Varia
 		stepVars := variables.New(variables.WithVars(step.Variables))
 		vars = vars.Merge(stepVars)
 		res.SequenceIds = append(res.SequenceIds, step.ID)
-		result, err := c.stepChecker.Run(step, vars)
+		result := c.stepChecker.Run(step, vars)
 		res.Steps[step.ID] = result
-		if err != nil {
+		if !result.OK {
 			break
 		}
 	}

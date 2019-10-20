@@ -3,7 +3,7 @@ package step
 import "github.com/iv-p/apid/common/http"
 
 type validator interface {
-	validate(ExpectedResponse, *http.Response) (ValidationResult, error)
+	validate(ExpectedResponse, *http.Response) ValidationResult
 }
 
 type httpValidator struct{}

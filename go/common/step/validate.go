@@ -18,8 +18,12 @@ type httpValidator struct{}
 // ValidationResult holds information if the validation succeeded or not and what
 // errors were encountered if any
 type ValidationResult struct {
-	OK     bool              // overall check status, true only if every other check passes
 	Errors map[string]string // a list of error keys and more information about what caused them
+}
+
+// OK returns overall check status, true only if every other check passes
+func (r ValidationResult) OK() bool {
+	return len(r.Errors) == 0
 }
 
 // NewHTTPValidator instantiates a new HTTPValidator
@@ -28,18 +32,17 @@ func NewHTTPValidator() validator {
 }
 
 func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (result ValidationResult) {
-	errs := make(map[string]error)
-
-	appendErr := func(errors map[string]error, key string, err error) {
+	errMsgs := make(map[string]string)
+	appendErr := func(errors map[string]string, key string, err error) {
 		if err != nil {
-			errors[key] = err
+			errors[key] = err.Error()
 		}
 	}
 
-	appendErr(errs, "code", v.checkCode(exp.Code, actual.StatusCode))
-	appendErr(errs, "headers", v.checkHeaders(exp.Headers, actual.Header))
+	appendErr(errMsgs, "code", v.checkCode(exp.Code, actual.StatusCode))
+	appendErr(errMsgs, "headers", v.checkHeaders(exp.Headers, actual.Header))
 
-	result.OK = len(errs) == 0
+	result.Errors = errMsgs
 	return
 }
 

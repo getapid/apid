@@ -36,7 +36,7 @@ func (c *TransactionChecker) check(transaction Transaction, vars variables.Varia
 		res.SequenceIds = append(res.SequenceIds, step.ID)
 		result := c.stepChecker.Run(step, vars)
 		res.Steps[step.ID] = result
-		if !result.OK {
+		if !result.OK() {
 			break
 		}
 	}

@@ -14,9 +14,7 @@ import (
 )
 
 var (
-	validResult = step.ValidationResult{
-		OK: true,
-	}
+	validResult = step.ValidationResult{Errors: map[string]string{}}
 )
 
 func testClient(handler http.Handler) (*http.Client, func()) {
@@ -60,7 +58,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					assert.Equal(t, "random-uuid-key", r.Header.Get("X-APID-KEY"))
 					assert.Equal(t, "/test-endpoint", r.RequestURI)
-					w.Write([]byte("OK"))
+					_, _ = w.Write([]byte("OK"))
 				}),
 			},
 			args{
@@ -76,7 +74,6 @@ func TestHTTPRunner_Check(t *testing.T) {
 				vars,
 			},
 			step.Result{
-				OK: true,
 				Step: step.PreparedStep{
 					Request: step.Request{
 						Type:     "GET",

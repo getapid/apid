@@ -18,9 +18,12 @@ type runner struct {
 
 // Result has all the data about the step execution
 type Result struct {
-	OK    bool
 	Step  PreparedStep
 	Valid ValidationResult
+}
+
+func (r Result) OK() bool {
+	return r.Valid.OK()
 }
 
 // NewRunner instantiates a new HTTPRunner
@@ -39,5 +42,5 @@ func (c *runner) Run(step Step, vars variables.Variables) Result {
 		return Result{}
 	}
 	validation := c.validator.validate(step.Response, response)
-	return Result{validation.OK, prepared, validation}
+	return Result{prepared, validation}
 }

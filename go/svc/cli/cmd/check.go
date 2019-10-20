@@ -49,7 +49,7 @@ func checkRun(*cobra.Command, []string) {
 	stepValidator := step.NewHTTPValidator()
 	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator)
 
-	transactionChecker := transaction.NewStepChecker(stepChecker)
+	transactionChecker := transaction.NewTransactionRunner(stepChecker)
 	transactionService := transaction.NewTransactionService(transactionChecker)
 
 	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())

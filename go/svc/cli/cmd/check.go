@@ -4,6 +4,7 @@ import (
 	"github.com/iv-p/apid/common/config"
 	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/log"
+	"github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/transaction"
 	"github.com/iv-p/apid/common/variables"
@@ -53,5 +54,8 @@ func checkRun(*cobra.Command, []string) {
 
 	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())
 	res := transactionService.Check(c.Transactions, vars)
-	log.L.Debug(res)
+
+	for _, res := range res {
+		result.NewConsoleWriter().Write(res)
+	}
 }

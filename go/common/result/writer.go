@@ -5,7 +5,7 @@ import (
 )
 
 type Writer interface {
-	Write(transaction.Result)
+	Write(transaction.SingleTransactionResult)
 	Close()
 }
 
@@ -17,7 +17,7 @@ func NewMultiWriter(w ...Writer) Writer {
 	return multiWriter{writers: w}
 }
 
-func (w multiWriter) Write(result transaction.Result) {
+func (w multiWriter) Write(result transaction.SingleTransactionResult) {
 	for _, writer := range w.writers {
 		writer.Write(result)
 	}

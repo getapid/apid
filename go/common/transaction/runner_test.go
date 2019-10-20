@@ -31,7 +31,6 @@ var (
 	okStepResult = step.Result{
 		Step: step.PreparedStep(okStep),
 		Valid: step.ValidationResult{
-			OK:     true,
 			Errors: map[string]string{},
 		},
 	}
@@ -43,7 +42,6 @@ var (
 	errStepResult = step.Result{
 		Step: step.PreparedStep(errStep),
 		Valid: step.ValidationResult{
-			OK: false,
 			Errors: map[string]string{
 				"error-one": "this is why",
 			},
@@ -225,12 +223,12 @@ func TestTransactionRunner_Run(t *testing.T) {
 						runs = append(runs,
 							stepRunner.EXPECT().
 								Run(step, rootVars.Merge(variables.New(variables.WithVars(step.Variables)))).
-								Return(okStepResult, nil))
+								Return(okStepResult))
 					} else {
 						runs = append(runs,
 							stepRunner.EXPECT().
 								Run(step, rootVars.Merge(variables.New(variables.WithVars(step.Variables)))).
-								Return(errStepResult, errStepErr))
+								Return(errStepResult))
 						break
 					}
 				}

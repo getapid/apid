@@ -47,11 +47,10 @@ func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars v
 	for _, step := range transaction.Steps {
 		stepVars := variables.New(variables.WithVars(step.Variables))
 		vars = vars.Merge(stepVars)
-		stepResult, err := r.stepRunner.Run(step, vars)
+		stepResult := r.stepRunner.Run(step, vars)
 		res.Steps = append(res.Steps, stepResult)
-		if err != nil {
-			ok = false
-			break
+		if !stepResult.OK() {
+			return res, false
 		}
 	}
 	return res, ok

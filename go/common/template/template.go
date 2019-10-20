@@ -5,13 +5,13 @@ import (
 	"reflect"
 	"strings"
 
-	"go.uber.org/multierr"
-
+	"github.com/iv-p/apid/common/variables"
 	"github.com/iv-p/mapaccess"
+	"go.uber.org/multierr"
 )
 
 // Render parses the string and returns the interpolated result
-func Render(template string, data interface{}) (string, error) {
+func Render(template string, data variables.Variables) (string, error) {
 	var res strings.Builder
 	var multiErr error
 	parser := parse(template, leftDelim, rightDelim)
@@ -27,7 +27,7 @@ func Render(template string, data interface{}) (string, error) {
 				multiErr = multierr.Append(multiErr, fmt.Errorf("write string: %v : %v", template, err))
 			}
 		case tokenIdentifier:
-			val, err := mapaccess.Get(data, token.val)
+			val, err := mapaccess.Get(data.Raw(), token.val)
 			if err != nil {
 				multiErr = multierr.Append(multiErr, fmt.Errorf("key not found in data: %v : %v", token.val, err))
 			}

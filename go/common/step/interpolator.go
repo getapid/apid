@@ -22,20 +22,20 @@ func NewTemplateInterpolator() *templateInterpolator {
 
 func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) (PreparedStep, error) {
 	var err error
-	if step.Request.Endpoint, err = template.Render(step.Request.Endpoint, vars.Get()); err != nil {
+	if step.Request.Endpoint, err = template.Render(step.Request.Endpoint, vars); err != nil {
 		log.L.Warnf("interpolating step endpoint: %v", err)
 	}
-	if step.Request.Body, err = template.Render(step.Request.Body, vars.Get()); err != nil {
+	if step.Request.Body, err = template.Render(step.Request.Body, vars); err != nil {
 		log.L.Warnf("interpolating step body: %v", err)
 	}
 
 	headers := make(map[string]string)
 	var key, value string
 	for k, v := range step.Request.Headers {
-		if key, err = template.Render(k, vars.Get()); err != nil {
+		if key, err = template.Render(k, vars); err != nil {
 			log.L.Warnf("interpolating step header key: %v", err)
 		}
-		if value, err = template.Render(v, vars.Get()); err != nil {
+		if value, err = template.Render(v, vars); err != nil {
 			log.L.Warnf("interpolating step header value: %v", err)
 		}
 		headers[key] = value

@@ -41,14 +41,14 @@ func checkRun(*cobra.Command, []string) {
 		log.L.Panic("the config failed validation: ", err)
 	}
 
-	httpClient := http.NewTimedClient()
+	httpClient := http.NewTimedClient(http.DefaultClient)
 
-	stepExecutor := step.NewRequestExecutor(httpClient)
-	stepValidator := step.NewResponseValidator()
-	stepChecker := step.NewStepChecker(stepExecutor, stepValidator)
+	stepInterpolator := step.NewTemplateInterpolator()
+	stepExecutor := step.NewHTTPExecutor(httpClient)
+	stepValidator := step.NewHTTPValidator()
+	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator)
 
-	stepInterpolator := transaction.NewStepInterpolator()
-	transactionChecker := transaction.NewStepChecker(stepChecker, stepInterpolator)
+	transactionChecker := transaction.NewStepChecker(stepChecker)
 	transactionService := transaction.NewTransactionService(transactionChecker)
 
 	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())

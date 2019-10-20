@@ -1,67 +1,31 @@
 package step
 
 import (
-	"context"
-	"log"
 	"strings"
-	"time"
 
 	"github.com/iv-p/apid/common/http"
 )
 
-type Executor interface {
-	do(Request) *http.Response
+type executor interface {
+	do(Request) (*http.Response, error)
 }
 
-type RequestExecutor struct {
+type httpExecutor struct {
 	client http.Client
-
-	Executor
 }
 
-type HTTPResponse struct {
-	StatusCode int
-	Body       string
-	Headers    map[string]string
-	Timings    Timings
+// NewHTTPExecutor instantiates a new http executor
+func NewHTTPExecutor(client http.Client) executor {
+	return &httpExecutor{client: client}
 }
 
-type Timings struct {
-	DNSLookup,
-	TCPConnection,
-	TLSHandshake,
-	ServerProcessing,
-	ContentTransfer,
-	NameLookup,
-	Connect,
-	PreTransfer,
-	StartTransfer,
-	Total int64
-}
-
-func NewRequestExecutor(client http.Client) Executor {
-	return &RequestExecutor{client: client}
-}
-
-func (e *RequestExecutor) do(request Request) *http.Response {
+func (e *httpExecutor) do(request Request) (*http.Response, error) {
 	req, err := http.NewRequest(request.Type, request.Endpoint, strings.NewReader(request.Body))
+	if err != nil {
+		return nil, err
+	}
 	for k, v := range request.Headers {
 		req.Header.Set(k, v)
 	}
-	res, err := e.client.Do(context.Background(), req)
-	if err != nil {
-		log.Print(err)
-	}
-
-	return res
-}
-
-func transformTimings(t http.Timings) Timings {
-	return Timings{
-		DNSLookup:        int64(t.DNSLookup / time.Millisecond),
-		TCPConnection:    int64(t.TCPConnection / time.Millisecond),
-		TLSHandshake:     int64(t.TLSHandshake / time.Millisecond),
-		ServerProcessing: int64(t.ServerProcessing / time.Millisecond),
-		ContentTransfer:  int64(t.ContentTransfer / time.Millisecond),
-	}
+	return e.client.Do(req.Context(), req)
 }

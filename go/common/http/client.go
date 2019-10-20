@@ -46,6 +46,9 @@ type Tracer interface {
 	Timings() Timings
 }
 
+// DefaultClient is the default HTTP client
+var DefaultClient = http.DefaultClient
+
 // DefaultTracer stores http request timings
 type DefaultTracer struct {
 	dnsStart,
@@ -59,8 +62,8 @@ type DefaultTracer struct {
 }
 
 // NewTimedClient creates a default timed client
-func NewTimedClient() *TimedClient {
-	return &TimedClient{http.DefaultClient, &DefaultTracer{}}
+func NewTimedClient(client *http.Client) *TimedClient {
+	return &TimedClient{client, &DefaultTracer{}}
 }
 
 // Tracer returns a new httptrace.ClientTrace

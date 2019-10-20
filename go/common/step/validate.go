@@ -2,26 +2,27 @@ package step
 
 import "github.com/iv-p/apid/common/http"
 
-type Validator interface {
-	validate(ExpectedResponse, *http.Response) ValidationResult
+type validator interface {
+	validate(ExpectedResponse, *http.Response) (ValidationResult, error)
 }
 
-type ResponseValidator struct {
-	Validator
-}
+type httpValidator struct{}
 
+// ValidationResult holds information if the validation succeeded or not and what
+// errors were encountered if any
 type ValidationResult struct {
 	OK     bool              // overall check status, true only if every other check passes
 	Errors map[string]string // a list of error keys and more information about what caused them
 }
 
-func NewResponseValidator() Validator {
-	return &ResponseValidator{}
+// NewHTTPValidator instantiates a new HTTPValidator
+func NewHTTPValidator() validator {
+	return &httpValidator{}
 }
 
-func (v *ResponseValidator) validate(ExpectedResponse, *http.Response) ValidationResult {
+func (v *httpValidator) validate(ExpectedResponse, *http.Response) (ValidationResult, error) {
 	return ValidationResult{
 		OK:     true,
 		Errors: make(map[string]string),
-	}
+	}, nil
 }

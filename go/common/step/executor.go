@@ -1,6 +1,7 @@
 package step
 
 import (
+	"context"
 	"strings"
 
 	"github.com/iv-p/apid/common/http"
@@ -24,8 +25,10 @@ func (e *httpExecutor) do(request Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	req.SkipVerify = request.SkipSSLVerification
 	for k, v := range request.Headers {
 		req.Header.Set(k, v)
 	}
-	return e.client.Do(req.Context(), req)
+	return e.client.Do(context.Background(), req)
 }

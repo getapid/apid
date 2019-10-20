@@ -3,23 +3,30 @@ package template
 import (
 	"reflect"
 	"testing"
+
+	"github.com/iv-p/apid/common/variables"
 )
 
-var data = map[string]interface{}{
-	"array": []interface{}{"value"},
-	"one":   "two",
-	"nested": map[string]interface{}{
-		"key":   "three",
-		"array": []interface{}{"four"},
-	},
-	"int":   3,
-	"float": 3.14,
-}
+var (
+	nilData = variables.New(variables.WithRaw(nil))
+	data    = variables.New(variables.WithRaw(
+		map[string]interface{}{
+			"array": []interface{}{"value"},
+			"one":   "two",
+			"nested": map[string]interface{}{
+				"key":   "three",
+				"array": []interface{}{"four"},
+			},
+      "int":   3,
+      "float": 3.14,
+		},
+	))
+)
 
 func TestGet(t *testing.T) {
 	type args struct {
 		template string
-		data     interface{}
+		data     variables.Variables
 	}
 	tests := []struct {
 		name    string
@@ -76,7 +83,7 @@ func TestGet(t *testing.T) {
 			"nil data only text",
 			args{
 				"text",
-				nil,
+				nilData,
 			},
 			"text",
 			false,
@@ -86,7 +93,7 @@ func TestGet(t *testing.T) {
 			"nil data variable text",
 			args{
 				"text {{ key }}",
-				nil,
+				nilData,
 			},
 			"",
 			true,

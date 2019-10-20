@@ -1,0 +1,10 @@
+FROM golang:1.13-alpine AS builder
+WORKDIR /code
+COPY . .
+RUN go mod download
+RUN	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -ldflags="-w -s" -o bin/test-api testapi/cmd/main.go
+
+FROM scratch
+COPY --from=builder /code/bin/test-api /bin/test-api
+EXPOSE 80
+ENTRYPOINT ["/bin/test-api"]

@@ -36,14 +36,12 @@ func testClient(handler http.Handler) (*http.Client, func()) {
 }
 
 func TestHTTPRunner_Check(t *testing.T) {
-	vars := variables.Variables{
-		Data: map[string]interface{}{
-			"vars": map[string]interface{}{
-				"api-key":  "random-uuid-key",
-				"endpoint": "test-endpoint",
-			},
-		},
-	}
+	vars := variables.New(variables.WithRaw(map[string]interface{}{
+		"vars": map[string]interface{}{
+			"api-key":  "random-uuid-key",
+			"endpoint": "test-endpoint",
+		}}),
+	)
 
 	type fields struct {
 		h http.HandlerFunc

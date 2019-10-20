@@ -53,7 +53,7 @@ func WithEnv() option {
 		environ := os.Environ()
 		env := make(map[string]interface{}, len(environ)) // we need map[string]interface{} for mergeMaps() to work
 		for _, e := range environ {
-			pair := strings.Split(e, "=")
+			pair := strings.SplitN(e, "=", 2)
 			env[pair[0]] = pair[1]
 		}
 		vars.data[envNamespace] = env

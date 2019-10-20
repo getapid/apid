@@ -115,7 +115,7 @@ func newConfigPair() (config, Config) {
 							Headers: &step.Headers{},
 							Body: &step.ExpectBody{
 								Type:    pstring("typ"),
-								Content: pstring("content"),
+								Content: "content",
 								Exact:   pbool(true),
 							},
 						},

@@ -39,21 +39,22 @@ func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (re
 		}
 	}
 
-	appendErr(errMsgs, "code", v.checkCode(exp.Code, actual.StatusCode))
-	appendErr(errMsgs, "headers", v.checkHeaders(exp.Headers, actual.Header))
+	appendErr(errMsgs, "code", v.validateCode(exp.Code, actual.StatusCode))
+	appendErr(errMsgs, "headers", v.validateHeaders(exp.Headers, actual.Header))
+	//appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.Body))
 
 	result.Errors = errMsgs
 	return
 }
 
-func (httpValidator) checkCode(exp *int, actual int) error {
+func (httpValidator) validateCode(exp *int, actual int) error {
 	if exp != nil && *exp != actual {
 		return fmt.Errorf("want %d, received %d", *exp, actual)
 	}
 	return nil
 }
 
-func (httpValidator) checkHeaders(exp *Headers, actual http2.Header) error {
+func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 	if exp == nil {
 		return nil
 	}

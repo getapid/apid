@@ -10,10 +10,11 @@ type Step struct {
 
 // Request is a single step request data
 type Request struct {
-	Type     string  `yaml:"type" validate:"required"`
-	Endpoint string  `yaml:"endpoint" validate:"required"`
-	Headers  Headers `yaml:"headers"`
-	Body     string  `yaml:"body"`
+	Type                string  `yaml:"type" validate:"required"`
+	Endpoint            string  `yaml:"endpoint" validate:"required"`
+	Headers             Headers `yaml:"headers"`
+	Body                string  `yaml:"body"`
+	SkipSSLVerification bool
 }
 
 type ExpectedResponse struct {

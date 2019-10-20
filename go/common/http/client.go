@@ -12,6 +12,8 @@ import (
 // Request is a http request
 type Request struct {
 	*http.Request
+
+	SkipVerify bool
 }
 
 // Timings holds the timings data for a http request
@@ -36,8 +38,9 @@ type Client interface {
 
 // TimedClient adds http request timings as part of the http response
 type TimedClient struct {
-	client *http.Client
-	tracer Tracer
+	client         *http.Client
+	insecureClient *http.Client
+	tracer         Tracer
 }
 
 // Tracer is the interface for a tracer
@@ -63,7 +66,12 @@ type DefaultTracer struct {
 
 // NewTimedClient creates a default timed client
 func NewTimedClient(client *http.Client) *TimedClient {
-	return &TimedClient{client, &DefaultTracer{}}
+	insecureClient := insecure(client)
+	return &TimedClient{
+		client:         client,
+		insecureClient: insecureClient,
+		tracer:         &DefaultTracer{},
+	}
 }
 
 // Tracer returns a new httptrace.ClientTrace
@@ -96,9 +104,22 @@ func (c TimedClient) Do(ctx context.Context, req *Request) (*Response, error) {
 	var err error
 	req.Request = req.WithContext(httptrace.WithClientTrace(ctx, c.tracer.Tracer()))
 	// Should we log the error here, or propagate upwards and ingest quietly?
-	res.Response, err = c.client.Do(req.Request)
+	client := c.client
+	if req.SkipVerify {
+		client = c.insecureClient
+	}
+	res.Response, err = client.Do(req.Request)
 	res.Timings = c.tracer.Timings()
 	return res, err
+}
+
+func insecure(source *http.Client) *http.Client {
+	insecureTransport := *http.DefaultTransport.(*http.Transport)
+	insecureTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	insecureClient := *source
+	insecureClient.Transport = &insecureTransport
+
+	return &insecureClient
 }
 
 // NewRequest is a helper to quickly create a new http request

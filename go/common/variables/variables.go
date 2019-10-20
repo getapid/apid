@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+const (
+	envNamespace = "env"
+	varNamespace = "var"
+)
+
 type Variables struct {
 	data map[string]interface{}
 }
@@ -30,7 +35,7 @@ type option func(variables *Variables)
 // WithVars places the provided map in the variables namespace of the Variables
 func WithVars(v map[string]interface{}) option {
 	return func(vars *Variables) {
-		vars.data["variables"] = v
+		vars.data[varNamespace] = v
 	}
 }
 
@@ -51,7 +56,7 @@ func WithEnv() option {
 			pair := strings.Split(e, "=")
 			env[pair[0]] = pair[1]
 		}
-		vars.data["env"] = env
+		vars.data[envNamespace] = env
 	}
 }
 

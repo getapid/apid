@@ -14,7 +14,7 @@ mock:
 test: mock
 	go test $(GOFLAGS) ./...
 
-test-api-%:
+test-api-%: mock
 	$(MAKE) -C testapi $*
 
 e2e-test: build-cli

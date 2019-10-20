@@ -84,28 +84,46 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 }
 
 func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
+	const (
+		typeJson  = "json"
+		typePlain = "plaintext"
+	)
+
 	if exp == nil {
 		return nil
 	}
 
-	if (exp.Type != nil && *exp.Type != "json") &&
-		(exp.Exact != nil && *exp.Exact) {
-		return fmt.Errorf(`cannot check non-exact body with type %q, only "json" supported`, exp.Type)
+	typ := typePlain
+	if exp.Type != nil {
+		typ = *exp.Type
+	}
+	exact := true
+	if exp.Exact != nil {
+		exact = *exp.Exact
+	}
+
+	if (typ != typeJson && typ != typePlain) && exact {
+		return fmt.Errorf(`cannot check non-exact body with type %q, only "json" supported`, typ)
 	}
 
 	var unmarshall func([]byte, interface{}) error
 	//typ := "plaintext" // todo use this
 
-	switch {
-	case exp.Type == nil:
-	case *exp.Type == "json":
+	switch typ {
+	case typeJson:
 		unmarshall = json.Unmarshal
-	case *exp.Type == "plaintext":
+	case typePlain:
 		unmarshall = func([]byte, interface{}) error {
 			panic("implement me")
 		}
 	default:
 		return fmt.Errorf("no support for type %q", *exp.Type)
+	}
+
+	var expected interface{}
+	err := unmarshall([]byte(exp.Content), &expected) // todo
+	if err != nil {
+		return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, exp.Content)
 	}
 
 	var received interface{}
@@ -115,15 +133,11 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	}
 	err = unmarshall(body, &received)
 	if err != nil {
-		return fmt.Errorf("coulnd't convert response to type %q, response: %s", *exp.Type, body) // TODO remove this dereference here and use the type
+		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, body) // TODO remove this dereference here and use the type
 	}
 	// todo interpolate the expected body
-	var expected interface{}
-	err = unmarshall([]byte(*exp.Content), &expected) // todo
-	if err != nil {
-		return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, *exp.Content)
-	}
-	if *exp.Exact {
+
+	if exact {
 		if !reflect.DeepEqual(expected, received) {
 			return fmt.Errorf("expected body doesn't match actual: want = %#v, received = %#v", expected, received)
 		}

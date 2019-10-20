@@ -27,6 +27,6 @@ type Headers map[string]string
 
 type ExpectBody struct {
 	Type    *string `yaml:"type"`
-	Content *string `yaml:"contains"`
+	Content *string `yaml:"content"`
 	Exact   *bool   `yaml:"exact"`
 }

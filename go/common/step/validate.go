@@ -1,8 +1,12 @@
 package step
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	http2 "net/http"
+	"reflect"
 	"strings"
 
 	"github.com/iv-p/apid/common/http"
@@ -32,6 +36,7 @@ func NewHTTPValidator() validator {
 }
 
 func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (result ValidationResult) {
+	defer actual.Body.Close()
 	errMsgs := make(map[string]string)
 	appendErr := func(errors map[string]string, key string, err error) {
 		if err != nil {
@@ -41,7 +46,7 @@ func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (re
 
 	appendErr(errMsgs, "code", v.validateCode(exp.Code, actual.StatusCode))
 	appendErr(errMsgs, "headers", v.validateHeaders(exp.Headers, actual.Header))
-	//appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.Body))
+	appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.Body))
 
 	result.Errors = errMsgs
 	return
@@ -76,4 +81,60 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 		}
 	}
 	return accumulatedErrs
+}
+
+func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
+	if exp == nil {
+		return nil
+	}
+
+	if (exp.Type != nil && *exp.Type != "json") &&
+		(exp.Exact != nil && *exp.Exact) {
+		return fmt.Errorf(`cannot check non-exact body with type %q, only "json" supported`, exp.Type)
+	}
+
+	var unmarshall func([]byte, interface{}) error
+	//typ := "plaintext" // todo use this
+
+	switch {
+	case exp.Type == nil:
+	case *exp.Type == "json":
+		unmarshall = json.Unmarshal
+	case *exp.Type == "plaintext":
+		unmarshall = func([]byte, interface{}) error {
+			panic("implement me")
+		}
+	default:
+		return fmt.Errorf("no support for type %q", *exp.Type)
+	}
+
+	var received interface{}
+	body, err := ioutil.ReadAll(actual)
+	if err != nil {
+		return err
+	}
+	err = unmarshall(body, &received)
+	if err != nil {
+		return fmt.Errorf("coulnd't convert response to type %q, response: %s", *exp.Type, body) // TODO remove this dereference here and use the type
+	}
+	// todo interpolate the expected body
+	var expected interface{}
+	err = unmarshall([]byte(*exp.Content), &expected) // todo
+	if err != nil {
+		return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, *exp.Content)
+	}
+	if *exp.Exact {
+		if !reflect.DeepEqual(expected, received) {
+			return fmt.Errorf("expected body doesn't match actual: want = %#v, received = %#v", expected, received)
+		}
+	} else {
+		if !fieldsEqual(expected, received) {
+			return fmt.Errorf("expected body's fields don't match actual: want = %#v, received = %#v", expected, received)
+		}
+	}
+	return nil
+}
+
+func fieldsEqual(exp, actual interface{}) bool {
+	return true // TODO
 }

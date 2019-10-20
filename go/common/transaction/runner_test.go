@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	txVars = map[string]interface{}{
+	rootVars = variables.New()
+	txVars   = map[string]interface{}{
 		"url": "one",
 	}
 	stepVars = map[string]interface{}{
@@ -68,7 +69,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 			"empty",
 			args{
 				[]Transaction{},
-				variables.New(),
+				rootVars,
 			},
 			want{
 				[]result.TransactionResult{},
@@ -85,7 +86,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 						[]step.Step{},
 					},
 				},
-				variables.New(),
+				rootVars,
 			},
 			want{
 				[]result.TransactionResult{
@@ -125,7 +126,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 						},
 					},
 				},
-				variables.New(),
+				rootVars,
 			},
 			want{
 				[]result.TransactionResult{
@@ -184,7 +185,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 						},
 					},
 				},
-				variables.New(),
+				rootVars,
 			},
 			want{
 				[]result.TransactionResult{
@@ -223,12 +224,12 @@ func TestTransactionRunner_Run(t *testing.T) {
 					if step.ID == okStep.ID {
 						runs = append(runs,
 							stepRunner.EXPECT().
-								Run(step, variables.New(variables.WithVars(step.Variables))).
+								Run(step, rootVars.Merge(variables.New(variables.WithVars(step.Variables)))).
 								Return(okStepResult, nil))
 					} else {
 						runs = append(runs,
 							stepRunner.EXPECT().
-								Run(step, variables.New(variables.WithVars(step.Variables))).
+								Run(step, rootVars.Merge(variables.New(variables.WithVars(step.Variables)))).
 								Return(errStepResult, errStepErr))
 						break
 					}

@@ -51,7 +51,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 		fields fields
 		args   args
 		want   step.Result
-	}{
+	}{ // TODO tests bate
 		{
 			"simple test",
 			fields{

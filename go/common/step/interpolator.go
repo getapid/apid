@@ -28,6 +28,11 @@ func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) 
 	if step.Request.Body, err = template.Render(step.Request.Body, vars); err != nil {
 		log.L.Warnf("interpolating step body: %v", err)
 	}
+	if step.Response.Body != nil {
+		if step.Response.Body.Content, err = template.Render(step.Response.Body.Content, vars.Get()); err != nil {
+			log.L.Warnf("interpolating step response body: %v", err)
+		}
+	}
 
 	headers := make(map[string]string)
 	var key, value string

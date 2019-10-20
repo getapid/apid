@@ -135,7 +135,6 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	if err != nil {
 		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, body) // TODO remove this dereference here and use the type
 	}
-	// todo interpolate the expected body
 
 	if exact {
 		if !reflect.DeepEqual(expected, received) {

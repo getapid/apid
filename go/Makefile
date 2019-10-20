@@ -2,7 +2,7 @@ GOFLAGS:=-v
 BINDIR:=bin/apid
 
 build-cli:
-	GO111MODULES=off go build $(GOFLAGS) -o $(BINDIR) svc/cli/main.go
+	go build $(GOFLAGS) -o $(BINDIR) svc/cli/main.go
 
 install:
 	go mod download

@@ -1,12 +1,14 @@
 GOFLAGS:=-v
 BINDIR:=bin/apid
+
 build-cli:
-	go build $(GOFLAGS) -o $(BINDIR) svc/cli/main.go
+	GO111MODULES=off go build $(GOFLAGS) -o $(BINDIR) svc/cli/main.go
 
 install:
 	go mod download
 
-mock: install
+mock:
+	go get github.com/golang/mock/mockgen
 	go generate ./...
 
 test: mock

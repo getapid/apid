@@ -103,7 +103,7 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	}
 
 	if (typ != typeJson && typ != typePlain) && exact {
-		return fmt.Errorf(`cannot check non-exact body with type %q, only "json" supported`, typ)
+		return fmt.Errorf(`cannot check exact body with type %q, only %q and %q supported`, typ, typePlain, typeJson)
 	}
 
 	var unmarshall func([]byte, interface{}) error
@@ -117,7 +117,7 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 			return nil
 		}
 	default:
-		return fmt.Errorf("no support for type %q", *exp.Type)
+		return fmt.Errorf("no support for type %q", typ)
 	}
 
 	var expected interface{}

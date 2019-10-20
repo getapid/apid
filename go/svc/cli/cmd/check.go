@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/iv-p/apid/common/config"
 	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/log"
@@ -56,6 +58,8 @@ func checkRun(*cobra.Command, []string) {
 	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
 
 	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())
-	res := transactionRunner.Run(c.Transactions, vars)
-	log.L.Debug(res)
+	ok := transactionRunner.Run(c.Transactions, vars)
+	if !ok {
+		os.Exit(1)
+	}
 }

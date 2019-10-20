@@ -7,7 +7,7 @@ import (
 )
 
 type Runner interface {
-	Run([]Transaction, variables.Variables) error
+	Run([]Transaction, variables.Variables) bool
 }
 
 // Transaction is the definition of a transaction
@@ -20,8 +20,6 @@ type Transaction struct {
 type TransactionRunner struct {
 	stepRunner step.Runner
 	writer     result.Writer
-
-	Runner
 }
 
 func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
@@ -31,29 +29,28 @@ func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
 	}
 }
 
-func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Variables) error {
-	var err error
+func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Variables) bool {
+	allOk := true
 	for _, transaction := range transactions {
-		tVars := variables.New(variables.WithVars(transaction.Variables))
-		vars = vars.Merge(tVars)
-		res := r.runSingleTransaction(transaction, vars)
+		tVars := vars.Merge(variables.New(variables.WithVars(transaction.Variables)))
+		res, ok := r.runSingleTransaction(transaction, tVars)
 		r.writer.Write(res)
+		allOk = allOk && ok
 	}
-	return err
+	return allOk
 }
 
-func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars variables.Variables) result.TransactionResult {
-	res := result.TransactionResult{
-		Steps: make([]step.Result, len(transaction.Steps)),
-	}
+func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars variables.Variables) (result.TransactionResult, bool) {
+	ok := true
+	res := result.TransactionResult{}
 	for _, step := range transaction.Steps {
-		tVars := variables.New(variables.WithVars(step.Variables))
-		vars = vars.Merge(tVars)
-		result, err := r.stepRunner.Run(step, vars)
-		res.Steps = append(res.Steps, result)
+		stepVars := vars.Merge(variables.New(variables.WithVars(step.Variables)))
+		stepResult, err := r.stepRunner.Run(step, stepVars)
+		res.Steps = append(res.Steps, stepResult)
 		if err != nil {
+			ok = false
 			break
 		}
 	}
-	return res
+	return res, ok
 }

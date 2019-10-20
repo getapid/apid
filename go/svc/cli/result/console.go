@@ -1,5 +1,7 @@
 package result
 
+//go:generate mockgen -destination=../mock/console_mock.go -package=mock github.com/iv-p/apid/common/result Writer
+
 import (
 	"encoding/json"
 	"fmt"

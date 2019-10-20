@@ -6,10 +6,13 @@ build-cli:
 install:
 	go mod download
 
-test:
+mock: install
+	go generate ./...
+
+test: mock
 	go test $(GOFLAGS) ./...
 
-test-api-%:
+test-api-%: mock
 	$(MAKE) -C testapi $*
 
 e2e-test: build-cli

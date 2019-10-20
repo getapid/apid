@@ -1,5 +1,7 @@
 package step
 
+//go:generate mockgen -destination=../mock/runner_mock.go -package=mock github.com/iv-p/apid/common/step Runner
+
 import (
 	"github.com/iv-p/apid/common/variables"
 )

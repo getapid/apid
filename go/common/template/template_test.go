@@ -17,6 +17,8 @@ var (
 				"key":   "three",
 				"array": []interface{}{"four"},
 			},
+      "int":   3,
+      "float": 3.14,
 		},
 	))
 )
@@ -95,6 +97,26 @@ func TestGet(t *testing.T) {
 			},
 			"",
 			true,
+		},
+
+		{
+			"int in text",
+			args{
+				"text {{ int }}",
+				data,
+			},
+			"text 3",
+			false,
+		},
+
+		{
+			"float in text",
+			args{
+				"text {{ float }}",
+				data,
+			},
+			"text 3.14",
+			false,
 		},
 	}
 	for _, tt := range tests {

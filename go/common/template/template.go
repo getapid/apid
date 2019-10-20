@@ -30,10 +30,15 @@ func Render(template string, data variables.Variables) (string, error) {
 			val, err := mapaccess.Get(data.Raw(), token.val)
 			if err != nil {
 				multiErr = multierr.Append(multiErr, fmt.Errorf("key not found in data: %v : %v", token.val, err))
+				continue
 			}
 			switch c := val.(type) {
 			case string:
 				res.WriteString(c)
+			case float64:
+				res.WriteString(fmt.Sprintf("%g", c))
+			case int:
+				res.WriteString(fmt.Sprintf("%d", c))
 			default:
 				multiErr = multierr.Append(multiErr, fmt.Errorf("unknown value type %v: %v", reflect.TypeOf(val), token.val))
 			}

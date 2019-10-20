@@ -13,24 +13,29 @@ transactions:
       - id: hello-endpoint-test-get
         request:
           type: GET
-          endpoint: "{{ variables.api_url }}/posts/1"
-          ssl_skip_verify: true
+          endpoint: "{{ var.api_url }}/posts/1"
+
+      - id: hello-endpoint-two
+        request:
+          type: GET
+          endpoint: "{{ var.api_url }}/todos/1"
+          skip_ssl_verify: true
         response:
           code: 200
           body:
             type: "plaintext"
-            content: |-
+            content: |
               {
                 "userId": 1,
                 "id": 1,
-                "title": "{{variables.title}}",
-                "body": "{{variables.body}}"
+                "title": "{{var.title}}",
+                "body": "{{var.body}}"
               }
 
       - id: hello-endpoint-test-get-1
         request:
           type: GET
-          endpoint: "{{ variables.api_url }}/posts/1"
+          endpoint: "{{ var.api_url }}/posts/1"
         response:
           code: 200
           body:
@@ -51,7 +56,7 @@ transactions:
       - id: health-endpoint-test-get
         request:
           type: GET
-          endpoint: "{{ variables.api_url }}/health"
+          endpoint: "{{ var.api_url }}/health"
         response:
           code: 200
           body:
@@ -61,7 +66,7 @@ transactions:
       - id: echo-endpoint-test-post
         request:
           type: POST
-          endpoint: "{{ variables.api_url }}/echo"
+          endpoint: "{{ var.api_url }}/echo"
           body: "some text h3re"
         response:
           code: 200

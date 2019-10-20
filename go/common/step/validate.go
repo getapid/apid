@@ -133,7 +133,7 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	}
 	err = unmarshall(body, &received)
 	if err != nil {
-		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, body) // TODO remove this dereference here and use the type
+		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, body)
 	}
 
 	if exact {
@@ -149,5 +149,23 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 }
 
 func fieldsEqual(exp, actual interface{}) bool {
-	return true // TODO
+	if reflect.ValueOf(exp).Kind() != reflect.ValueOf(actual).Kind() {
+		return false
+	}
+
+	switch expMap := exp.(type) {
+	case map[string]interface{}:
+		actualMap := actual.(map[string]interface{})
+		allOk := true
+		for k, expNested := range expMap {
+			if actualNested, ok := actualMap[k]; !ok {
+				return false
+			} else {
+				allOk = allOk && fieldsEqual(expNested, actualNested)
+			}
+		}
+		return allOk
+	default:
+		return true // when comparing scalars
+	}
 }

@@ -158,13 +158,12 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 }
 
 func fieldsEqual(exp, actual interface{}) bool {
-	if reflect.ValueOf(exp).Kind() != reflect.ValueOf(actual).Kind() {
-		return false
-	}
-
 	switch expMap := exp.(type) {
 	case map[string]interface{}:
-		actualMap := actual.(map[string]interface{})
+		actualMap, ok := actual.(map[string]interface{})
+		if !ok {
+			return false
+		}
 		for k, expNested := range expMap {
 			if actualNested, ok := actualMap[k]; !ok {
 				return false

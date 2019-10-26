@@ -10,41 +10,11 @@ transactions:
       title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
       body: quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto
     steps:
-#      - id: hello-endpoint-test-get
-#        request:
-#          type: GET
-#          endpoint: "{{ variables.api_url }}/posts/1"
-#
-#      - id: hello-endpoint-two
-#        request:
-#          type: GET
-#          endpoint: "{{ variables.api_url }}/todos/1"
-#          skip_ssl_verify: true
-#              response:
-#          code: 200
-#          headers:
-#            "name_regex": "value_regex"
-#            "name_regex_two": "value_regex_two"
-#          body:
-#            type: "json"
-#            content: "{
-#                'first_name': 'Boaty',
-#                'last_name': 'McBoatface'
-#                'addresses': [
-#                  {
-#                    'first_line': 'Lane McLaneface'
-#                  }
-#                ]
-#              }"
-#            exact: false
-#        export:
-#          auth_cookie: response.headers.X-APIDAUTH
-#          first_address: response.body.addresses[0].first_line
-
       - id: hello-endpoint-test-post
         request:
           type: GET
           endpoint: "{{ variables.api_url }}/posts/1"
+          ssl_skip_verify: true
         response:
           code: 200
           body:
@@ -85,7 +55,7 @@ transactions:
         response:
           code: 200
           body:
-            type: "text"
+            type: "plaintext"
             content: "OK"
             exact: true
       - id: echo-endpoint-test-post
@@ -96,6 +66,6 @@ transactions:
         response:
           code: 200
           body:
-            type: "text"
+            type: "plaintext"
             content: "some text h3re"
             exact: true

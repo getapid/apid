@@ -54,9 +54,9 @@ jobs:
         docker build -t getapid/apid:${VERSION} -f svc/cli/dockerfile .
         docker tag getapid/apid:${VERSION} getapid/apid:latest
 
-    - name: Set up zola 0.8.0
+    - name: Set up zola 0.9.0
       run: |
-        wget -q -O - "https://github.com/getzola/zola/releases/download/v0.8.0/zola-v0.8.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
+        wget -q -O - "https://github.com/getzola/zola/releases/download/v0.9.0/zola-v0.9.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
 
 
     - name: Set up node

@@ -26,7 +26,7 @@ type Request struct {
 type ExpectedResponse struct {
 	Code    *int        `yaml:"code"`
 	Headers *Headers    `yaml:"headers"`
-	Body    *ExpectBody `yaml:"body"`
+	Body    *ExpectBody `yaml:"body" validate:"expectBody"`
 }
 
 type Headers map[string][]string

@@ -24,11 +24,11 @@ func (s *ValidatorSuite) TestValidate() {
 	incorrectHeadersResult := ValidationResult{Errors: map[string]string{"headers": ""}}
 	correctResult := ValidationResult{}
 
-	testCases := []struct {
+	testCases := [...]struct {
 		name      string
 		args      args
 		expResult ValidationResult
-	}{ // TODO add more tests
+	}{
 		{
 			name: "status correct",
 			args: args{
@@ -98,7 +98,7 @@ func (s *ValidatorSuite) TestValidate() {
 			expResult: incorrectHeadersResult,
 		},
 		{
-			name: "body exact correct",
+			name: "body json exact correct",
 			args: args{
 				exp: ExpectedResponse{
 					Body: &ExpectBody{
@@ -116,7 +116,7 @@ func (s *ValidatorSuite) TestValidate() {
 			expResult: correctResult,
 		},
 		{
-			name: "body not exact correct",
+			name: "body json not exact correct",
 			args: args{
 				exp: ExpectedResponse{
 					Body: &ExpectBody{
@@ -134,36 +134,36 @@ func (s *ValidatorSuite) TestValidate() {
 			expResult: correctResult,
 		},
 		{
-			name: "body not exact incorrect",
+			name: "body json exact incorrect",
 			args: args{
 				exp: ExpectedResponse{
 					Body: &ExpectBody{
 						Type:    pstring("json"),
-						Content: `{"field1":"value doesn't matter"}`,
-						Exact:   pbool(false),
+						Content: `{"field1":"value actually matters"}`,
+						Exact:   pbool(true),
 					},
 				},
 				actual: &http.Response{
 					Response: &stdhttp.Response{
-						Body: &stringReadCloser{`{"field2":"value doesn't matter"}`},
+						Body: &stringReadCloser{`{"field1":"value matters"}`},
 					},
 				},
 			},
 			expResult: incorrectBodyResult,
 		},
 		{
-			name: "body not exact incorrect",
+			name: "body json not exact incorrect",
 			args: args{
 				exp: ExpectedResponse{
 					Body: &ExpectBody{
 						Type:    pstring("json"),
-						Content: `{"field1":"value doesn't matter"}`,
+						Content: `{"field1":{"a":1}}`,
 						Exact:   pbool(false),
 					},
 				},
 				actual: &http.Response{
 					Response: &stdhttp.Response{
-						Body: &stringReadCloser{`{"field2":"value doesn't matter"}`},
+						Body: &stringReadCloser{`{"field1":{"b":1}}`},
 					},
 				},
 			},
@@ -223,6 +223,6 @@ func keysMatch(this, other map[string]string) bool {
 	return equal
 }
 
-func TestLoaderSuite(t *testing.T) {
+func TestValidatorSuite(t *testing.T) {
 	suite.Run(t, new(ValidatorSuite))
 }

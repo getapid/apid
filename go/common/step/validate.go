@@ -98,40 +98,26 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 }
 
 func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
-	const (
-		typeJson  = "json"
-		typePlain = "plaintext"
-	)
-
 	if exp == nil {
 		return nil
 	}
 
-	typ := typePlain
-	if exp.Type != nil {
-		typ = *exp.Type
-	}
-	exact := true
-	if exp.Exact != nil {
-		exact = *exp.Exact
-	}
-
-	if (typ != typeJson && typ != typePlain) && exact {
-		return fmt.Errorf(`cannot check exact body with type %q, only %q and %q supported`, typ, typePlain, typeJson)
-	}
+	// validation should have set those to non-nil
+	typ := *exp.Type
+	exact := *exp.Exact
 
 	var unmarshall func([]byte, interface{}) error
 
 	switch typ {
-	case typeJson:
+	case "json":
 		unmarshall = json.Unmarshal
-	case typePlain:
+	case "plaintext":
 		unmarshall = func(b []byte, v interface{}) error {
 			reflect.ValueOf(v).Elem().Set(reflect.ValueOf(string(b)))
 			return nil
 		}
-	default:
-		return fmt.Errorf("no support for type %q", typ)
+	default: // again, should have been covered by validation
+		panic(fmt.Errorf("no support for type %q", typ))
 	}
 
 	var expected interface{}

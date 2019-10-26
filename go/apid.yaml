@@ -56,7 +56,6 @@ transactions:
                 "title": "{{variables.title}}",
                 "body": "{{variables.body}}"
               }
-            exact: true
 
       - id: hello-endpoint-test-post-1
         request:

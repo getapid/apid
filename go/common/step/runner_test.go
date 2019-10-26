@@ -2,9 +2,11 @@ package step_test
 
 import (
 	"context"
+	"encoding/json"
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	httpi "github.com/iv-p/apid/common/http"
@@ -16,6 +18,10 @@ import (
 var (
 	validResult = step.ValidationResult{
 		Errors: map[string]string{},
+	}
+
+	endpointBody = map[string]interface{}{
+		"test": "value",
 	}
 )
 
@@ -60,7 +66,8 @@ func TestHTTPRunner_Check(t *testing.T) {
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					assert.Equal(t, "random-uuid-key", r.Header.Get("X-APID-KEY"))
 					assert.Equal(t, "/test-endpoint", r.RequestURI)
-					_, _ = w.Write([]byte("OK"))
+					body, _ := json.Marshal(endpointBody)
+					w.Write(body)
 				}),
 			},
 			args{
@@ -72,11 +79,14 @@ func TestHTTPRunner_Check(t *testing.T) {
 							"X-APID-KEY": []string{"{{ vars.api-key }}"},
 						},
 					},
+					Export: step.Export{
+						"exported-key": "test",
+					},
 				},
 				vars,
 			},
 			step.Result{
-				Step: step.PreparedStep{
+				step.PreparedStep{
 					Request: step.Request{
 						Type:     "GET",
 						Endpoint: "http://test.com/test-endpoint",
@@ -84,8 +94,14 @@ func TestHTTPRunner_Check(t *testing.T) {
 							"X-APID-KEY": []string{"random-uuid-key"},
 						},
 					},
+					Export: step.Export{
+						"exported-key": "test",
+					},
 				},
-				Valid: validResult,
+				step.Exported{
+					"exported-key": "value",
+				},
+				validResult,
 			},
 		},
 	}
@@ -97,10 +113,13 @@ func TestHTTPRunner_Check(t *testing.T) {
 			c := step.NewRunner(
 				step.NewHTTPExecutor(timedClient),
 				step.NewHTTPValidator(),
-				step.NewTemplateInterpolator())
-			got := c.Run(tt.args.step, tt.args.vars)
-
-			assert.Equal(t, tt.want, got, tt.name) // this displays the diffs more nicely
+				step.NewTemplateInterpolator(),
+				step.NewBodyExtractor(),
+			)
+			got, _ := c.Run(tt.args.step, tt.args.vars)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Runner.Run() got %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

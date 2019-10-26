@@ -53,11 +53,12 @@ func checkRun(*cobra.Command, []string) {
 	stepInterpolator := step.NewTemplateInterpolator()
 	stepExecutor := step.NewHTTPExecutor(httpClient)
 	stepValidator := step.NewHTTPValidator()
-	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator)
+	stepExtractor := step.NewBodyExtractor()
+	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator, stepExtractor)
 
 	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
 
-	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())
+	vars := variables.New(variables.WithRawVars(c.Variables))
 	ok := transactionRunner.Run(c.Transactions, vars)
 	if !ok {
 		os.Exit(1)

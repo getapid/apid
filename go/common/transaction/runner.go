@@ -32,7 +32,7 @@ func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
 func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Variables) bool {
 	allOk := true
 	for _, transaction := range transactions {
-		tVars := variables.New(variables.WithVars(transaction.Variables))
+		tVars := variables.New(variables.WithRawVars(transaction.Variables))
 		vars = vars.Merge(tVars)
 		res, ok := r.runSingleTransaction(transaction, vars)
 		r.writer.Write(res)
@@ -44,10 +44,23 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars variables.Variables) (result.TransactionResult, bool) {
 	ok := true
 	res := result.TransactionResult{}
+	exportedVars := variables.New()
 	for _, step := range transaction.Steps {
-		stepVars := variables.New(variables.WithVars(step.Variables))
-		vars = vars.Merge(stepVars)
-		stepResult := r.stepRunner.Run(step, vars)
+		stepVars := variables.New(
+			variables.WithVars(vars),
+			variables.WithRawVars(transaction.Variables),
+			variables.WithRawVars(step.Variables),
+			variables.WithVars(exportedVars),
+		)
+		stepResult, err := r.stepRunner.Run(step, stepVars)
+		exportedVars = variables.New(
+			variables.WithVars(exportedVars),
+			variables.WithRaw(
+				map[string]interface{}{
+					step.ID: stepResult.Exported,
+				},
+			),
+		)
 		res.Steps = append(res.Steps, stepResult)
 		if !stepResult.OK() {
 			return res, false

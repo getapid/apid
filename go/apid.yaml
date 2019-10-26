@@ -32,6 +32,9 @@ transactions:
                 "title": "{{var.title}}",
                 "completed": false
               }
+        export:
+          auth_cookie: response.headers.X-APIDAUTH
+          first_address: response.body.addresses[0].first_line
 
       - id: hello-endpoint-test-get-1
         request:

@@ -9,19 +9,21 @@ import (
 // Runner takes a step and variables and checks if it
 // returns the expected data
 type Runner interface {
-	Run(Step, variables.Variables) Result
+	Run(Step, variables.Variables) (Result, error)
 }
 
 type runner struct {
 	executor     executor
 	validator    validator
 	interpolator interpolator
+	extractor    extractor
 }
 
 // Result has all the data about the step execution
 type Result struct {
-	Step  PreparedStep
-	Valid ValidationResult
+	Step     PreparedStep
+	Exported Exported
+	Valid    ValidationResult
 }
 
 func (r Result) OK() bool {
@@ -29,20 +31,30 @@ func (r Result) OK() bool {
 }
 
 // NewRunner instantiates a new HTTPRunner
-func NewRunner(executor executor, validator validator, interpolator interpolator) Runner {
-	return &runner{executor, validator, interpolator}
+func NewRunner(
+	executor executor,
+	validator validator,
+	interpolator interpolator,
+	extractor extractor) Runner {
+	return &runner{executor, validator, interpolator, extractor}
 }
 
 // Run interpolates, executes and validates an HTTP step
-func (c *runner) Run(step Step, vars variables.Variables) Result {
-	prepared, err := c.interpolator.interpolate(step, vars)
+func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
+	var err error
+	var result Result
+	result.Step, err = c.interpolator.interpolate(step, vars)
 	if err != nil {
-		return Result{}
+		return Result{}, err
 	}
-	response, err := c.executor.do(prepared.Request)
+	response, err := c.executor.do(result.Step.Request)
 	if err != nil {
-		return Result{}
+		return result, err
 	}
-	validation := c.validator.validate(step.Response, response)
-	return Result{prepared, validation}
+	result.Valid = c.validator.validate(result.Step.Response, response)
+	if err != nil {
+		return result, err
+	}
+	result.Exported = c.extractor.Extract(response, result.Step.Export)
+	return result, nil
 }

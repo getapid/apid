@@ -12,6 +12,7 @@ type Step struct {
 	Variables map[string]interface{} `yaml:"variables"`
 	Request   Request                `yaml:"request" validate:"required"`
 	Response  ExpectedResponse       `yaml:"response"`
+	Export    Export                 `yaml:"export"`
 }
 
 // Request is a single step request data
@@ -86,3 +87,5 @@ type ExpectBody struct {
 	Content string  `yaml:"content"`
 	Exact   *bool   `yaml:"exact"`
 }
+
+type Export map[string]string

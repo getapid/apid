@@ -119,6 +119,7 @@ func newConfigPair() (config, Config) {
 								Exact:   pbool(true),
 							},
 						},
+						Export: step.Export{},
 					},
 				},
 			},

@@ -12,6 +12,68 @@ type VarsSuite struct {
 	suite.Suite
 }
 
+func (s *VarsSuite) TestWithRawVars() {
+	arbitraryMap := map[string]interface{}{
+		"1": "val1",
+	}
+
+	testCases := []struct {
+		v1      Variables
+		v2      map[string]interface{}
+		expVars Variables
+	}{
+		{
+			v1: newEmptyVars(),
+			v2: map[string]interface{}{
+				"test": "one",
+			},
+			expVars: Variables{
+				data: map[string]interface{}{
+					varNamespace: map[string]interface{}{
+						"test": "one",
+					},
+				},
+			},
+		},
+		{
+			v1: Variables{
+				data: map[string]interface{}{
+					varNamespace: arbitraryMap,
+				},
+			},
+			v2: map[string]interface{}{
+				"test": "one",
+			},
+			expVars: Variables{
+				data: map[string]interface{}{
+					varNamespace: map[string]interface{}{
+						"1":    "val1",
+						"test": "one",
+					},
+				},
+			},
+		},
+		{
+			v1: Variables{},
+			v2: map[string]interface{}{
+				"test": "one",
+			},
+			expVars: Variables{
+				data: map[string]interface{}{
+					varNamespace: map[string]interface{}{
+						"test": "one",
+					},
+				},
+			},
+		},
+	}
+
+	for i, t := range testCases {
+		actualVars := New(WithVars(t.v1), WithRawVars(t.v2))
+		s.Equalf(t.expVars, actualVars, "test case %d/%d", i+1, len(testCases))
+	}
+}
+
 func (s *VarsSuite) TestNewFromEnv() {
 
 	testCases := []struct {

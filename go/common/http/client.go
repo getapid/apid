@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptrace"
 	"time"
@@ -28,7 +29,8 @@ type Timings struct {
 // Response a http response with added timing information
 type Response struct {
 	*http.Response
-	Timings Timings
+	Timings  Timings
+	ReadBody string
 }
 
 // Client is the interface of a http client
@@ -103,14 +105,21 @@ func (c TimedClient) Do(ctx context.Context, req *Request) (*Response, error) {
 	var res = &Response{}
 	var err error
 	req.Request = req.WithContext(httptrace.WithClientTrace(ctx, c.tracer.Tracer()))
-	// Should we log the error here, or propagate upwards and ingest quietly?
 	client := c.client
 	if req.SkipVerify {
 		client = c.insecureClient
 	}
 	res.Response, err = client.Do(req.Request)
 	res.Timings = c.tracer.Timings()
-	return res, err
+	if err != nil {
+		return res, err
+	}
+	readBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return res, err
+	}
+	res.ReadBody = string(readBody)
+	return res, nil
 }
 
 func insecure(source *http.Client) *http.Client {

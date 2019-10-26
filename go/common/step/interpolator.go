@@ -29,7 +29,7 @@ func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) 
 		log.L.Warnf("interpolating step body: %v", err)
 	}
 	if step.Response.Body != nil {
-		if step.Response.Body.Content, err = template.Render(step.Response.Body.Content, vars.Get()); err != nil {
+		if step.Response.Body.Content, err = template.Render(step.Response.Body.Content, vars); err != nil {
 			log.L.Warnf("interpolating step response body: %v", err)
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/transaction"
 )
 
@@ -11,7 +12,7 @@ type consoleWriter struct {
 	successes, failures int
 }
 
-func NewConsoleWriter() Writer {
+func NewConsoleWriter() result.Writer {
 	return &consoleWriter{}
 }
 

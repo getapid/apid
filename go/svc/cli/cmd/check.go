@@ -4,10 +4,10 @@ import (
 	"github.com/iv-p/apid/common/config"
 	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/log"
-	"github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/transaction"
 	"github.com/iv-p/apid/common/variables"
+	"github.com/iv-p/apid/svc/cli/result"
 	"github.com/spf13/cobra"
 )
 

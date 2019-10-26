@@ -1,9 +1,4 @@
 {% extends "base.html" %}
-{% import "macros.html" as macros %}
-
-{% block header %}
-{{ macros::header(section="") }}
-{% endblock header %}
 
 {% block content %}
 <section class="hero is-bold">
@@ -20,13 +15,9 @@
                     <h2 class="subtitle is-6">
                         APId gives you peace of piece of mind your software is healthy and operational
                     </h2>
-                    <div class="field is-grouped is-pulled-right">
-                        <p class="control">
-                            <button class="button is-primary is-pulled-right is-large">Download</button>
-                        </p>
-                        <p class="control">
-                            <button class="button is-primary is-pulled-right is-outlined is-large">Read docs</button>
-                        </p>
+                    <div class="buttons">
+                        <button class="button is-primary is-large is-fullwidth">Download</button>
+                        <button class="button is-text is-large is-fullwidth">Read docs</button>
                     </div>
                 </div>
             </div>

@@ -11,27 +11,21 @@ $primary: $blue;
 
 @import '../node_modules/bulma/sass/utilities/initial-variables.sass';
 
-// Update Bulma's global variables
 $family-sans-serif: 'Nunito', sans-serif;
 
-// Update some of Bulma's component variables
+$navbar-background-color: rgba(0, 0, 0, 0);
+$navbar-height: 6rem;
+
+$footer-background-color: $white;
+$footer-padding: 1rem 1rem 1rem;
+
 $block-spacing: 3rem;
 $control-border-width: 2px;
 $input-shadow: none;
 $family-sans-serif: 'Nunito', sans-serif;
 $title-line-height: 1.5;
-$navbar-background-color: rgba(0, 0, 0, 0);
 
-// Import only what you need from Bulma
 @import "../node_modules/bulma/bulma.sass";
-// @import "../node_modules/bulma/sass/utilities/_all.sass";
-// @import "../node_modules/bulma/sass/base/_all.sass";
-// @import "../node_modules/bulma/sass/elements/title.sass";
-// @import "../node_modules/bulma/sass/grid/columns.sass";
-// @import "../node_modules/bulma/sass/components/navbar.sass";
-// @import "../node_modules/bulma/sass/layout/hero.sass";
-// @import "../node_modules/bulma/sass/elements/button.sass";
-// @import "../node_modules/bulma/sass/elements/image.sass";
 
 .logo {
     font-size: 2rem;
@@ -40,4 +34,9 @@ $navbar-background-color: rgba(0, 0, 0, 0);
 
 .title, .subtitle {
     letter-spacing: 1px;
+}
+
+.columns, .is-variable {
+  margin-left: 0rem !important;
+  margin-right: 0rem !important;
 }

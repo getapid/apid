@@ -1,9 +1,6 @@
-{% extends "base.html" %}
-{% import "macros.html" as macros %}
+{% extends "docs/root.html" %}
 
-{% block header %}
-{{ macros::header(section="docs") }}
-{% endblock header %}
-
-{% block content %}
-{% endblock content %}
+{% block inner_content %}
+    <h1 class="title is-3">{{ page.title }}</h1>
+    {{ page.content | safe }}
+{% endblock inner_content %}

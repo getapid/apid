@@ -1,3 +1,4 @@
+{% import "macros.html" as macros %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,29 +7,23 @@
   <meta charset="utf-8" />
   <title>APId - health and performance monitoring</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="images/favicon.ico" />
+  <link rel="shortcut icon" href="logo/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="152x152" href="logo/apple-touch-icon.png">
   <link href="/style.css" rel="stylesheet" type="text/css" />
   <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
-
   {% endblock head %}
 </head>
 
 <body style="background-image: url('images/home-shape.png'); background-repeat: no-repeat;">
-  {% block header %} {% endblock header %}
+  {% block header %}
+    {{ macros::header(section="", path="/") }}
+  {% endblock header %}
 
   {% block content %} {% endblock content %}
 
-  {% block pagination %} {% endblock pagination %}
-
-
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        <strong>APId</strong> all rights reserved 2019.
-      </p>
-    </div>
-  </footer>
-  <script src="/script.js"></script>
+  {% block footer %}
+    {{ macros::footer() }}
+  {% endblock footer %}
 </body>
 
 </html>

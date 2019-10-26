@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "using cli"
 description = ""
 template = "blog/article.html"
 +++

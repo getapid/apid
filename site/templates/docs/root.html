@@ -2,8 +2,58 @@
 {% import "macros.html" as macros %}
 
 {% block header %}
-{{ macros::header(section="docs") }}
+{{ macros::header(section="docs", path="/docs") }}
 {% endblock header %}
 
 {% block content %}
+{% set index = get_section(path="docs/_index.md") %}
+<div class="columns" style="margin-top: 20px">
+    <div class="column is-2 is-offset-2">
+        <aside class="menu">
+            <ul class="menu-list">
+                {% for s in index.subsections %}
+                {% set subsection = get_section(path=s) %}
+                <li>
+                    <a {% if current_path == subsection.path %}class="is-active" {% endif %}
+                        href="{{ subsection.permalink }}">
+                        {{ subsection.title }}
+                    </a>
+                    {% if subsection.pages %}
+                    <ul>
+                        {% for page in subsection.pages %}
+                        <li>
+                            <a {% if current_path == page.path %}class="is-active" {% endif %}
+                                href="{{ page.permalink }}">
+                                {{ page.title }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </aside>
+    </div>
+    <div class="column is-6">
+        {% block inner_content %}
+        <h1 class="title is-3">{{ section.title }}</h1>
+        {{ section.content | safe }}
+        {% set index = get_section(path="docs/_index.md") %}
+        {% for s in index.subsections %}
+        {% set subsection = get_section(path=s) %}
+        <a href="{{ subsection.permalink }}">
+        <div class="card" style="margin-bottom: 10px;">
+            <div class="card-content">
+                <div class="content is-clearfix">
+                    <h3 class="title is-5">{{ subsection.title }}</h3>
+                    <p>{{ subsection.description }}</p>
+                </div>
+            </div>
+        </div>
+        </a>
+        {% endfor %}
+        {% endblock inner_content %}
+    </div>
+</div>
 {% endblock content %}

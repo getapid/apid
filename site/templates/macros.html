@@ -1,9 +1,9 @@
-{% macro header(section) %}
-<div class="columns">
-  <div class="column is-8 is-offset-2">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+{% macro header(section, path) %}
+<div class="columns is-marginless is-paddingless has-background-primary">
+  <div class="column is-8 is-offset-2 is-paddingless">
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item logo" href="{{ get_url(path="/") }}">
+        <a class="navbar-item logo" href="{{ get_url(path=path) }}">
           apid{% if section %}::{{ section }}{% endif %}
         </a>
 
@@ -16,10 +16,12 @@
 
       <div id="navbar" class="navbar-menu">
         <div class="navbar-end">
+          <a href="{{ get_url(path="/") }}" class="navbar-item">
+            Home
+          </a>
           <a href="{{ get_url(path="/docs") }}" class="navbar-item">
             Docs
           </a>
-
           <a href="{{ get_url(path="/blog") }}" class="navbar-item">
             Blog
           </a>
@@ -28,4 +30,25 @@
     </nav>
   </div>
 </div>
+<script src="/script.js"></script>
 {% endmacro header %}
+
+{% macro footer() %}
+<footer class="footer is-primary">
+  <div class="content has-text-centered">
+    <div class="level">
+      <div class="level-item">
+        <a href="{{ get_url(path="/") }}" class="navbar-item">
+          Home
+        </a>
+        <a href="{{ get_url(path="/docs") }}" class="navbar-item">
+          Docs
+        </a>
+        <a href="{{ get_url(path="/blog") }}" class="navbar-item">
+          Blog
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+{% endmacro footer %}

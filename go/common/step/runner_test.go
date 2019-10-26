@@ -67,7 +67,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 						Type:     "GET",
 						Endpoint: "http://test.com/{{ vars.endpoint }}",
 						Headers: step.Headers{
-							"X-APID-KEY": "{{ vars.api-key }}",
+							"X-APID-KEY": []string{"{{ vars.api-key }}"},
 						},
 					},
 				},
@@ -79,7 +79,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 						Type:     "GET",
 						Endpoint: "http://test.com/test-endpoint",
 						Headers: step.Headers{
-							"X-APID-KEY": "random-uuid-key",
+							"X-APID-KEY": []string{"random-uuid-key"},
 						},
 					},
 				},

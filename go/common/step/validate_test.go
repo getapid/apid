@@ -64,7 +64,7 @@ func (s *ValidatorSuite) TestValidate() {
 			args: args{
 				exp: ExpectedResponse{
 					Headers: &Headers{
-						"HEADER1": "value1",
+						"HEADER1": []string{"value1"},
 					},
 				},
 				actual: &http.Response{
@@ -83,7 +83,7 @@ func (s *ValidatorSuite) TestValidate() {
 			args: args{
 				exp: ExpectedResponse{
 					Headers: &Headers{
-						"HEADER1": "value1",
+						"HEADER1": []string{"value1"},
 					},
 				},
 				actual: &http.Response{

@@ -107,7 +107,7 @@ func newConfigPair() (config, Config) {
 						Request: step.Request{
 							Type:     "t",
 							Endpoint: "e",
-							Headers:  map[string]string{},
+							Headers:  map[string][]string{},
 							Body:     "b",
 						},
 						Response: step.ExpectedResponse{

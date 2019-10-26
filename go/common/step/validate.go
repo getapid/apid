@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	http2 "net/http"
 	"reflect"
-	"strings"
 
 	"github.com/iv-p/apid/common/http"
 	"go.uber.org/multierr"
@@ -64,14 +63,20 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 		return nil
 	}
 
-	headersEqual := func(expected string, actual []string) bool {
-		uncoveredLen := len(expected)
-		for _, h := range actual {
-			if i := strings.Index(expected, h); i >= 0 {
-				uncoveredLen -= len(h)
+	headersEqual := func(expected []string, actual []string) bool {
+		for _, expVal := range expected {
+			found := false
+			for _, actualVal := range actual {
+				if expVal == actualVal {
+					found = true
+					break
+				}
+			}
+			if !found {
+				return false
 			}
 		}
-		return uncoveredLen == 0
+		return true
 	}
 
 	var accumulatedErrs error

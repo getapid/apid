@@ -34,16 +34,18 @@ func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) 
 		}
 	}
 
-	headers := make(map[string]string)
+	headers := make(map[string][]string)
 	var key, value string
-	for k, v := range step.Request.Headers {
+	for k, vals := range step.Request.Headers {
 		if key, err = template.Render(k, vars); err != nil {
 			log.L.Warnf("interpolating step header key: %v", err)
 		}
-		if value, err = template.Render(v, vars); err != nil {
-			log.L.Warnf("interpolating step header value: %v", err)
+		for _, v := range vals {
+			if value, err = template.Render(v, vars); err != nil {
+				log.L.Warnf("interpolating step header value: %v", err)
+			}
+			headers[key] = append(headers[key], value)
 		}
-		headers[key] = value
 	}
 	step.Request.Headers = headers
 	return PreparedStep(step), nil

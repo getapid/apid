@@ -15,14 +15,6 @@ jobs:
         go-version: 1.13
       id: go
 
-    - name: Set up zola 0.8.0
-      run: |
-        wget -q -O - "https://github.com/getzola/zola/releases/download/v0.8.0/zola-v0.8.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
-
-    - name: Set up s3cmd 2.0.1
-      run: |
-        sudo apt install s3cmd
-
     - name: Check out code
       uses: actions/checkout@v1
 
@@ -54,12 +46,27 @@ jobs:
         docker build -t getapid/apid:${VERSION} -f svc/cli/dockerfile .
         docker tag getapid/apid:${VERSION} getapid/apid:latest
 
+    - name: Set up zola 0.8.0
+      run: |
+        wget -q -O - "https://github.com/getzola/zola/releases/download/v0.8.0/zola-v0.8.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
+
+
+    - name: Set up node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+
     - name: Build static site
       env:
         CLICOLOR: 0
       run: |
         cd site
+        npm i
         zola build
+
+    - name: Set up s3cmd 2.0.1
+      run: |
+        sudo apt install s3cmd
 
     - name: Publish CLI
       env:

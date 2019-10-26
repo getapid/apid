@@ -1,0 +1,11 @@
+{
+  "requires": true,
+  "lockfileVersion": 1,
+  "dependencies": {
+    "bulma": {
+      "version": "0.8.0",
+      "resolved": "https://registry.npmjs.org/bulma/-/bulma-0.8.0.tgz",
+      "integrity": "sha512-nhf3rGyiZh/VM7FrSJ/5KeLlfaFkXz0nYcXriynfPH4vVpnxnqyEwaNGdNCVzHyyCA3cHgkQAMpdF/SFbFGZfA=="
+    }
+  }
+}

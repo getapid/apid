@@ -2,32 +2,33 @@
 <html lang="en">
 
 <head>
-    {% block head %}
-    <meta charset="utf-8" />
-    <title>APId - health and performance monitoring</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
-    <link href="/css/style.css" rel="stylesheet" type="text/css" />
-    {% endblock head %}
+  {% block head %}
+  <meta charset="utf-8" />
+  <title>APId - health and performance monitoring</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="images/favicon.ico" />
+  <link href="/style.css" rel="stylesheet" type="text/css" />
+  <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+
+  {% endblock head %}
 </head>
 
-<body>
-    {% block header %}
-    {% endblock header %}
+<body style="background-image: url('images/home-shape.png'); background-repeat: no-repeat;">
+  {% block header %} {% endblock header %}
 
-    {% block content %} {% endblock content %}
-    {% block pagination %} {% endblock pagination %}
+  {% block content %} {% endblock content %}
 
-    {% block footer %}
-    {% endblock footer %}
+  {% block pagination %} {% endblock pagination %}
 
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/jquery.easing.min.js"></script>
-    <!-- Main Js -->
-    <script src="/js/app.js"></script>
+
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        <strong>APId</strong> all rights reserved 2019.
+      </p>
+    </div>
+  </footer>
+  <script src="/script.js"></script>
 </body>
 
 </html>

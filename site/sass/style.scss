@@ -1,0 +1,43 @@
+@charset "utf-8";
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap');
+
+$text: rgb(64, 64, 64);
+$red: #e43f52;
+$blue: #2f55d4;
+$cyan: #17a2b8;
+$green: #2eca8b;
+$orange: #f17425;
+$primary: $blue;
+
+@import '../node_modules/bulma/sass/utilities/initial-variables.sass';
+
+// Update Bulma's global variables
+$family-sans-serif: 'Nunito', sans-serif;
+
+// Update some of Bulma's component variables
+$block-spacing: 3rem;
+$control-border-width: 2px;
+$input-shadow: none;
+$family-sans-serif: 'Nunito', sans-serif;
+$title-line-height: 1.5;
+$navbar-background-color: rgba(0, 0, 0, 0);
+
+// Import only what you need from Bulma
+@import "../node_modules/bulma/bulma.sass";
+// @import "../node_modules/bulma/sass/utilities/_all.sass";
+// @import "../node_modules/bulma/sass/base/_all.sass";
+// @import "../node_modules/bulma/sass/elements/title.sass";
+// @import "../node_modules/bulma/sass/grid/columns.sass";
+// @import "../node_modules/bulma/sass/components/navbar.sass";
+// @import "../node_modules/bulma/sass/layout/hero.sass";
+// @import "../node_modules/bulma/sass/elements/button.sass";
+// @import "../node_modules/bulma/sass/elements/image.sass";
+
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.title, .subtitle {
+    letter-spacing: 1px;
+}

@@ -64,6 +64,16 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 		return nil
 	}
 
+	headersEqual := func(expected string, actual []string) bool {
+		uncoveredLen := len(expected)
+		for _, h := range actual {
+			if i := strings.Index(expected, h); i >= 0 {
+				uncoveredLen -= len(h)
+			}
+		}
+		return uncoveredLen == 0
+	}
+
 	var accumulatedErrs error
 
 	for h, expVal := range *exp {
@@ -74,9 +84,8 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 			continue
 		}
 
-		actualVal := strings.Join(received, "")
-		if expVal != actualVal {
-			err := fmt.Errorf("%q: want %q, received %q", h, actualVal, expVal)
+		if !headersEqual(expVal, received) {
+			err := fmt.Errorf("%q: want %q, received %q", h, received, expVal)
 			accumulatedErrs = multierr.Append(accumulatedErrs, err)
 		}
 	}
@@ -156,16 +165,15 @@ func fieldsEqual(exp, actual interface{}) bool {
 	switch expMap := exp.(type) {
 	case map[string]interface{}:
 		actualMap := actual.(map[string]interface{})
-		allOk := true
 		for k, expNested := range expMap {
 			if actualNested, ok := actualMap[k]; !ok {
 				return false
 			} else {
-				allOk = allOk && fieldsEqual(expNested, actualNested)
+				if !fieldsEqual(expNested, actualNested) {
+					return false
+				}
 			}
 		}
-		return allOk
-	default:
-		return true // when comparing scalars
 	}
+	return true
 }

@@ -3,7 +3,6 @@
 <html lang="en">
 
 <head>
-  {% block head %}
   <meta charset="utf-8" />
   <title>APId - health and performance monitoring</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,18 +10,25 @@
   <link rel="apple-touch-icon" sizes="152x152" href="logo/apple-touch-icon.png">
   <link href="/style.css" rel="stylesheet" type="text/css" />
   <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
-  {% endblock head %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151023633-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-151023633-1');
+  </script>
 </head>
 
 <body style="background-image: url('images/home-shape.png'); background-repeat: no-repeat;">
   {% block header %}
-    {{ macros::header(section="", path="/") }}
+  {{ macros::header(section="", path="/") }}
   {% endblock header %}
 
   {% block content %} {% endblock content %}
 
   {% block footer %}
-    {{ macros::footer() }}
+  {{ macros::footer() }}
   {% endblock footer %}
 </body>
 

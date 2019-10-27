@@ -17,6 +17,6 @@ type config struct {
 	Version             string                    `yaml:"version" validate:"version"`
 	APIKey              string                    `yaml:"apikey"`
 	Variables           map[string]interface{}    `yaml:"variables"`
-	Transactions        []transaction.Transaction `yaml:"transactions" validate:"required,unique=ID"`
+	Transactions        []transaction.Transaction `yaml:"transactions" validate:"unique=ID"`
 	SkipSSLVerification bool                      `yaml:"skip_ssl_verify"`
 }

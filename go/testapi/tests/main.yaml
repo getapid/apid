@@ -1,6 +1,5 @@
 ---
 version: 1
-apid_key: test-api-key
 variables:
   api_url: https://jsonplaceholder.typicode.com
 transactions:
@@ -8,7 +7,6 @@ transactions:
     variables:
       api_url: https://jsonplaceholder.typicode.com
       title: delectus aut autem
-      body: quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto
     steps:
       - id: hello-endpoint-one
         request:
@@ -52,30 +50,3 @@ transactions:
                 "body": ""
               }
             exact: false
-
-  - id: transaction-two
-    variables:
-      api_url: http://localhost:80
-    steps:
-      - id: health-endpoint-test-get
-        request:
-          method: GET
-          endpoint: "{{ var.api_url }}/health"
-        response:
-          code: 200
-          body:
-            type: "plaintext"
-            content: "OK"
-            exact: true
-
-      - id: echo-endpoint-test-post
-        request:
-          method: POST
-          endpoint: "{{ var.api_url }}/echo"
-          body: "some text h3re"
-        response:
-          code: 200
-          body:
-            type: "plaintext"
-            content: "some text h3re"
-            exact: true

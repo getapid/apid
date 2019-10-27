@@ -60,12 +60,12 @@ func WithEnv() option {
 	}
 }
 
-// Merge another variable instance with this one and return a copy of the result
-// not modifying the original set of variables
 func (v Variables) Raw() map[string]interface{} {
 	return v.data
 }
 
+// Merge another variable instance with this one and return a copy of the result
+// not modifying the original set of variables
 func (v Variables) Merge(other Variables) Variables {
 	return Variables{
 		data: mergeMaps(v.data, other.data),
@@ -83,7 +83,11 @@ func mergeMaps(this, other map[string]interface{}) map[string]interface{} {
 				// if the new value isn't mergable we skip it
 				if newMap, ok := newVal.(map[string]interface{}); ok {
 					this[key] = mergeMaps(existingMap, newMap)
+				} else {
+					this[key] = newVal
 				}
+			} else {
+				this[key] = newVal
 			}
 		} else {
 			this[key] = newVal

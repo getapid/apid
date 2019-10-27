@@ -1,6 +1,8 @@
 package transaction
 
 import (
+	"fmt"
+
 	"github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/variables"
@@ -34,6 +36,7 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 	for _, transaction := range transactions {
 		tVars := variables.New(variables.WithVars(transaction.Variables))
 		vars = vars.Merge(tVars)
+		fmt.Println(vars)
 		res, ok := r.runSingleTransaction(transaction, vars)
 		r.writer.Write(res)
 		allOk = allOk && ok

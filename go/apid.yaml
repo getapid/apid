@@ -14,17 +14,12 @@ transactions:
         request:
           type: GET
           endpoint: "{{ var.api_url }}/posts/1"
-
-      - id: hello-endpoint-two
-        request:
-          type: GET
-          endpoint: "{{ var.api_url }}/todos/1"
-          skip_ssl_verify: true
+          ssl_skip_verify: true
         response:
           code: 200
           body:
             type: "plaintext"
-            content: |
+            content: |-
               {
                 "userId": 1,
                 "id": 1,
@@ -51,7 +46,7 @@ transactions:
 
   - id: transaction-two
     variables:
-      api_url: http://localhost:8080
+      api_url: http://localhost:80
     steps:
       - id: health-endpoint-test-get
         request:

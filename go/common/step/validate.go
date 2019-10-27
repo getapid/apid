@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	http2 "net/http"
 	"reflect"
+	"strings"
 
 	"github.com/iv-p/apid/common/http"
 	"go.uber.org/multierr"
@@ -107,14 +108,24 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	exact := *exp.Exact
 
 	var unmarshall func([]byte, interface{}) error
+	var nonExactEquals func(interface{}, interface{}) bool
 
 	switch typ {
 	case "json":
 		unmarshall = json.Unmarshal
+		nonExactEquals = mapFieldsEqual
 	case "plaintext":
 		unmarshall = func(b []byte, v interface{}) error {
 			reflect.ValueOf(v).Elem().Set(reflect.ValueOf(string(b)))
 			return nil
+		}
+		nonExactEquals = func(i1 interface{}, i2 interface{}) bool {
+			i1String, ok1 := i1.(string)
+			i2String, ok2 := i2.(string)
+			if !ok1 || !ok2 {
+				return false
+			}
+			return strings.Contains(i2String, i1String)
 		}
 	default: // again, should have been covered by validation
 		panic(fmt.Errorf("no support for type %q", typ))
@@ -141,16 +152,18 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 			return fmt.Errorf("expected body doesn't match actual: want = %#v, received = %#v", expected, received)
 		}
 	} else {
-		if !fieldsEqual(expected, received) {
+		if !nonExactEquals(expected, received) {
 			return fmt.Errorf("expected body's fields don't match actual: want = %#v, received = %#v", expected, received)
 		}
 	}
 	return nil
 }
 
-func fieldsEqual(exp, actual interface{}) bool {
-	switch expMap := exp.(type) {
-	case map[string]interface{}:
+// mapFieldsEqual checks if the actual map has all the fields that exp has. If the value for a field in exp is also
+// a map, then mapFieldsEqual will check recursively there as well (returning false if the type in actual
+// is not another map)
+func mapFieldsEqual(exp, actual interface{}) bool {
+	if expMap, ok := exp.(map[string]interface{}); ok {
 		actualMap, ok := actual.(map[string]interface{})
 		if !ok {
 			return false
@@ -159,7 +172,7 @@ func fieldsEqual(exp, actual interface{}) bool {
 			if actualNested, ok := actualMap[k]; !ok {
 				return false
 			} else {
-				if !fieldsEqual(expNested, actualNested) {
+				if !mapFieldsEqual(expNested, actualNested) {
 					return false
 				}
 			}

@@ -134,6 +134,24 @@ func (s *ValidatorSuite) TestValidate() {
 			expResult: correctResult,
 		},
 		{
+			name: "body json not exact correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: &ExpectBody{
+						Type:    pstring("plaintext"),
+						Content: `hi, what's up`,
+						Exact:   pbool(false),
+					},
+				},
+				actual: &http.Response{
+					Response: &stdhttp.Response{
+						Body: &stringReadCloser{`hi, what's up mate'`},
+					},
+				},
+			},
+			expResult: correctResult,
+		},
+		{
 			name: "body json exact incorrect",
 			args: args{
 				exp: ExpectedResponse{

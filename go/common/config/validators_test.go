@@ -37,19 +37,19 @@ func (s *ValidatorsSuite) TestValidate_ExpectBodyValidator() {
 			expValid: true,
 		},
 		{
-			name: "invalid - plaintext and non exact",
+			name: "valid - plaintext and non exact",
 			val: &step.ExpectBody{
 				Type:  pstring("plaintext"),
-				Exact: pbool(false),
+				Exact: pbool(true),
 			},
-			expValid: false,
+			expValid: true,
 		},
 		{
-			name: "invalid - plaintext and non exact",
+			name: "valid - plaintext and non exact",
 			val: &step.ExpectBody{
 				Exact: pbool(false),
 			},
-			expValid: false,
+			expValid: true,
 		},
 		{
 			name: "invalid type",

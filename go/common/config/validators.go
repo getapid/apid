@@ -125,9 +125,5 @@ func (v ExpectBodyValidator) Validate(val interface{}) (b bool, err error) {
 		return false, fmt.Errorf(`cannot check exact body with type %q, only %q and %q supported`, typ, typePlain, typeJson)
 	}
 
-	if !exact && typ == typePlain {
-		return false, fmt.Errorf(`cannot perform a non-exact check on plaintext`)
-	}
-
 	return true, nil
 }

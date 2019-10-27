@@ -1,11 +1,12 @@
 package result
 
+//go:generate mockgen -destination=../mock/console_mock.go -package=mock github.com/iv-p/apid/common/result Writer
+
 import (
 	"encoding/json"
 	"fmt"
 
 	"github.com/iv-p/apid/common/result"
-	"github.com/iv-p/apid/common/transaction"
 )
 
 type consoleWriter struct {
@@ -16,7 +17,7 @@ func NewConsoleWriter() result.Writer {
 	return &consoleWriter{}
 }
 
-func (w *consoleWriter) Write(result transaction.SingleTransactionResult) {
+func (w *consoleWriter) Write(result result.TransactionResult) {
 	if isFailure(result) {
 		w.failures++
 	} else {
@@ -35,7 +36,7 @@ func (w *consoleWriter) Close() {
 	fmt.Printf("successful: %d/%d; failed: %d/%d", w.successes, total, w.failures, total)
 }
 
-func isFailure(r transaction.SingleTransactionResult) (isFailed bool) {
+func isFailure(r result.TransactionResult) (isFailed bool) {
 	for _, s := range r.Steps {
 		isFailed = isFailed || !s.OK()
 	}

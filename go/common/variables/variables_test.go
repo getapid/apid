@@ -113,7 +113,7 @@ func (s *VarsSuite) TestMerge() {
 			expVars: Variables{
 				data: map[string]interface{}{
 					"some-other-key": make(map[string]interface{}),
-					varNamespace:     map[string]interface{}{"1": "2"},
+					varNamespace:     map[string]interface{}{"1": "val1"},
 					envNamespace:     map[string]interface{}{"env1": "val1"},
 				},
 			},
@@ -170,7 +170,7 @@ func (s *VarsSuite) TestMerge() {
 				data: map[string]interface{}{
 					"1": map[string]interface{}{
 						"a":  'a',
-						"22": 2,
+						"22": 5,
 					},
 					envNamespace: make(map[string]interface{}),
 				},

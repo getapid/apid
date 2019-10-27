@@ -35,14 +35,23 @@ type option func(variables *Variables)
 // WithVars places the provided map in the variables namespace of the Variables
 func WithVars(v map[string]interface{}) option {
 	return func(vars *Variables) {
-		vars.data[varNamespace] = v
+		merged := vars.Merge(Variables{data: map[string]interface{}{varNamespace: v}})
+		vars.data = merged.data
+	}
+}
+
+// WithOther places the provided map in the variables namespace of the Variables
+func WithOther(v Variables) option {
+	return func(vars *Variables) {
+		merged := vars.Merge(v)
+		vars.data = merged.data
 	}
 }
 
 // WithRaw places the provided map as the underlying data of the Variables
 func WithRaw(v map[string]interface{}) option {
 	return func(vars *Variables) {
-		vars.data = v
+		vars.data = mergeMaps(vars.data, v)
 	}
 }
 
@@ -60,16 +69,17 @@ func WithEnv() option {
 	}
 }
 
-func (v Variables) Raw() map[string]interface{} {
-	return v.data
-}
-
 // Merge another variable instance with this one and return a copy of the result
 // not modifying the original set of variables
 func (v Variables) Merge(other Variables) Variables {
 	return Variables{
 		data: mergeMaps(v.data, other.data),
 	}
+}
+
+// Raw is the underlying map[string]interface{} representation of the vars
+func (v Variables) Raw() map[string]interface{} {
+	return v.data
 }
 
 func mergeMaps(this, other map[string]interface{}) map[string]interface{} {

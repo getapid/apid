@@ -1,6 +1,8 @@
 package transaction
 
 import (
+	"fmt"
+
 	"github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/variables"
@@ -44,10 +46,26 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars variables.Variables) (result.TransactionResult, bool) {
 	ok := true
 	res := result.TransactionResult{}
+	exportedVars := variables.New()
 	for _, step := range transaction.Steps {
-		stepVars := variables.New(variables.WithVars(step.Variables))
-		vars = vars.Merge(stepVars)
-		stepResult := r.stepRunner.Run(step, vars)
+		stepVars := variables.New(
+			variables.WithOther(vars),
+			variables.WithVars(transaction.Variables),
+			variables.WithVars(step.Variables),
+			variables.WithOther(exportedVars),
+		)
+		stepResult, err := r.stepRunner.Run(step, stepVars)
+		if err != nil {
+			fmt.Println(err)
+		}
+		exportedVars = variables.New(
+			variables.WithOther(exportedVars),
+			variables.WithRaw(
+				map[string]interface{}{
+					step.ID: stepResult.Exported,
+				},
+			),
+		)
 		res.Steps = append(res.Steps, stepResult)
 		if !stepResult.OK() {
 			return res, false

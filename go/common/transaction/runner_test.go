@@ -8,6 +8,7 @@ import (
 	commonmock "github.com/iv-p/apid/common/mock"
 	"github.com/iv-p/apid/common/result"
 	climock "github.com/iv-p/apid/svc/cli/mock"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/variables"
@@ -27,17 +28,20 @@ var (
 	okStep = step.Step{
 		ID:        "ok-step",
 		Variables: stepVars,
+		Export:    step.Export{},
 	}
 	okStepResult = step.Result{
 		Step: step.PreparedStep(okStep),
 		Valid: step.ValidationResult{
 			Errors: map[string]string{},
 		},
+		Exported: step.Exported{},
 	}
 
 	errStep = step.Step{
 		ID:        "err-step",
 		Variables: stepVars,
+		Export:    step.Export{},
 	}
 	errStepResult = step.Result{
 		Step: step.PreparedStep(errStep),
@@ -46,10 +50,15 @@ var (
 				"error-one": "this is why",
 			},
 		},
+		Exported: step.Exported{},
 	}
 )
 
-func TestTransactionRunner_Run(t *testing.T) {
+type RunnerSuite struct {
+	suite.Suite
+}
+
+func (s *RunnerSuite) TestTransactionRunner_Run() {
 	type args struct {
 		transactions []Transaction
 		vars         variables.Variables
@@ -121,6 +130,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 						[]step.Step{
 							okStep,
 							okStep,
+							okStep,
 						},
 					},
 				},
@@ -144,6 +154,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 					},
 					{
 						[]step.Result{
+							okStepResult,
 							okStepResult,
 							okStepResult,
 						},
@@ -180,6 +191,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 						[]step.Step{
 							okStep,
 							okStep,
+							okStep,
 						},
 					},
 				},
@@ -203,6 +215,7 @@ func TestTransactionRunner_Run(t *testing.T) {
 						[]step.Result{
 							okStepResult,
 							okStepResult,
+							okStepResult,
 						},
 					},
 				},
@@ -210,48 +223,68 @@ func TestTransactionRunner_Run(t *testing.T) {
 			false,
 		},
 	}
-	mockCtrl := gomock.NewController(t)
+	mockCtrl := gomock.NewController(s.T())
 	defer mockCtrl.Finish()
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stepRunner := commonmock.NewMockRunner(mockCtrl)
-			var runs []*gomock.Call
-			for _, tx := range tt.args.transactions {
-				for _, step := range tx.Steps {
-					if step.ID == okStep.ID {
-						runs = append(runs,
-							stepRunner.EXPECT().
-								Run(step, rootVars.Merge(variables.New(variables.WithVars(step.Variables)))).
-								Return(okStepResult))
-					} else {
-						runs = append(runs,
-							stepRunner.EXPECT().
-								Run(step, rootVars.Merge(variables.New(variables.WithVars(step.Variables)))).
-								Return(errStepResult))
-						break
-					}
+		stepRunner := commonmock.NewMockRunner(mockCtrl)
+		var runs []*gomock.Call
+		for _, tx := range tt.args.transactions {
+			exported := variables.New()
+			for _, step := range tx.Steps {
+				if step.ID == okStep.ID {
+					runs = append(runs,
+						stepRunner.EXPECT().
+							Run(step, variables.New(
+								variables.WithOther(rootVars),
+								variables.WithVars(txVars),
+								variables.WithOther(exported),
+								variables.WithVars(step.Variables),
+							)).
+							Return(okStepResult, nil))
+					exported = variables.New(
+						variables.WithOther(exported),
+						variables.WithRaw(
+							map[string]interface{}{
+								step.ID: okStepResult.Exported,
+							},
+						),
+					)
+				} else {
+					runs = append(runs,
+						stepRunner.EXPECT().
+							Run(step, variables.New(
+								variables.WithOther(rootVars),
+								variables.WithVars(txVars),
+								variables.WithOther(exported),
+								variables.WithVars(step.Variables),
+							)).
+							Return(errStepResult, errStepErr))
+					break
 				}
 			}
-			gomock.InOrder(runs...)
+		}
+		gomock.InOrder(runs...)
 
-			writer := climock.NewMockWriter(mockCtrl)
-			runs = []*gomock.Call{}
-			for _, txResult := range tt.want.Results {
-				runs = append(runs,
-					writer.EXPECT().
-						Write(txResult).
-						Return())
-			}
-			gomock.InOrder(runs...)
+		writer := climock.NewMockWriter(mockCtrl)
+		runs = []*gomock.Call{}
+		for _, txResult := range tt.want.Results {
+			runs = append(runs,
+				writer.EXPECT().
+					Write(txResult).
+					Return())
+		}
+		gomock.InOrder(runs...)
 
-			r := &TransactionRunner{
-				stepRunner: stepRunner,
-				writer:     writer,
-			}
-			if ok := r.Run(tt.args.transactions, tt.args.vars); ok != tt.ok {
-				t.Errorf("TransactionRunner.Run() error = %v, wantErr %v", ok, tt.ok)
-			}
-		})
+		r := &TransactionRunner{
+			stepRunner: stepRunner,
+			writer:     writer,
+		}
+		ok := r.Run(tt.args.transactions, tt.args.vars)
+		s.Equal(tt.ok, ok, tt.name)
 	}
+}
+
+func TestRunnerSuite(t *testing.T) {
+	suite.Run(t, new(RunnerSuite))
 }

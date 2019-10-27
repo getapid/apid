@@ -57,7 +57,7 @@
 {% endmacro footer %}
 
 {% macro prev_link(section) %}
-    {# need to find the last page of the previous section or the previous section directly
+{# need to find the last page of the previous section or the previous section directly
      if there isn't any pages in it #}
     {% set index = get_section(path="_index.md") %}
     {% set found_current = false %}
@@ -101,3 +101,40 @@
         {% endfor %}
     {% endif %}
 {% endmacro next_link %}
+
+{% macro newsletter() %}
+
+<section style="padding: 50px 0px; margin: 50px 0px; background-color: #f8f9fc;">
+  <div class="columns">
+    <div class="column is-8 is-offset-2 has-text-centered">
+      <h3 class="title is-4">Be the first to know</h3>
+      <form action="https://gmail.us20.list-manage.com/subscribe/post?u=cb2a947d7ab1a96ab7b6c8a54&amp;id=b2cbd3d806"
+        method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank"
+        novalidate>
+        <div class="field is-grouped">
+          <p class="control is-expanded">
+            <input class="input is-large" type="email" placeholder="Your email" name="EMAIL" id="mce-EMAIL">
+          </p>
+          <p class="control">
+            <button type="submit" class="button is-large is-primary">
+              Subscribe
+            </button>
+          </p>
+        </div>
+        <div id="mce-responses" class="clear">
+          <article class="message is-success">
+            <div id="mce-success-response" class="message-body"  style="display:none">
+              Success!
+            </div>
+          </article>
+        </div>
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text"
+            name="b_cb2a947d7ab1a96ab7b6c8a54_b2cbd3d806" tabindex="-1" value=""></div>
+      </form>
+    </div>
+  </div>
+  <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script>
+  <script
+    type='text/javascript'>(function ($) { window.fnames = new Array(); window.ftypes = new Array(); fnames[0] = 'EMAIL'; ftypes[0] = 'email'; }(jQuery)); var $mcj = jQuery.noConflict(true);</script>
+</section>
+{% endmacro newsletter %}

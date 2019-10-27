@@ -2,11 +2,10 @@
 {% import "macros.html" as macros %}
 
 {% block header %}
-{{ macros::header(section="blog", path="/blog") }}
+{{ macros::header(section="", path="/") }}
 {% endblock header %}
 
 {% block content %}
-{% set index = get_section(path="blog/_index.md") %}
 <div class="columns" style="margin-top: 20px">
     <div class="column is-6 is-offset-3">
         <h1 class="title is-3">Download</h1>

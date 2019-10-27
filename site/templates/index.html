@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "macros.html" as macros %}
 
 {% block content %}
 <section class="hero is-bold">
@@ -57,23 +58,7 @@
         </div>
     </div>
 </section>
-<section style="padding: 50px 0px; margin: 50px 0px; background-color: #f8f9fc;">
-    <div class="columns">
-        <div class="column is-8 is-offset-2 has-text-centered">
-            <h3 class="title is-4">Be the first to know</h3>
-            <div class="field is-grouped">
-                <p class="control is-expanded">
-                    <input class="input is-large" type="text" placeholder="Your email">
-                </p>
-                <p class="control">
-                    <a class="button is-large is-primary">
-                        Subscribe
-                    </a>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+{{ macros::newsletter() }}
 <section style="padding: 75px 0px;">
     <div class="columns is-variable is-8 is-vcentered">
         <div class="column is-4 is-offset-2">

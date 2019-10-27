@@ -14,7 +14,9 @@ import (
 )
 
 var (
-	validResult = step.ValidationResult{Errors: map[string]string{}}
+	validResult = step.ValidationResult{
+		Errors: map[string]string{},
+	}
 )
 
 func testClient(handler http.Handler) (*http.Client, func()) {

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/iv-p/apid/common/step"
-
 	"github.com/stretchr/testify/suite"
 )
 

@@ -10,7 +10,7 @@ transactions:
       title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
       body: quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto
     steps:
-      - id: hello-endpoint-test-post
+      - id: hello-endpoint-test-get
         request:
           type: GET
           endpoint: "{{ variables.api_url }}/posts/1"
@@ -27,7 +27,7 @@ transactions:
                 "body": "{{variables.body}}"
               }
 
-      - id: hello-endpoint-test-post-1
+      - id: hello-endpoint-test-get-1
         request:
           type: GET
           endpoint: "{{ variables.api_url }}/posts/1"

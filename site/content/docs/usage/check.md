@@ -19,7 +19,7 @@ If a transaction fails, this will be reported in the console and the next transa
 
 {{ h3(text="Examples") }}
 
-```shell script
+```sh
 apid check
 apid check --config ./tests/e2e/apid.yaml
 ```

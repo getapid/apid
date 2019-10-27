@@ -12,7 +12,7 @@ Head over to our [home page](../../..) and click "Download".
 <br><br>
 This should get you a binary that can run as is. Just make sure to add execute permissions:
 <br><br>
-```shell script
+```sh
 chmod u+x apid
 ./apid version
 ```

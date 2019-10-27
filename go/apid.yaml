@@ -10,12 +10,12 @@ transactions:
     steps:
       - id: hello-endpoint-test-get
         request:
-          type: GET
+          method: GET
           endpoint: "{{ variables.api_url }}/posts/1"
 
       - id: hello-endpoint-two
         request:
-          type: GET
+          method: GET
           endpoint: "{{ variables.api_url }}/todos/1"
           skip_ssl_verify: true
         response:
@@ -41,7 +41,7 @@ transactions:
 
       - id: hello-endpoint-test-post
         request:
-          type: GET
+          method: GET
           endpoint: "{{ variables.api_url }}/posts/1"
           headers:
             "X-APIDAUTH": "{{ hello-endpoint-two.auth_cookie }}"
@@ -58,7 +58,7 @@ transactions:
     steps:
       - id: health-endpoint-test-get
         request:
-          type: GET
+          method: GET
           endpoint: "{{ variables.api_url }}/health"
         response:
           code: 200
@@ -68,7 +68,7 @@ transactions:
             exact: true
       - id: echo-endpoint-test-post
         request:
-          type: POST
+          method: POST
           endpoint: "{{ variables.api_url }}/echo"
           body: "some text h3re"
         response:

@@ -1,4 +1,6 @@
-all: go-build
+.PHONY: site
+
+all: go-test
 
 go-%:
 	$(MAKE) -C go $*

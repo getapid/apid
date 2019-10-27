@@ -1,6 +1,6 @@
 +++
-title = "CLI argumentss"
-description = "CLI argumentss"
+title = "CLI"
+description = "CLI"
 template = "docs/article.html"
 weight = 2
 sort_by = "weight"

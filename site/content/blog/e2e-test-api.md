@@ -1,9 +1,7 @@
 +++
-title = "CLI argumentss"
-description = "CLI argumentss"
-template = "docs/article.html"
-weight = 2
-sort_by = "weight"
+title = "How to end-to-end test an API"
+description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu feugiat sapien. Aenean ligula nunc, laoreet id sem in, interdum bibendum felis. Donec vel dui neque. Praesent ac sem ut justo volutpat rutrum a imperdiet tellus."
+template = "blog/article.html"
 +++
 
 {{ heading(type="2", class="is-4", text="Heading 1") }}

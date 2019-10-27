@@ -12,7 +12,7 @@ var completionFilepath string
 
 var completionCmd = &cobra.Command{
 	Use:       "completion",
-	Short:     "Generates bash completion scripts",
+	Short:     "Generates shell completion scripts",
 	ValidArgs: []string{"bash", "zsh", "powershell"},
 	Args:      cobra.ExactArgs(1),
 	Long: `To load completion run

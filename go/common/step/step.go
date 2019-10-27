@@ -16,7 +16,8 @@ type Step struct {
 
 // Request is a single step request data
 type Request struct {
-	Type                string  `yaml:"type" validate:"required"`
+	// Type if the method of the request
+	Type                string  `yaml:"method" validate:"required"`
 	Endpoint            string  `yaml:"endpoint" validate:"required"`
 	Headers             Headers `yaml:"headers"`
 	Body                string  `yaml:"body"`

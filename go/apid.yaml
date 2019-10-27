@@ -12,9 +12,14 @@ transactions:
     steps:
       - id: hello-endpoint-test-get
         request:
-          type: GET
+          method: GET
           endpoint: "{{ var.api_url }}/posts/1"
-          ssl_skip_verify: true
+
+      - id: hello-endpoint-two
+        request:
+          method: GET
+          endpoint: "{{ var.api_url }}/todos/1"
+          skip_ssl_verify: true
         response:
           code: 200
           body:

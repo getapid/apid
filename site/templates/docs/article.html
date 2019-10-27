@@ -14,16 +14,16 @@
     {% else %}
         {# No page before, find the link for the section it's in if there is one #}
         {% set parent = get_section(path=page.ancestors | reverse | first) %}
-        <a class="button is-text" href="{{ parent.permalink }}">< {{ page.title }}</a>
+        <a class="button is-text" href="{{ parent.permalink }}">< {{ parent.title }}</a>
     {% endif %}
 {% endblock prev_link %}
 
 {% block next_link %}
     {% if page.heavier %}
-        <a class="button is-text is-pulled-right" href="{{ page.heavier.permalink }}">{{ page.title }} ></a>
+        <a class="button is-text is-pulled-right" href="{{ page.heavier.permalink }}">{{ page.heavier.title }} ></a>
     {% else %}
         {# No page after, find the link for the following section #}
-        {% set index = get_section(path="_index.md") %}
+        {% set index = get_section(path="docs/_index.md") %}
         {% set found_current = false %}
         {% for s in index.subsections %}
             {% set subsection = get_section(path=s) %}

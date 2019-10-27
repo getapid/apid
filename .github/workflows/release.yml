@@ -53,6 +53,7 @@ jobs:
         cp build/cli-${VERSION}-linux-386 latest/cli-latest-linux-386
         cp build/cli-${VERSION}-linux-arm latest/cli-latest-linux-arm
         cp build/cli-${VERSION}-freebsd-amd64 latest/cli-latest-freebsd-amd64
+        cp build/cli-${VERSION}-freebsd-386 latest/cli-latest-freebsd-386
         cp build/cli-${VERSION}-freebsd-arm latest/cli-latest-freebsd-arm
         cp build/cli-${VERSION}-openbsd-amd64 latest/cli-latest-openbsd-amd64
         cp build/cli-${VERSION}-openbsd-386 latest/cli-latest-openbsd-386

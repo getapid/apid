@@ -6,7 +6,7 @@ weight = 2
 sort_by = "weight"
 +++
 
-{{ heading(type="2", class="is-4", text="How to install") }}
+{{ h2(text="How to install") }}
 
 Head over to our [home page](../../..) and click "Download".
 <br><br>

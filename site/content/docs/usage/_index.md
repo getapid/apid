@@ -6,4 +6,4 @@ sort_by = "weight"
 template = "docs/root.html"
 +++
 
-usage guide
+Contains articles documenting the usage of apid CLI

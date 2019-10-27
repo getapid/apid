@@ -42,32 +42,32 @@ jobs:
       run: |
         export VERSION=$(cat version)
         cd go
-        GOOS=darwin GOARCH=amd64  go build -v -o build/cli-${VERSION}-darwin-amd64      svc/cli/main.go
-        GOOS=linux GOARCH=amd64   go build -v -o build/cli-${VERSION}-linux-amd64       svc/cli/main.go
-        GOOS=linux GOARCH=386     go build -v -o build/cli-${VERSION}-linux-386         svc/cli/main.go
-        GOOS=linux GOARCH=arm     go build -v -o build/cli-${VERSION}-linux-arm         svc/cli/main.go
-        GOOS=freebsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-freebsd-amd64     svc/cli/main.go
-        GOOS=freebsd GOARCH=386   go build -v -o build/cli-${VERSION}-freebsd-386       svc/cli/main.go
-        GOOS=freebsd GOARCH=arm   go build -v -o build/cli-${VERSION}-freebsd-arm       svc/cli/main.go
-        GOOS=openbsd GOARCH=amd64 go build -v -o build/cli-${VERSION}-openbsd-amd64     svc/cli/main.go
-        GOOS=openbsd GOARCH=386   go build -v -o build/cli-${VERSION}-openbsd-386       svc/cli/main.go
-        GOOS=solaris GOARCH=amd64 go build -v -o build/cli-${VERSION}-solaris-amd64     svc/cli/main.go
-        GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64.exe svc/cli/main.go
-        GOOS=windows GOARCH=386   go build -v -o build/cli-${VERSION}-windows-386.exe   svc/cli/main.go
+        GOOS=darwin GOARCH=amd64  go build -v -o build/apid-${VERSION}-darwin-amd64      svc/cli/main.go
+        GOOS=linux GOARCH=amd64   go build -v -o build/apid-${VERSION}-linux-amd64       svc/cli/main.go
+        GOOS=linux GOARCH=386     go build -v -o build/apid-${VERSION}-linux-386         svc/cli/main.go
+        GOOS=linux GOARCH=arm     go build -v -o build/apid-${VERSION}-linux-arm         svc/cli/main.go
+        GOOS=freebsd GOARCH=amd64 go build -v -o build/apid-${VERSION}-freebsd-amd64     svc/cli/main.go
+        GOOS=freebsd GOARCH=386   go build -v -o build/apid-${VERSION}-freebsd-386       svc/cli/main.go
+        GOOS=freebsd GOARCH=arm   go build -v -o build/apid-${VERSION}-freebsd-arm       svc/cli/main.go
+        GOOS=openbsd GOARCH=amd64 go build -v -o build/apid-${VERSION}-openbsd-amd64     svc/cli/main.go
+        GOOS=openbsd GOARCH=386   go build -v -o build/apid-${VERSION}-openbsd-386       svc/cli/main.go
+        GOOS=solaris GOARCH=amd64 go build -v -o build/apid-${VERSION}-solaris-amd64     svc/cli/main.go
+        GOOS=windows GOARCH=amd64 go build -v -o build/apid-${VERSION}-windows-amd64.exe svc/cli/main.go
+        GOOS=windows GOARCH=386   go build -v -o build/apid-${VERSION}-windows-386.exe   svc/cli/main.go
 
         mkdir latest
-        cp build/cli-${VERSION}-darwin-amd64 latest/cli-latest-darwin-amd64
-        cp build/cli-${VERSION}-linux-amd64 latest/cli-latest-linux-amd64
-        cp build/cli-${VERSION}-linux-386 latest/cli-latest-linux-386
-        cp build/cli-${VERSION}-linux-arm latest/cli-latest-linux-arm
-        cp build/cli-${VERSION}-freebsd-amd64 latest/cli-latest-freebsd-amd64
-        cp build/cli-${VERSION}-freebsd-386 latest/cli-latest-freebsd-386
-        cp build/cli-${VERSION}-freebsd-arm latest/cli-latest-freebsd-arm
-        cp build/cli-${VERSION}-openbsd-amd64 latest/cli-latest-openbsd-amd64
-        cp build/cli-${VERSION}-openbsd-386 latest/cli-latest-openbsd-386
-        cp build/cli-${VERSION}-solaris-amd64 latest/cli-latest-solaris-amd64
-        cp build/cli-${VERSION}-windows-amd64.exe latest/cli-latest-windows-amd64.exe
-        cp build/cli-${VERSION}-windows-386.exe latest/cli-latest-windows-386.exe
+        cp build/apid-${VERSION}-darwin-amd64 latest/apid-latest-darwin-amd64
+        cp build/apid-${VERSION}-linux-amd64 latest/apid-latest-linux-amd64
+        cp build/apid-${VERSION}-linux-386 latest/apid-latest-linux-386
+        cp build/apid-${VERSION}-linux-arm latest/apid-latest-linux-arm
+        cp build/apid-${VERSION}-freebsd-amd64 latest/apid-latest-freebsd-amd64
+        cp build/apid-${VERSION}-freebsd-386 latest/apid-latest-freebsd-386
+        cp build/apid-${VERSION}-freebsd-arm latest/apid-latest-freebsd-arm
+        cp build/apid-${VERSION}-openbsd-amd64 latest/apid-latest-openbsd-amd64
+        cp build/apid-${VERSION}-openbsd-386 latest/apid-latest-openbsd-386
+        cp build/apid-${VERSION}-solaris-amd64 latest/apid-latest-solaris-amd64
+        cp build/apid-${VERSION}-windows-amd64.exe latest/apid-latest-windows-amd64.exe
+        cp build/apid-${VERSION}-windows-386.exe latest/apid-latest-windows-386.exe
 
     - name: Build docker cli images
       run: |

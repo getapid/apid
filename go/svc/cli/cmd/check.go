@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/iv-p/apid/common/config"
 	"github.com/iv-p/apid/common/http"
 	"github.com/iv-p/apid/common/log"
+	cmdResult "github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/transaction"
 	"github.com/iv-p/apid/common/variables"
+	"github.com/iv-p/apid/svc/cli/result"
 	"github.com/spf13/cobra"
 )
 
@@ -41,6 +45,9 @@ func checkRun(*cobra.Command, []string) {
 		log.L.Panic("the config failed validation: ", err)
 	}
 
+	consoleWriter := result.NewConsoleWriter()
+	writer := cmdResult.NewMultiWriter(consoleWriter)
+
 	httpClient := http.NewTimedClient(http.DefaultClient)
 
 	stepInterpolator := step.NewTemplateInterpolator()
@@ -48,10 +55,11 @@ func checkRun(*cobra.Command, []string) {
 	stepValidator := step.NewHTTPValidator()
 	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator)
 
-	transactionChecker := transaction.NewStepChecker(stepChecker)
-	transactionService := transaction.NewTransactionService(transactionChecker)
+	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
 
 	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())
-	res := transactionService.Check(c.Transactions, vars)
-	log.L.Debug(res)
+	ok := transactionRunner.Run(c.Transactions, vars)
+	if !ok {
+		os.Exit(1)
+	}
 }

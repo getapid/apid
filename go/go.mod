@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
+	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/iv-p/mapaccess v1.0.0
 	github.com/json-iterator/go v1.1.7 // indirect
@@ -17,6 +18,7 @@ require (
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0
 	go.uber.org/zap v1.10.0
+	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
 	golang.org/x/sys v0.0.0-20191010194322-b09406accb47 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v2 v2.2.4

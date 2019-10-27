@@ -1,5 +1,5 @@
 +++
-title = "root"
+title = "landing page"
 description = ""
 template = "index.html"
 +++

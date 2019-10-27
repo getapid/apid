@@ -1,11 +1,15 @@
 package result
 
 import (
-	"github.com/iv-p/apid/common/transaction"
+	"github.com/iv-p/apid/common/step"
 )
 
+type TransactionResult struct {
+	Steps []step.Result
+}
+
 type Writer interface {
-	Write(transaction.Result)
+	Write(TransactionResult)
 	Close()
 }
 
@@ -17,7 +21,7 @@ func NewMultiWriter(w ...Writer) Writer {
 	return multiWriter{writers: w}
 }
 
-func (w multiWriter) Write(result transaction.Result) {
+func (w multiWriter) Write(result TransactionResult) {
 	for _, writer := range w.writers {
 		writer.Write(result)
 	}

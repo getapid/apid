@@ -23,6 +23,8 @@ func getValidatorFromTag(tag string, fieldType reflect.Type) Validator {
 		return UniqueValidator{prop: strings.TrimPrefix(t, "unique=")}
 	case t == "version":
 		return VersionValidator{}
+	case t == "expectBody":
+		return ExpectBodyValidator{}
 	}
 
 	return DefaultValidator{}

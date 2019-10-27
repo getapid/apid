@@ -5,7 +5,6 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 
 	httpi "github.com/iv-p/apid/common/http"
@@ -16,8 +15,7 @@ import (
 
 var (
 	validResult = step.ValidationResult{
-		true,
-		map[string]string{},
+		Errors: map[string]string{},
 	}
 )
 
@@ -51,11 +49,10 @@ func TestHTTPRunner_Check(t *testing.T) {
 		vars variables.Variables
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    step.Result
-		wantErr bool
+		name   string
+		fields fields
+		args   args
+		want   step.Result
 	}{
 		{
 			"simple test",
@@ -63,7 +60,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					assert.Equal(t, "random-uuid-key", r.Header.Get("X-APID-KEY"))
 					assert.Equal(t, "/test-endpoint", r.RequestURI)
-					w.Write([]byte("OK"))
+					_, _ = w.Write([]byte("OK"))
 				}),
 			},
 			args{
@@ -72,25 +69,24 @@ func TestHTTPRunner_Check(t *testing.T) {
 						Type:     "GET",
 						Endpoint: "http://test.com/{{ vars.endpoint }}",
 						Headers: step.Headers{
-							"X-APID-KEY": "{{ vars.api-key }}",
+							"X-APID-KEY": []string{"{{ vars.api-key }}"},
 						},
 					},
 				},
 				vars,
 			},
 			step.Result{
-				step.PreparedStep{
+				Step: step.PreparedStep{
 					Request: step.Request{
 						Type:     "GET",
 						Endpoint: "http://test.com/test-endpoint",
 						Headers: step.Headers{
-							"X-APID-KEY": "random-uuid-key",
+							"X-APID-KEY": []string{"random-uuid-key"},
 						},
 					},
 				},
-				validResult,
+				Valid: validResult,
 			},
-			false,
 		},
 	}
 	for _, tt := range tests {
@@ -102,14 +98,9 @@ func TestHTTPRunner_Check(t *testing.T) {
 				step.NewHTTPExecutor(timedClient),
 				step.NewHTTPValidator(),
 				step.NewTemplateInterpolator())
-			got, err := c.Run(tt.args.step, tt.args.vars)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("HTTPRunner.Check() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("HTTPRunner.Check() = %v, want %v", got, tt.want)
-			}
+			got := c.Run(tt.args.step, tt.args.vars)
+
+			assert.Equal(t, tt.want, got, tt.name) // this displays the diffs more nicely
 		})
 	}
 }

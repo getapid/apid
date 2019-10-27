@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/iv-p/apid/common/step"
 	"go.uber.org/multierr"
 )
 
@@ -76,6 +77,52 @@ func (v RequiredValidator) Validate(val interface{}) (b bool, err error) {
 
 	if thing.Kind() != reflect.Struct && thing.Len() == 0 {
 		return false, fmt.Errorf("length must not be 0")
+	}
+
+	return true, nil
+}
+
+// ExpectBodyValidator validates a step.ExpectBody so that the type and the exact fields make sense together.
+// It also sets the defaults for type and exact
+type ExpectBodyValidator struct{}
+
+func (v ExpectBodyValidator) Validate(val interface{}) (b bool, err error) {
+	if val == nil {
+		return true, nil
+	}
+
+	expBody, ok := val.(*step.ExpectBody)
+	if !ok {
+		return false, fmt.Errorf("must be *step.ExpectBody")
+	}
+
+	const (
+		typeJson  = "json"
+		typePlain = "plaintext"
+	)
+
+	typ := typePlain
+	if expBody.Type != nil {
+		typ = *expBody.Type
+	} else {
+		(*expBody).Type = &typ
+	}
+
+	exact := true
+	if expBody.Exact != nil {
+		exact = *expBody.Exact
+	} else {
+		(*expBody).Exact = &exact
+	}
+
+	switch typ {
+	case typeJson, typePlain:
+	default:
+		return false, fmt.Errorf("unsupported content type %q", typ)
+	}
+
+	if exact && (typ != "json" && typ != "plaintext") {
+		return false, fmt.Errorf(`cannot check exact body with type %q, only %q and %q supported`, typ, typePlain, typeJson)
 	}
 
 	return true, nil

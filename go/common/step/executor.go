@@ -28,7 +28,9 @@ func (e *httpExecutor) do(request Request) (*http.Response, error) {
 
 	req.SkipVerify = request.SkipSSLVerification
 	for k, v := range request.Headers {
-		req.Header.Set(k, v)
+		for _, subV := range v {
+			req.Header.Add(k, subV)
+		}
 	}
 	return e.client.Do(context.Background(), req)
 }

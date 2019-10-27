@@ -1,28 +1,44 @@
 package result
 
-import (
-	"log"
+//go:generate mockgen -destination=../mock/console_mock.go -package=mock github.com/iv-p/apid/common/result Writer
 
-	"github.com/iv-p/apid/common/transaction"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/iv-p/apid/common/result"
 )
 
-// ConsoleWriter sends transaction results to stdout
-type ConsoleWriter struct {
-	success, failure int
+type consoleWriter struct {
+	successes, failures int
 }
 
-// Header prints the header to the console
-func (w *ConsoleWriter) Header() {
-	log.Printf("Header\n")
+func NewConsoleWriter() result.Writer {
+	return &consoleWriter{}
 }
 
-// Write prints a result to the console
-func (w *ConsoleWriter) Write(tx transaction.Result) {
-	w.success++
-	log.Printf("Result\n")
+func (w *consoleWriter) Write(result result.TransactionResult) {
+	if isFailure(result) {
+		w.failures++
+	} else {
+		w.successes++
+	}
+
+	bytes, err := json.MarshalIndent(result, "", "    ")
+	if err != nil {
+		panic(fmt.Errorf("couldn't unamrshall result %w", err))
+	}
+	fmt.Println(string(bytes))
 }
 
-// Footer prints the footer to the console
-func (w *ConsoleWriter) Footer() {
-	log.Printf("success: %d failure: %d\n", w.success, w.failure)
+func (w *consoleWriter) Close() {
+	total := w.failures + w.successes
+	fmt.Printf("successful: %d/%d; failed: %d/%d", w.successes, total, w.failures, total)
+}
+
+func isFailure(r result.TransactionResult) (isFailed bool) {
+	for _, s := range r.Steps {
+		isFailed = isFailed || !s.OK()
+	}
+	return
 }

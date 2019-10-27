@@ -1,7 +1,7 @@
 {% macro header(section, path) %}
-<div class="columns is-marginless is-paddingless has-background-primary">
+<div class="columns is-marginless is-paddingless">
   <div class="column is-8 is-offset-2 is-paddingless">
-    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item logo" href="{{ get_url(path=path) }}">
           apid{% if section %}::{{ section }}{% endif %}
@@ -18,6 +18,9 @@
         <div class="navbar-end">
           <a href="{{ get_url(path="/") }}" class="navbar-item">
             Home
+          </a>
+          <a href="{{ get_url(path="/download") }}" class="navbar-item">
+            Download
           </a>
           <a href="{{ get_url(path="/docs") }}" class="navbar-item">
             Docs

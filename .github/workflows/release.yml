@@ -47,6 +47,19 @@ jobs:
         GOOS=windows GOARCH=amd64 go build -v -o build/cli-${VERSION}-windows-amd64.exe svc/cli/main.go
         GOOS=windows GOARCH=386   go build -v -o build/cli-${VERSION}-windows-386.exe   svc/cli/main.go
 
+        mkdir latest
+        cp build/cli-${VERSION}-darwin-amd64 latest/cli-latest-darwin-amd64
+        cp build/cli-${VERSION}-linux-amd64 latest/cli-latest-linux-amd64
+        cp build/cli-${VERSION}-linux-386 latest/cli-latest-linux-386
+        cp build/cli-${VERSION}-linux-arm latest/cli-latest-linux-arm
+        cp build/cli-${VERSION}-freebsd-amd64 latest/cli-latest-freebsd-amd64
+        cp build/cli-${VERSION}-freebsd-arm latest/cli-latest-freebsd-arm
+        cp build/cli-${VERSION}-openbsd-amd64 latest/cli-latest-openbsd-amd64
+        cp build/cli-${VERSION}-openbsd-386 latest/cli-latest-openbsd-386
+        cp build/cli-${VERSION}-solaris-amd64 latest/cli-latest-solaris-amd64
+        cp build/cli-${VERSION}-windows-amd64.exe latest/cli-latest-windows-amd64.exe
+        cp build/cli-${VERSION}-windows-386.exe latest/cli-latest-windows-386.exe
+
     - name: Build docker cli images
       run: |
         export VERSION=$(cat version)
@@ -86,6 +99,16 @@ jobs:
         export VERSION=$(cat version)
         cd go/build
         s3cmd put * s3://apid-production-space/cli/${VERSION}/ \
+        --acl-public \
+        --add-header=Cache-Control:max-age=86400 \
+        --recursive \
+        --access_key=${ACCESS_KEY} \
+        --secret_key=${SECRET_KEY} \
+        --host=${HOST_NAME} \
+        --host-bucket=${HOST_BUCKET}
+
+        cd ../latest
+        s3cmd put * s3://apid-production-space/cli/latest/ \
         --acl-public \
         --add-header=Cache-Control:max-age=86400 \
         --recursive \

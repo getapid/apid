@@ -16,8 +16,8 @@
                         APId gives you peace of piece of mind your software is healthy and operational
                     </h2>
                     <div class="buttons">
-                        <button class="button is-primary is-large is-fullwidth">Download</button>
-                        <button class="button is-text is-large is-fullwidth">Read docs</button>
+                        <a class="button is-primary is-large is-fullwidth" href="{{ get_url(path="/download") }}">Download</a>
+                        <a class="button is-text is-large is-fullwidth" href="{{ get_url(path="/docs") }}">Read docs</a>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@
                             <i class="icon ion-md-checkmark-circle-outline"></i>
                         </span><b>No extra coding</b> - no need to add any code, just define your transactions</li>
                 </ul>
-                <a href="/docs" class="button is-text is-pulled-right">Read docs</a>
+                <a href="{{ get_url(path="/docs") }}" class="button is-text is-pulled-right">Read docs</a>
             </p>
         </div>
         <div class="column is-4">
@@ -137,7 +137,7 @@
                         as CircleCI, Jenkins and others.
                     </li>
                 </ul>
-                <a href="/docs" class="button is-text is-pulled-right">Read docs</a>
+                <a href="{{ get_url(path="/docs") }}" class="button is-text is-pulled-right">Read docs</a>
             </p>
         </div>
     </div>
@@ -171,7 +171,7 @@
                         <b>Intradependent</b> - use data from previous steps in a transaction
                     </li>
                 </ul>
-                <a href="/docs" class="button is-text is-pulled-right">Read docs</a>
+                <a href="{{ get_url(path="/docs") }}" class="button is-text is-pulled-right">Read docs</a>
             </p>
         </div>
         <div class="column is-4">
@@ -188,10 +188,10 @@
         <div class="column is-4">
             <div class="field is-grouped is-pulled-right">
                 <p class="control">
-                    <button class="button is-primary is-pulled-right is-large">Download</button>
+                    <a class="button is-primary is-pulled-right is-large" href="{{ get_url(path="/download") }}">Download</a>
                 </p>
                 <p class="control">
-                    <button class="button is-primary is-pulled-right is-outlined is-large">Read docs</button>
+                    <a class="button is-primary is-pulled-right is-outlined is-large" href="{{ get_url(path="/docs") }}">Read docs</a>
                 </p>
             </div>
         </div>

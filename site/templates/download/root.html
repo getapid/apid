@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block header %}
+{{ macros::header(section="blog", path="/blog") }}
+{% endblock header %}
+
+{% block content %}
+{% set index = get_section(path="blog/_index.md") %}
+<div class="columns" style="margin-top: 20px">
+    <div class="column is-6 is-offset-3">
+        <h1 class="title is-3">Download</h1>
+        <p>
+            Below are the available downloads for the latest version of APId. Please download the proper
+            package for your operating system and architecture.
+        </p>
+        <p>
+            Terraform is distributed as a single binary. Install APId by downloading it and moving it to a directory
+            included in your system's PATH .
+        </p>
+        <div class="table-container">
+            <table class="table is-transparent is-hoverable is-fullwidth" style="background-color: transparent;">
+                <tr>
+                    <td style="padding-top:17px">
+                        MacOS
+                    </td>
+                    <td>
+                        <div class="buttons  is-pulled-right">
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-darwin-amd64" class="button is-text">x86</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:17px">
+                        Linux
+                    </td>
+                    <td>
+                        <div class="buttons  is-pulled-right">
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-darwin-arm" class="button is-text">arm</a>
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-darwin-386" class="button is-text">x86</a>
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-darwin-amd64" class="button is-text">x64</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:17px">
+                        Windows
+                    </td>
+                    <td>
+                        <div class="buttons  is-pulled-right">
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-windows-386.exe" class="button is-text">x86</a>
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-windows-amd64.exe" class="button is-text">x64</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:17px">
+                        FreeBSD
+                    </td>
+                    <td>
+                        <div class="buttons  is-pulled-right">
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-freebsd-arm" class="button is-text">arm</a>
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-freebsd-386" class="button is-text">x86</a>
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-freebsd-amd64" class="button is-text">x64</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:17px">
+                        OpenBSD
+                    </td>
+                    <td>
+                        <div class="buttons  is-pulled-right">
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-openbsd-386" class="button is-text">x86</a>
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-openbsd-amd64" class="button is-text">x64</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top:17px">
+                        Solaris
+                    </td>
+                    <td>
+                        <div class="buttons  is-pulled-right">
+                            <a href="https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/cli-latest-solaris-amd64" class="button is-text">x64</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

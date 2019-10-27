@@ -11,6 +11,7 @@ type Transaction struct {
 	Steps     []step.Step            `yaml:"steps" validate:"required,unique=ID"`
 }
 
+// TODO remove after rebase
 // Result holds information for the result of a transaction
 // Passed to the result writer. Content TBD
 type Result struct{}

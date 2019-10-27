@@ -7,50 +7,42 @@ transactions:
   - id: transaction-one
     variables:
       api_url: https://jsonplaceholder.typicode.com
+      title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+      body: quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto
     steps:
       - id: hello-endpoint-test-get
         request:
           type: GET
           endpoint: "{{ variables.api_url }}/posts/1"
-
-      - id: hello-endpoint-two
-        request:
-          type: GET
-          endpoint: "{{ variables.api_url }}/todos/1"
-          skip_ssl_verify: true
+          ssl_skip_verify: true
         response:
           code: 200
-          headers:
-            "name_regex": "value_regex"
-            "name_regex_two": "value_regex_two"
           body:
-            type: "json"
-            content: "{
-                'first_name': 'Boaty',
-                'last_name': 'McBoatface'
-                'addresses': [
-                  {
-                    'first_line': 'Lane McLaneface'
-                  }
-                ]
-              }"
-            exact: false
-        export:
-          auth_cookie: response.headers.X-APIDAUTH
-          first_address: response.body.addresses[0].first_line
+            type: "plaintext"
+            content: |-
+              {
+                "userId": 1,
+                "id": 1,
+                "title": "{{variables.title}}",
+                "body": "{{variables.body}}"
+              }
 
-      - id: hello-endpoint-test-post
+      - id: hello-endpoint-test-get-1
         request:
           type: GET
           endpoint: "{{ variables.api_url }}/posts/1"
-          headers:
-            "X-APIDAUTH": "{{ hello-endpoint-two.auth_cookie }}"
         response:
-          code: 201
+          code: 200
           body:
-            type: "text"
-            content: "OK"
-            exact: true
+            type: "json"
+            content: |
+              {
+                "userId": 1,
+                "id": 1,
+                "title": "",
+                "body": ""
+              }
+            exact: false
 
   - id: transaction-two
     variables:
@@ -63,7 +55,7 @@ transactions:
         response:
           code: 200
           body:
-            type: "text"
+            type: "plaintext"
             content: "OK"
             exact: true
       - id: echo-endpoint-test-post
@@ -74,6 +66,6 @@ transactions:
         response:
           code: 200
           body:
-            type: "text"
+            type: "plaintext"
             content: "some text h3re"
             exact: true

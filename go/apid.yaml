@@ -7,13 +7,14 @@ transactions:
   - id: transaction-one
     variables:
       api_url: https://jsonplaceholder.typicode.com
-      title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+      title: delectus aut autem
       body: quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto
     steps:
-      - id: hello-endpoint-test-get
+      - id: hello-endpoint-one
         request:
           method: GET
-          endpoint: "{{ var.api_url }}/posts/1"
+          endpoint: "{{ var.api_url }}/todos/1"
+          skip_ssl_verify: true
 
       - id: hello-endpoint-two
         request:
@@ -29,12 +30,12 @@ transactions:
                 "userId": 1,
                 "id": 1,
                 "title": "{{var.title}}",
-                "body": "{{var.body}}"
+                "completed": false
               }
 
       - id: hello-endpoint-test-get-1
         request:
-          type: GET
+          method: GET
           endpoint: "{{ var.api_url }}/posts/1"
         response:
           code: 200
@@ -55,7 +56,7 @@ transactions:
     steps:
       - id: health-endpoint-test-get
         request:
-          type: GET
+          method: GET
           endpoint: "{{ var.api_url }}/health"
         response:
           code: 200
@@ -65,7 +66,7 @@ transactions:
             exact: true
       - id: echo-endpoint-test-post
         request:
-          type: POST
+          method: POST
           endpoint: "{{ var.api_url }}/echo"
           body: "some text h3re"
         response:

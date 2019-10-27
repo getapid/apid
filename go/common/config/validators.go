@@ -87,10 +87,9 @@ func (v RequiredValidator) Validate(val interface{}) (b bool, err error) {
 type ExpectBodyValidator struct{}
 
 func (v ExpectBodyValidator) Validate(val interface{}) (b bool, err error) {
-	if val == nil {
+	if val == nil || (reflect.ValueOf(val).Kind() == reflect.Ptr && reflect.ValueOf(val).IsNil()) {
 		return true, nil
 	}
-
 	expBody, ok := val.(*step.ExpectBody)
 	if !ok {
 		return false, fmt.Errorf("must be *step.ExpectBody")

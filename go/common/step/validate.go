@@ -3,8 +3,6 @@ package step
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	http2 "net/http"
 	"reflect"
 	"strings"
@@ -46,7 +44,7 @@ func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (re
 
 	appendErr(errMsgs, "code", v.validateCode(exp.Code, actual.StatusCode))
 	appendErr(errMsgs, "headers", v.validateHeaders(exp.Headers, actual.Header))
-	appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.Body))
+	appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.ReadBody))
 
 	result.Errors = errMsgs
 	return
@@ -98,7 +96,7 @@ func (httpValidator) validateHeaders(exp *Headers, actual http2.Header) error {
 	return accumulatedErrs
 }
 
-func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
+func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 	if exp == nil {
 		return nil
 	}
@@ -138,13 +136,9 @@ func (httpValidator) validateBody(exp *ExpectBody, actual io.Reader) error {
 	}
 
 	var received interface{}
-	body, err := ioutil.ReadAll(actual)
+	err = unmarshall(actual, &received)
 	if err != nil {
-		return err
-	}
-	err = unmarshall(body, &received)
-	if err != nil {
-		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, body)
+		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, actual)
 	}
 
 	if exact {

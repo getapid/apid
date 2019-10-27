@@ -30,7 +30,7 @@ type Timings struct {
 type Response struct {
 	*http.Response
 	Timings  Timings
-	ReadBody string
+	ReadBody []byte
 }
 
 // Client is the interface of a http client
@@ -118,7 +118,7 @@ func (c TimedClient) Do(ctx context.Context, req *Request) (*Response, error) {
 	if err != nil {
 		return res, err
 	}
-	res.ReadBody = string(readBody)
+	res.ReadBody = readBody
 	return res, nil
 }
 

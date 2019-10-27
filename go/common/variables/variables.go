@@ -32,16 +32,16 @@ func newEmptyVars() Variables {
 
 type option func(variables *Variables)
 
-// WithRawVars places the provided map in the variables namespace of the Variables
-func WithRawVars(v map[string]interface{}) option {
+// WithVars places the provided map in the variables namespace of the Variables
+func WithVars(v map[string]interface{}) option {
 	return func(vars *Variables) {
 		merged := vars.Merge(Variables{data: map[string]interface{}{varNamespace: v}})
 		vars.data = merged.data
 	}
 }
 
-// WithVars places the provided map in the variables namespace of the Variables
-func WithVars(v Variables) option {
+// WithOther places the provided map in the variables namespace of the Variables
+func WithOther(v Variables) option {
 	return func(vars *Variables) {
 		merged := vars.Merge(v)
 		vars.data = merged.data

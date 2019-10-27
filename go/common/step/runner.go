@@ -43,6 +43,7 @@ func NewRunner(
 func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
 	var err error
 	var result Result
+
 	result.Step, err = c.interpolator.interpolate(step, vars)
 	if err != nil {
 		return Result{}, err
@@ -51,10 +52,8 @@ func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
 	if err != nil {
 		return result, err
 	}
+
 	result.Valid = c.validator.validate(result.Step.Response, response)
-	if err != nil {
-		return result, err
-	}
-	result.Exported = c.extractor.Extract(response, result.Step.Export)
+	result.Exported = c.extractor.extract(response, result.Step.Export)
 	return result, nil
 }

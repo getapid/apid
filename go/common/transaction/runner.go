@@ -1,6 +1,8 @@
 package transaction
 
 import (
+	"fmt"
+
 	"github.com/iv-p/apid/common/result"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/variables"
@@ -32,7 +34,7 @@ func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
 func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Variables) bool {
 	allOk := true
 	for _, transaction := range transactions {
-		tVars := variables.New(variables.WithRawVars(transaction.Variables))
+		tVars := variables.New(variables.WithVars(transaction.Variables))
 		vars = vars.Merge(tVars)
 		res, ok := r.runSingleTransaction(transaction, vars)
 		r.writer.Write(res)
@@ -47,14 +49,17 @@ func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars v
 	exportedVars := variables.New()
 	for _, step := range transaction.Steps {
 		stepVars := variables.New(
-			variables.WithVars(vars),
-			variables.WithRawVars(transaction.Variables),
-			variables.WithRawVars(step.Variables),
-			variables.WithVars(exportedVars),
+			variables.WithOther(vars),
+			variables.WithVars(transaction.Variables),
+			variables.WithVars(step.Variables),
+			variables.WithOther(exportedVars),
 		)
 		stepResult, err := r.stepRunner.Run(step, stepVars)
+		if err != nil {
+			fmt.Println(err)
+		}
 		exportedVars = variables.New(
-			variables.WithVars(exportedVars),
+			variables.WithOther(exportedVars),
 			variables.WithRaw(
 				map[string]interface{}{
 					step.ID: stepResult.Exported,

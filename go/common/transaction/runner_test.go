@@ -236,14 +236,14 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 					runs = append(runs,
 						stepRunner.EXPECT().
 							Run(step, variables.New(
-								variables.WithVars(rootVars),
-								variables.WithRawVars(txVars),
-								variables.WithVars(exported),
-								variables.WithRawVars(step.Variables),
+								variables.WithOther(rootVars),
+								variables.WithVars(txVars),
+								variables.WithOther(exported),
+								variables.WithVars(step.Variables),
 							)).
 							Return(okStepResult, nil))
 					exported = variables.New(
-						variables.WithVars(exported),
+						variables.WithOther(exported),
 						variables.WithRaw(
 							map[string]interface{}{
 								step.ID: okStepResult.Exported,
@@ -254,10 +254,10 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 					runs = append(runs,
 						stepRunner.EXPECT().
 							Run(step, variables.New(
-								variables.WithVars(rootVars),
-								variables.WithRawVars(txVars),
-								variables.WithVars(exported),
-								variables.WithRawVars(step.Variables),
+								variables.WithOther(rootVars),
+								variables.WithVars(txVars),
+								variables.WithOther(exported),
+								variables.WithVars(step.Variables),
 							)).
 							Return(errStepResult, errStepErr))
 					break

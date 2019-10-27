@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 
 	"github.com/iv-p/apid/common/http"
+	"github.com/iv-p/apid/common/log"
 	"github.com/iv-p/mapaccess"
 )
 
 type extractor interface {
-	Extract(*http.Response, Export) Exported
+	extract(*http.Response, Export) Exported
 }
 
 type bodyExtractor struct {
@@ -20,10 +21,10 @@ func NewBodyExtractor() extractor {
 	return &bodyExtractor{}
 }
 
-func (e *bodyExtractor) Extract(response *http.Response, export Export) Exported {
+func (e *bodyExtractor) extract(response *http.Response, export Export) Exported {
 	exported := make(Exported, len(export))
 	var jsonBody interface{}
-	err := json.Unmarshal([]byte(response.ReadBody), &jsonBody)
+	err := json.Unmarshal(response.ReadBody, &jsonBody)
 	if err != nil {
 		return exported
 	}
@@ -31,6 +32,7 @@ func (e *bodyExtractor) Extract(response *http.Response, export Export) Exported
 	for exportedKey, bodyKey := range export {
 		value, err = mapaccess.Get(jsonBody, bodyKey)
 		if err != nil {
+			log.L.Warn("could not fetch key %v : %v", bodyKey, err)
 			continue
 		}
 		exported[exportedKey] = value

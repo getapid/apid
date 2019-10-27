@@ -12,7 +12,7 @@ type VarsSuite struct {
 	suite.Suite
 }
 
-func (s *VarsSuite) TestWithRawVars() {
+func (s *VarsSuite) TestWithVars() {
 	arbitraryMap := map[string]interface{}{
 		"1": "val1",
 	}
@@ -69,7 +69,7 @@ func (s *VarsSuite) TestWithRawVars() {
 	}
 
 	for i, t := range testCases {
-		actualVars := New(WithVars(t.v1), WithRawVars(t.v2))
+		actualVars := New(WithOther(t.v1), WithVars(t.v2))
 		s.Equalf(t.expVars, actualVars, "test case %d/%d", i+1, len(testCases))
 	}
 }

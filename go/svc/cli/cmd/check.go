@@ -58,7 +58,7 @@ func checkRun(*cobra.Command, []string) {
 
 	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
 
-	vars := variables.New(variables.WithRawVars(c.Variables))
+	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())
 	ok := transactionRunner.Run(c.Transactions, vars)
 	if !ok {
 		os.Exit(1)

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"net"
 	"net/http"
@@ -62,7 +63,7 @@ func TestTimedClient_Do(t *testing.T) {
 	}
 	type want struct {
 		code    int
-		body    string
+		body    []byte
 		timings time.Duration
 	}
 	tests := []struct {
@@ -76,14 +77,14 @@ func TestTimedClient_Do(t *testing.T) {
 			"correct",
 			fields{200, "test", &DummyTracer{}, 0 * time.Millisecond},
 			args{context.Background()},
-			want{200, "test", d},
+			want{200, []byte("test"), d},
 			false,
 		},
 		{
 			"timeout",
 			fields{200, "test", &DummyTracer{}, 20 * time.Millisecond},
 			args{context.Background()},
-			want{200, "test", d},
+			want{200, []byte("test"), d},
 			true,
 		},
 	}
@@ -109,7 +110,7 @@ func TestTimedClient_Do(t *testing.T) {
 			if got.StatusCode != tt.want.code {
 				t.Errorf("TimedClient.Do() = %v, want %v", got.StatusCode, tt.want.code)
 			}
-			if got.ReadBody != tt.want.body {
+			if !bytes.Equal(got.ReadBody, tt.want.body) {
 				t.Errorf("TimedClient.Do() = %v, want %v", got.ReadBody, tt.want.body)
 			}
 			if got.Timings.ContentTransfer != d {

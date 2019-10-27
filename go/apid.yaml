@@ -67,6 +67,7 @@ transactions:
             type: "plaintext"
             content: "OK"
             exact: true
+
       - id: echo-endpoint-test-post
         request:
           method: POST

@@ -8,3 +8,33 @@ weight = 220
 
 
 {{ h2(text="Summary") }}
+
+Variables are scoped either globally, to a transaction or to a step. Variables in a narrower scope have precedence over
+those in a broader one. Variables are available in templates - `"{{ var.api_url }}"`
+
+{{ h3(text="Regular variables") }}
+
+These are declared either in the transaction, step or the root yaml document. There they are simply declared as a mapping
+from Those will be available in templates
+using the `var` prefix - `"{{ var.api_url }}"`
+
+{{ h3(text="Exported variables") }}
+
+Each step can export a set of variables. This is useful when you want to make a request and then use part of the response
+in another request, like when you authenticate to get a token and then use this token in subsequent requests. See
+[step](../step) about the exact syntax of exporting variables in a step. Exported variables will be available in
+subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth_token }}"`
+
+{{ h3(text="Environment variables") }}
+
+These will contain anything environment variable that the APId CLI has inherited. Useful for injecting passwords or
+other kinds of secrets. They will be available like so: `"{{ env.PASSWORD }}"`
+
+{{ h2(text="Examples") }}
+
+```yaml
+variables:
+  title: "A long time ago"
+  subtitle: "in a {{ var.place }} far far away"
+  year: 2187
+```

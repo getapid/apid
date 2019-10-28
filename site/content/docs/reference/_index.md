@@ -1,6 +1,6 @@
 +++
 title = "Reference"
-description = "learn how to use apid"
+description = "details about the yaml configuration"
 weight = 10
 sort_by = 'weight'
 template = "docs/root.html"

@@ -27,7 +27,12 @@ to validate the response.
 
 {{ h3(text="export") }}
 
-{{ field(type="mapping", required="false", desc="The variables to export; a mapping from variable names to JSON paths to the value in the response") }}
+{{ field(type="mapping", required="false", desc="The variables to export; a mapping from variable names to JSON paths
+to the value in the response. See [variables](../variables) for more details") }}
+
+{{ h3(text="variables") }}
+
+{{ field(type="[`variables`](../variables)", required="false", desc="Variables scoped to this step") }}
 
 {{ h2(text="Examples") }}
 

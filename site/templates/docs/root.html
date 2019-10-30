@@ -38,21 +38,39 @@
     <div class="column is-6">
         {% block inner_content %}
         <h1 class="title is-3">{{ section.title }}</h1>
-        {{ section.content | safe }}
-        {% for s in section.subsections %}
-        {% set subsection = get_section(path=s) %}
-        <a href="{{ subsection.permalink }}">
-        <div class="card" style="margin-bottom: 10px;">
-            <div class="card-content">
-                <div class="content is-clearfix">
-                    <h3 class="title is-5" style="margin-bottom: 20px;">{{ subsection.title }}</h3>
-                    <p>{{ subsection.description }}</p>
-                    <div class="is-pulled-right">read more</div>
+        <p>
+            {{ section.content | safe }}
+        </p>
+        <div style="margin-top: 20px">
+            {% for s in section.subsections %}
+            {% set subsection = get_section(path=s) %}
+            <a href="{{ subsection.permalink }}">
+                <div class="card" style="margin-bottom: 10px;">
+                    <div class="card-content">
+                        <div class="content is-clearfix">
+                            <h3 class="title is-5" style="margin-bottom: 20px;">{{ subsection.title }}</h3>
+                            <p>{{ subsection.description }}</p>
+                            <div class="is-pulled-right">read more</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </a>
+            {% endfor %}
+
+            {% for p in section.pages %}
+            <a href="{{ p.permalink }}">
+                <div class="card" style="margin-bottom: 10px;">
+                    <div class="card-content">
+                        <div class="content is-clearfix">
+                            <h3 class="title is-5" style="margin-bottom: 20px;">{{ p.title }}</h3>
+                            <p>{{ p.description }}</p>
+                            <div class="is-pulled-right">read more</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
         </div>
-        </a>
-        {% endfor %}
         {% endblock inner_content %}
 
         <div class="content" style="margin-top: 20px;">
@@ -62,45 +80,36 @@
             {% set index = get_section(path="_index.md") %}
             {% set found_current = false %}
             {% for s in index.subsections | reverse %}
-                {% set subsection = get_section(path=s) %}
-                {% if subsection.permalink == section.permalink %}
-                    {% set_global found_current = true %}
-                {% else %}
-                    {% if found_current %}
-                        {% if subsection.pages %}
-                            {% set last_page = subsection.pages | last %}
-                            <a class="previous" href="{{ last_page.permalink }}">< {{ last_page.title }}</a>
-                        {% else %}
-                            <a class="previous" href="{{ subsection.permalink }}">< {{ subsection.title }}</a>
-                        {% endif %}
-                        {# no break #}
-                        {% set_global found_current = false %}
-                    {% endif %}
-                {% endif %}
+            {% set subsection = get_section(path=s) %}
+            {% if subsection.permalink == section.permalink %}
+            {% set_global found_current = true %}
+            {% else %}
+            {% if found_current %}
+            {% if subsection.pages %}
+            {% set last_page = subsection.pages | last %}
+            <a class="previous" href="{{ last_page.permalink }}">
+                < {{ last_page.title }}</a> {% else %} <a class="previous" href="{{ subsection.permalink }}">
+                    < {{ subsection.title }}</a> {% endif %} {# no break #} {% set_global found_current = false %}
+                        {% endif %} {% endif %} {% endfor %} {% endblock prev_link %} {% block next_link %}
+                        {% if section.pages %} {% set next_page = section.pages | first %} <a
+                        class="button is-text is-pulled-right" href="{{ next_page.permalink }}">{{ next_page.title }} >
+            </a>
+            {% else %}
+            {# No page in the section, find the link for the following section #}
+            {% set index = get_section(path="_index.md") %}
+            {% set found_current = false %}
+            {% for s in index.subsections %}
+            {% set subsection = get_section(path=s) %}
+            {% if found_current %}
+            <a class="button is-text is-pulled-right" href="{{ subsection.permalink }}">{{ subsection.title }} ></a>
+            {# no break #}
+            {% set_global found_current = false %}
+            {% endif %}
+            {% if subsection.permalink == section.permalink %}
+            {% set_global found_current = true %}
+            {% endif %}
             {% endfor %}
-            {% endblock prev_link %}
-
-
-            {% block next_link %}
-                {% if section.pages %}
-                    {% set next_page = section.pages | first %}
-                    <a class="button is-text is-pulled-right" href="{{ next_page.permalink }}">{{ next_page.title }} ></a>
-                {% else %}
-                    {# No page in the section, find the link for the following section #}
-                    {% set index = get_section(path="_index.md") %}
-                    {% set found_current = false %}
-                    {% for s in index.subsections %}
-                        {% set subsection = get_section(path=s) %}
-                        {% if found_current %}
-                            <a class="button is-text is-pulled-right" href="{{ subsection.permalink }}">{{ subsection.title }} ></a>
-                            {# no break #}
-                            {% set_global found_current = false %}
-                        {% endif %}
-                        {% if subsection.permalink == section.permalink %}
-                            {% set_global found_current = true %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+            {% endif %}
             {% endblock next_link %}
         </div>
     </div>

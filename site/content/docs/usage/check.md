@@ -1,6 +1,6 @@
 +++
 title = "check"
-description = "check command"
+description = "How to use the command line interface"
 template = "docs/article.html"
 weight = 2
 sort_by = "weight"

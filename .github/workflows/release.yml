@@ -28,7 +28,7 @@ jobs:
 
     - name: Get Go dependencies
       run: |
-        make go-install
+        go get github.com/golang/mock/mockgen
 
     - name: Go Test
       run: |

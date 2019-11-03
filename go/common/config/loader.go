@@ -18,7 +18,7 @@ func Load(path string) (Config, error) {
 func tryLoad(path string) (Config, error) {
 	fi, err := os.Stat(path)
 	if err != nil {
-		return Config{}, fmt.Errorf("could not find %v", path)
+		return Config{}, fmt.Errorf("loading %s: %w", path, err)
 	}
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
@@ -40,7 +40,7 @@ func loadDir(path string) (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
-	fmt.Println(files)
+
 	configs := make([]Config, len(files))
 	for i, file := range files {
 		config, err := loadFile(file)

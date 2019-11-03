@@ -32,4 +32,4 @@ jobs:
 
       - name: End to end tests
         run: |
-          make e2e
+          make build-e2e e2e

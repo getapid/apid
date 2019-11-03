@@ -39,4 +39,9 @@ func main() {
 func bind(h handler.GinHandler, r gin.IRouter) {
 	r.GET("/health", h.HandleHealthCheck)
 	r.POST("/echo", h.HandleEcho)
+	r.POST("/auth", h.HandleLogin)
+
+	authenticatedBeers := r.Group("beer")
+	authenticatedBeers.Use(h.AuthMiddleware)
+	authenticatedBeers.GET("", h.ListBeers)
 }

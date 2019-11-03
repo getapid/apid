@@ -8,7 +8,6 @@ install:
 	go mod download
 
 mock:
-	go get github.com/golang/mock/mockgen
 	go generate ./...
 
 test: mock

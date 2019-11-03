@@ -17,6 +17,10 @@ type bodyExtractor struct {
 
 type Exported map[string]interface{}
 
+func (e Exported) Generic() map[string]interface{} {
+	return e
+}
+
 func NewBodyExtractor() extractor {
 	return &bodyExtractor{}
 }

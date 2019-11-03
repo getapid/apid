@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: run tests
         run: |
-            curl -o apid https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/apid-latest-linux-amd64
+            curl -o apid https://cdn.getapid.com/cli/latest/apid-latest-linux-amd64
             chmod u+x apid
             apid check -c path/to/apid.yaml
 ```

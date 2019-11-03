@@ -35,7 +35,7 @@ Integrating the CLI with Travis is the nois just as simple as using the docker i
 ---
 before_install:
   - docker run -v /path/to/apid.yaml:/apid.yaml run getapid/apid:latest check -c /apid.yaml
-  - curl -o apid https://apid-production-space.fra1.cdn.digitaloceanspaces.com/cli/latest/apid-latest-linux-amd64
+  - curl -o apid https://cdn.getapid.com/cli/latest/apid-latest-linux-amd64
   - chmod u+x apid
 script:
   - apid check -c path/to/apid.yaml

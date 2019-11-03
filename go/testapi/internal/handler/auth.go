@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/iv-p/apid/common/log"
 )
 
 const (
@@ -14,6 +15,7 @@ const (
 func (h GinHandler) HandleLogin(c *gin.Context) {
 	user, pass, ok := c.Request.BasicAuth()
 	if !ok || user != username || pass != password {
+		log.L.Debugf("received basic auth with user: %q, pass: %q", user, pass)
 		c.Status(http.StatusUnauthorized)
 		return
 	}

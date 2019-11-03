@@ -18,4 +18,4 @@ test-api-%:
 	$(MAKE) -C testapi $*
 
 e2e-test: build-cli
-	$(BINDIR) check
+	$(BINDIR) check -c testapi/tests

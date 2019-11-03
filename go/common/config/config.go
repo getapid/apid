@@ -14,9 +14,9 @@ type Config struct {
 
 // Config holds all the config data from the config yaml file
 type config struct {
-	Version             string                    `yaml:"version" validate:"version"`
+	Version             string                    `yaml:"version"`
 	APIKey              string                    `yaml:"apikey"`
 	Variables           map[string]interface{}    `yaml:"variables"`
-	Transactions        []transaction.Transaction `yaml:"transactions" validate:"required,unique=ID"`
+	Transactions        []transaction.Transaction `yaml:"transactions" validate:"unique=ID"`
 	SkipSSLVerification bool                      `yaml:"skip_ssl_verify"`
 }

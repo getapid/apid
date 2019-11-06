@@ -37,8 +37,18 @@ transactions:
             Authorization: "Bearer {{ auth.auth_token }}"
         response:
           code: 200
-          exact: false
-
+          body:
+            exact: true
+            type: json
+            content: |
+              {
+                "beer": {
+                  "id": 1,
+                  "name": "Stella Artois",
+                  "type": "pilsner",
+                  "price": 2.5
+                }
+              }
 
   - id: simple-transaction
     steps:

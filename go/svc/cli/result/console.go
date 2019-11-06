@@ -36,7 +36,7 @@ func (w *consoleWriter) Write(result result.TransactionResult) {
 	w.print(result.Id + ":\n")
 
 	w.out.setIndent(4)
-	//width := terminalWidth()
+
 	for _, s := range result.Steps {
 		if !s.OK() {
 			w.printFailedStep(s)

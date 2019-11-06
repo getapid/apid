@@ -34,7 +34,7 @@ func init() {
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 }
 
-func checkRun(*cobra.Command, []string) {
+func checkRun(cmd *cobra.Command, args []string) {
 	c, err := config.Load(configFilepath)
 	if err != nil {
 		log.L.Fatalf("could not load config file: %v", err)
@@ -45,7 +45,7 @@ func checkRun(*cobra.Command, []string) {
 		log.L.Panic("the config failed validation: ", err)
 	}
 
-	consoleWriter := cmdResult.NewConsoleWriter()
+	consoleWriter := cmdResult.NewConsoleWriter(cmd.OutOrStdout())
 	writer := result.NewMultiWriter(consoleWriter)
 
 	httpClient := http.NewTimedClient(http.DefaultClient)

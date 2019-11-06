@@ -40,6 +40,7 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 		r.writer.Write(res)
 		allOk = allOk && ok
 	}
+	r.writer.Close()
 	return allOk
 }
 

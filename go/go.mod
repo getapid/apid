@@ -3,6 +3,7 @@ module github.com/iv-p/apid
 go 1.13
 
 require (
+	github.com/fatih/color v1.7.0
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
 	github.com/golang/mock v1.3.1
@@ -10,6 +11,7 @@ require (
 	github.com/iv-p/mapaccess v1.0.0
 	github.com/json-iterator/go v1.1.7 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/spf13/cobra v0.0.5

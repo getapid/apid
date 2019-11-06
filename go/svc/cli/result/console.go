@@ -67,10 +67,10 @@ func (w *consoleWriter) count(result result.TransactionResult) {
 func isFailed(r result.TransactionResult) bool {
 	for _, s := range r.Steps {
 		if !s.OK() {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 func (w consoleWriter) printFailedStep(s step.Result) {

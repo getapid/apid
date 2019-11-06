@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	redFail = color.RedString("FAIL")
-	greenOk = color.GreenString("OK")
+	redFail = color.New(color.FgHiRed, color.Bold).Sprint("FAIL")
+	greenOk = color.New(color.FgHiGreen, color.Bold).Sprint("OK")
 )
 
 type consoleWriter struct {

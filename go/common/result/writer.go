@@ -5,6 +5,7 @@ import (
 )
 
 type TransactionResult struct {
+	Id    string
 	Steps []step.Result
 }
 

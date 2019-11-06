@@ -44,8 +44,7 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 }
 
 func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars variables.Variables) (result.TransactionResult, bool) {
-	ok := true
-	res := result.TransactionResult{}
+	res := result.TransactionResult{Id: transaction.ID}
 	exportedVars := variables.New()
 	for _, step := range transaction.Steps {
 		stepVars := variables.New(
@@ -71,5 +70,5 @@ func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars v
 			return res, false
 		}
 	}
-	return res, ok
+	return res, true
 }

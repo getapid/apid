@@ -75,11 +75,11 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 		{
 			"empty",
 			args{
-				[]Transaction{},
-				rootVars,
+				transactions: []Transaction{},
+				vars:         rootVars,
 			},
 			want{
-				[]result.TransactionResult{},
+				Results: []result.TransactionResult{},
 			},
 			true,
 		},
@@ -88,7 +88,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id",
+						"test-id-1",
 						txVars,
 						[]step.Step{},
 					},
@@ -96,8 +96,8 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 				rootVars,
 			},
 			want{
-				[]result.TransactionResult{
-					{},
+				Results: []result.TransactionResult{
+					{Id: "test-id-1"},
 				},
 			},
 			true,
@@ -107,17 +107,17 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-2",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-3",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 							okStep,
@@ -125,9 +125,9 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-4",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 							okStep,
@@ -139,13 +139,15 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			want{
 				[]result.TransactionResult{
 					{
-						[]step.Result{
+						Id: "test-id-2",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-3",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 							okStepResult,
@@ -153,7 +155,8 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-4",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 							okStepResult,
@@ -168,17 +171,17 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-5",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-6",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							errStep,
 							okStep,
@@ -186,9 +189,9 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-7",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 							okStep,
@@ -200,19 +203,22 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			want{
 				[]result.TransactionResult{
 					{
-						[]step.Result{
+						Id: "test-id-5",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-6",
+						Steps: []step.Result{
 							okStepResult,
 							errStepResult,
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-7",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 							okStepResult,

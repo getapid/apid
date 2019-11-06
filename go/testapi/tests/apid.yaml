@@ -29,6 +29,16 @@ transactions:
           code: 200
           exact: false
 
+      - id: get-beer-1
+        request:
+          method: GET
+          endpoint: "{{ var.api_url }}/beer/1"
+          headers:
+            Authorization: "Bearer {{ auth.auth_token }}"
+        response:
+          code: 200
+          exact: false
+
 
   - id: simple-transaction
     steps:

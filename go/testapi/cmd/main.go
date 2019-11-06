@@ -44,4 +44,5 @@ func bind(h handler.GinHandler, r gin.IRouter) {
 	authenticatedBeers := r.Group("beer")
 	authenticatedBeers.Use(h.AuthMiddleware)
 	authenticatedBeers.GET("", h.ListBeers)
+	authenticatedBeers.GET("/:id", h.GetBeer)
 }

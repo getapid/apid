@@ -2,8 +2,10 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/iv-p/apid/common/log"
 )
 
 type beer struct {
@@ -14,7 +16,8 @@ type beer struct {
 }
 
 type beerHandler struct {
-	beers []beer
+	beers  []beer
+	mBeers map[int]beer
 }
 
 func (h *beerHandler) init() {
@@ -38,12 +41,45 @@ func (h *beerHandler) init() {
 			Price: 1.5,
 		},
 	}
+
+	h.mBeers = make(map[int]beer, len(h.beers))
+	for _, b := range h.beers {
+		if _, ok := h.mBeers[b.Id]; ok {
+			log.L.Panicw("found two beers in config with same id; are you drunk?",
+				"id", b.Id,
+			)
+		}
+
+		h.mBeers[b.Id] = b
+	}
 }
 
 func (h beerHandler) ListBeers(c *gin.Context) {
 	response := struct {
 		Beers []beer `json:"beers"`
 	}{h.beers}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func (h beerHandler) GetBeer(c *gin.Context) {
+	id := c.Param("id")
+
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	b, exists := h.mBeers[i]
+	if !exists {
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	response := struct {
+		Beers beer `json:"beer"`
+	}{b}
 
 	c.JSON(http.StatusOK, response)
 }

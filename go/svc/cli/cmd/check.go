@@ -42,7 +42,7 @@ func checkRun(cmd *cobra.Command, args []string) {
 
 	err = config.Validate(c)
 	if err != nil {
-		log.L.Panic("the config failed validation: ", err)
+		log.L.Fatal("the config failed validation: ", err)
 	}
 
 	consoleWriter := cmdResult.NewConsoleWriter(cmd.OutOrStdout())

@@ -93,15 +93,12 @@ func mergeMaps(this, other map[string]interface{}) map[string]interface{} {
 				// if the new value isn't mergable we skip it
 				if newMap, ok := newVal.(map[string]interface{}); ok {
 					this[key] = mergeMaps(existingMap, newMap)
-				} else {
-					this[key] = newVal
+					continue
 				}
-			} else {
-				this[key] = newVal
 			}
-		} else {
-			this[key] = newVal
 		}
+		this[key] = newVal
 	}
+
 	return this
 }

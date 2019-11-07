@@ -8,7 +8,6 @@ install:
 	go mod download
 
 mock:
-	go get github.com/golang/mock/mockgen
 	go generate ./...
 
 test: mock
@@ -18,4 +17,4 @@ test-api-%:
 	$(MAKE) -C testapi $*
 
 e2e-test: build-cli
-	$(BINDIR) check -c testapi/tests
+	$(BINDIR) check -c testapi/tests/

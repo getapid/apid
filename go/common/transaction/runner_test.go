@@ -246,7 +246,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						variables.WithOther(exported),
 						variables.WithRaw(
 							map[string]interface{}{
-								step.ID: okStepResult.Exported,
+								step.ID: okStepResult.Exported.Generic(),
 							},
 						),
 					)

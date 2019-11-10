@@ -6,10 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type GinHandler struct{}
+type GinHandler struct {
+	beerHandler
+}
 
 func NewGinHandler() GinHandler {
-	return GinHandler{}
+	beers := beerHandler{}
+	beers.init()
+
+	return GinHandler{beerHandler: beers}
 }
 
 func (h GinHandler) HandleHealthCheck(c *gin.Context) {

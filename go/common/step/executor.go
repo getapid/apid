@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/iv-p/apid/common/http"
+	"github.com/iv-p/apid/common/log"
 )
 
 type executor interface {
@@ -32,5 +33,25 @@ func (e *httpExecutor) do(request Request) (*http.Response, error) {
 			req.Header.Add(k, subV)
 		}
 	}
-	return e.client.Do(context.Background(), req)
+
+	log.L.Debugw("executing request",
+		"method", req.Method,
+		"endpoint", req.URL,
+		"headers", req.Header,
+		"body", request.Body,
+	)
+
+	resp, err := e.client.Do(context.Background(), req)
+	if err != nil {
+		return nil, err
+	}
+
+	log.L.Debugw("received response",
+		"endpoint", req.URL,
+		"method", req.Method,
+		"body", string(resp.ReadBody),
+		"headers", resp.Header,
+	)
+
+	return resp, nil
 }

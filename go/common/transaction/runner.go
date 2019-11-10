@@ -62,7 +62,7 @@ func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars v
 			variables.WithOther(exportedVars),
 			variables.WithRaw(
 				map[string]interface{}{
-					step.ID: stepResult.Exported,
+					step.ID: stepResult.Exported.Generic(),
 				},
 			),
 		)

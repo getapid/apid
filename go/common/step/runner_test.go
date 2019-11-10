@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	httpi "github.com/iv-p/apid/common/http"
+	"github.com/iv-p/apid/common/log"
 	"github.com/iv-p/apid/common/step"
 	"github.com/iv-p/apid/common/variables"
 	"github.com/stretchr/testify/assert"
@@ -40,6 +41,9 @@ func testClient(handler http.Handler) (*http.Client, func()) {
 }
 
 func TestHTTPRunner_Check(t *testing.T) {
+	log.Init(-1)
+	defer log.L.Sync()
+
 	vars := variables.New(variables.WithRaw(map[string]interface{}{
 		"vars": map[string]interface{}{
 			"api-key":  "random-uuid-key",

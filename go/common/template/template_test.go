@@ -1,6 +1,7 @@
 package template
 
 import (
+	"github.com/getapid/apid/common/log"
 	"reflect"
 	"testing"
 
@@ -120,7 +121,7 @@ func TestGet(t *testing.T) {
 		},
 
 		{
-			"command with env text",
+			"command with env branch text",
 			args{
 				"text {% echo $NESTED %}",
 				data,
@@ -149,6 +150,9 @@ func TestGet(t *testing.T) {
 			false,
 		},
 	}
+
+	log.Init(-1)
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := Render(tt.args.template, tt.args.data)

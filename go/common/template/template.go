@@ -2,7 +2,7 @@ package template
 
 import (
 	"fmt"
-	"github.com/getapid/apid/common/shell"
+	"github.com/getapid/apid/common/command"
 	"reflect"
 	"strings"
 
@@ -13,7 +13,7 @@ import (
 
 // Render parses the string and returns the interpolated result
 func Render(template string, data variables.Variables) (string, error) {
-	cmd := shell.NewShellCommandExecutor()
+	cmd := command.NewShellCommandExecutor()
 	var renderer strings.Builder
 	var multiErr error
 	parser := parse(template)

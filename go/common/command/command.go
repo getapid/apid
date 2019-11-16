@@ -1,4 +1,4 @@
-package shell
+package command
 
 import (
 	"bytes"
@@ -32,9 +32,13 @@ func (e *ShellCommandExecutor) Exec(command string, vars variables.Variables) ([
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	sh := os.Getenv("SHELL")
+	shell := os.Getenv("SHELL")
+	if shell == "" {
+		log.L.Warn("SHELL env var not set, using /bin/sh by default")
+		shell = "/bin/sh"
+	}
 
-	cmd := exec.CommandContext(ctx, sh, "-c", command)
+	cmd := exec.CommandContext(ctx, shell, "-c", command)
 	cmd.Env = append(os.Environ(), getEnvFromVars(vars)...)
 	cmd.Stdin = strings.NewReader("")
 	var out bytes.Buffer

@@ -5,7 +5,7 @@ import (
 	stdhttp "net/http"
 	"testing"
 
-	"github.com/iv-p/apid/common/http"
+	"github.com/getapid/apid/common/http"
 	"github.com/stretchr/testify/suite"
 )
 

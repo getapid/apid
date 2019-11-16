@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/iv-p/apid/common/transaction"
+	"github.com/getapid/apid/common/transaction"
 	"gopkg.in/yaml.v3"
 )
 

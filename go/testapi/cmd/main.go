@@ -6,8 +6,8 @@ import (
 	"os/signal"
 
 	"github.com/gin-gonic/gin"
-	"github.com/iv-p/apid/common/log"
-	"github.com/iv-p/apid/testapi/internal/handler"
+	"github.com/getapid/apid/common/log"
+	"github.com/getapid/apid/testapi/internal/handler"
 )
 
 const (

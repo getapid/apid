@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/iv-p/apid/common/log"
+	"github.com/getapid/apid/common/log"
 	"github.com/spf13/cobra"
 )
 

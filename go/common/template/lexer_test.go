@@ -18,15 +18,17 @@ func mkItem(typ itemType, text string) item {
 }
 
 var (
-	iEOF        = mkItem(itemEOF, "")
-	iError      = mkItem(itemError, "")
-	iLeftDelim  = mkItem(itemLeftDelim, "")
-	iRightDelim = mkItem(itemRightDelim, "")
+	iEOF                = mkItem(itemEOF, "")
+	iError              = mkItem(itemError, "")
+	iTemplateLeftDelim  = mkItem(itemTemplateLeftDelim, "")
+	iTemplateRightDelim = mkItem(itemTemplateRightDelim, "")
+	iCommandLeftDelim  = mkItem(itemCommandLeftDelim, "")
+	iCommandRightDelim = mkItem(itemCommandRightDelim, "")
 )
 
 // collectItems gathers the emitted items into a slice.
 func collectItems(t *lexTest) (items []item) {
-	l := lex(t.input, leftDelim, rightDelim)
+	l := lex(t.input)
 	for {
 		item := l.nextItem()
 		items = append(items, item)
@@ -74,10 +76,47 @@ func TestLex(t *testing.T) {
 			"text {{ key }} more",
 			[]item{
 				mkItem(itemText, "text "),
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "key"),
-				iRightDelim,
+				iTemplateRightDelim,
 				mkItem(itemText, " more"),
+				iEOF,
+			},
+		},
+		{
+			"simple command",
+			"{% command %}",
+			[]item{
+				iCommandLeftDelim,
+				mkItem(itemCommand, "command"),
+				iCommandRightDelim,
+				iEOF,
+			},
+		},
+		{
+			"simple command between text",
+			"text {% command %} more",
+			[]item{
+				mkItem(itemText, "text "),
+				iCommandLeftDelim,
+				mkItem(itemCommand, "command"),
+				iCommandRightDelim,
+				mkItem(itemText, " more"),
+				iEOF,
+			},
+		},
+		{
+			"simple command and template between text",
+			"text {% command %} more {{ key }}",
+			[]item{
+				mkItem(itemText, "text "),
+				iCommandLeftDelim,
+				mkItem(itemCommand, "command"),
+				iCommandRightDelim,
+				mkItem(itemText, " more "),
+				iTemplateLeftDelim,
+				mkItem(itemIdentifier, "key"),
+				iTemplateRightDelim,
 				iEOF,
 			},
 		},
@@ -85,9 +124,9 @@ func TestLex(t *testing.T) {
 			"complex key no text",
 			"{{ one.two[12].three }}",
 			[]item{
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "one.two[12].three"),
-				iRightDelim,
+				iTemplateRightDelim,
 				iEOF,
 			},
 		},
@@ -95,13 +134,13 @@ func TestLex(t *testing.T) {
 			"multiple complex keys no text",
 			"{{ one.two[12].three }} {{ four.five[6].seven }}",
 			[]item{
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "one.two[12].three"),
-				iRightDelim,
+				iTemplateRightDelim,
 				mkItem(itemText, " "),
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "four.five[6].seven"),
-				iRightDelim,
+				iTemplateRightDelim,
 				iEOF,
 			},
 		},
@@ -110,13 +149,13 @@ func TestLex(t *testing.T) {
 			"some {{ one.two[12].three }} random {{ four.five[6].seven }} text",
 			[]item{
 				mkItem(itemText, "some "),
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "one.two[12].three"),
-				iRightDelim,
+				iTemplateRightDelim,
 				mkItem(itemText, " random "),
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "four.five[6].seven"),
-				iRightDelim,
+				iTemplateRightDelim,
 				mkItem(itemText, " text"),
 				iEOF,
 			},
@@ -126,7 +165,7 @@ func TestLex(t *testing.T) {
 			"invalid key",
 			"{{ asd!() }}",
 			[]item{
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "asd"),
 				iError,
 			},
@@ -136,7 +175,7 @@ func TestLex(t *testing.T) {
 			"text {{ asd!() }}",
 			[]item{
 				mkItem(itemText, "text "),
-				iLeftDelim,
+				iTemplateLeftDelim,
 				mkItem(itemIdentifier, "asd"),
 				iError,
 			},
@@ -146,7 +185,7 @@ func TestLex(t *testing.T) {
 			"text {{  }}",
 			[]item{
 				mkItem(itemText, "text "),
-				iLeftDelim,
+				iTemplateLeftDelim,
 				iError,
 			},
 		},

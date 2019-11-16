@@ -3,14 +3,14 @@ package cmd
 import (
 	"os"
 
-	"github.com/iv-p/apid/common/config"
-	"github.com/iv-p/apid/common/http"
-	"github.com/iv-p/apid/common/log"
-	"github.com/iv-p/apid/common/result"
-	"github.com/iv-p/apid/common/step"
-	"github.com/iv-p/apid/common/transaction"
-	"github.com/iv-p/apid/common/variables"
-	cmdResult "github.com/iv-p/apid/svc/cli/result"
+	"github.com/getapid/apid/common/config"
+	"github.com/getapid/apid/common/http"
+	"github.com/getapid/apid/common/log"
+	"github.com/getapid/apid/common/result"
+	"github.com/getapid/apid/common/step"
+	"github.com/getapid/apid/common/transaction"
+	"github.com/getapid/apid/common/variables"
+	cmdResult "github.com/getapid/apid/svc/cli/result"
 	"github.com/spf13/cobra"
 )
 

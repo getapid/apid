@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/iv-p/apid/common/log"
+	"github.com/getapid/apid/common/log"
 )
 
 type beer struct {

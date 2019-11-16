@@ -4,13 +4,13 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/getapid/apid/common/mock"
+	"github.com/getapid/apid/common/result"
 	"github.com/golang/mock/gomock"
-	"github.com/iv-p/apid/common/mock"
-	"github.com/iv-p/apid/common/result"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/iv-p/apid/common/step"
-	"github.com/iv-p/apid/common/variables"
+	"github.com/getapid/apid/common/step"
+	"github.com/getapid/apid/common/variables"
 )
 
 var (

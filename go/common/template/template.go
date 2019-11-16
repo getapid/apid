@@ -2,19 +2,21 @@ package template
 
 import (
 	"fmt"
+	"github.com/getapid/apid/common/shell"
 	"reflect"
 	"strings"
 
-	"github.com/iv-p/apid/common/variables"
+	"github.com/getapid/apid/common/variables"
 	"github.com/iv-p/mapaccess"
 	"go.uber.org/multierr"
 )
 
 // Render parses the string and returns the interpolated result
 func Render(template string, data variables.Variables) (string, error) {
-	var res strings.Builder
+	cmd := shell.NewShellCommandExecutor()
+	var renderer strings.Builder
 	var multiErr error
-	parser := parse(template, leftDelim, rightDelim)
+	parser := parse(template)
 	for {
 		token := parser.nextItem()
 		switch token.typ {
@@ -23,7 +25,7 @@ func Render(template string, data variables.Variables) (string, error) {
 		case tokenEnd:
 			goto EXIT
 		case tokenText:
-			if _, err := res.WriteString(token.val); err != nil {
+			if _, err := renderer.WriteString(token.val); err != nil {
 				multiErr = multierr.Append(multiErr, fmt.Errorf("write string: %v : %v", template, err))
 			}
 		case tokenIdentifier:
@@ -34,16 +36,23 @@ func Render(template string, data variables.Variables) (string, error) {
 			}
 			switch c := val.(type) {
 			case string:
-				res.WriteString(c)
+				renderer.WriteString(c)
 			case float64:
-				res.WriteString(fmt.Sprintf("%g", c))
+				renderer.WriteString(fmt.Sprintf("%g", c))
 			case int:
-				res.WriteString(fmt.Sprintf("%d", c))
+				renderer.WriteString(fmt.Sprintf("%d", c))
 			default:
 				multiErr = multierr.Append(multiErr, fmt.Errorf("unknown value type %v: %v", reflect.TypeOf(val), token.val))
 			}
+		case tokenCommand:
+			res, err := cmd.Exec(token.val, data)
+			if err != nil {
+				multiErr = multierr.Append(multiErr, fmt.Errorf("error executing command %v: %v", token.val, err))
+				continue
+			}
+			renderer.Write(res)
 		}
 	}
 EXIT:
-	return res.String(), multiErr
+	return renderer.String(), multiErr
 }

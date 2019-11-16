@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/iv-p/apid/common/step"
-	"github.com/iv-p/apid/common/transaction"
+	"github.com/getapid/apid/common/step"
+	"github.com/getapid/apid/common/transaction"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v2"
 )

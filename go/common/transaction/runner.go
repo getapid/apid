@@ -3,9 +3,9 @@ package transaction
 import (
 	"fmt"
 
-	"github.com/iv-p/apid/common/result"
-	"github.com/iv-p/apid/common/step"
-	"github.com/iv-p/apid/common/variables"
+	"github.com/getapid/apid/common/result"
+	"github.com/getapid/apid/common/step"
+	"github.com/getapid/apid/common/variables"
 )
 
 type Runner interface {

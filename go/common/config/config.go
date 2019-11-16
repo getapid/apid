@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/iv-p/apid/common/transaction"
+	"github.com/getapid/apid/common/transaction"
 )
 
 // Config holds the internal representation of the config

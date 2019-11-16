@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/iv-p/apid/common/http"
-	"github.com/iv-p/apid/common/log"
+	"github.com/getapid/apid/common/http"
+	"github.com/getapid/apid/common/log"
 	"github.com/iv-p/mapaccess"
 )
 

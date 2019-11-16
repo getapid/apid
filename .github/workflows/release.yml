@@ -138,6 +138,11 @@ jobs:
           --data-binary "@site.zip" \
           https://api.netlify.com/api/v1/sites/${SITE_NAME}.netlify.com/deploys
 
+    - name: Update sitemaps
+      run: |
+        curl https://www.google.com/webmasters/sitemaps/ping?sitemap=https://www.getapid.com/sitemap.xml || true
+        curl https://www.bing.com/ping?sitemap=https://www.getapid.com/sitemap.xml || true
+
     - name: Publish docker cli images
       env:
         DOCKER_HUB_USERNAME: getapid

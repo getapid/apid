@@ -3,8 +3,10 @@ package shell
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/getapid/apid/common/log"
 	"github.com/getapid/apid/common/variables"
 	"os"
 	"os/exec"
@@ -52,20 +54,24 @@ func getEnvFromVars(vars variables.Variables) []string {
 }
 
 func flattenVars(namespace string, vars interface{}) []string {
+	this, err := json.Marshal(vars)
+	if err != nil {
+		log.L.Debug("could not marshall variables: %s", err)
+	}
+	result := []string{fmt.Sprintf("%s=%s", strings.ToUpper(namespace), this)}
 	switch val := vars.(type) {
 	case map[string]interface{}:
-		var result []string
 		for key, value := range val {
 			result = append(result, flattenVars(strings.ToUpper(namespace + "_" + key), value)...)
 		}
 		return result
 	case []interface{}:
-		var result []string
 		for index, value := range val {
 			result = append(result, fmt.Sprintf("%s=%v", strings.ToUpper(namespace + "_" + strconv.Itoa(index)), value))
 		}
 		return result
 	default:
-		return []string{fmt.Sprintf("%s=%v", namespace, val)}
+		result = append(result, fmt.Sprintf("%s=%v", namespace, val))
+		return result
 	}
 }

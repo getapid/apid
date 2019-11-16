@@ -120,6 +120,16 @@ func TestGet(t *testing.T) {
 		},
 
 		{
+			"command with env text",
+			args{
+				"text {% echo $NESTED %}",
+				data,
+			},
+			"text {\"array\":[\"four\"],\"key\":\"three\"}",
+			false,
+		},
+
+		{
 			"int in text",
 			args{
 				"text {{ int }}",

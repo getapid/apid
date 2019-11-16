@@ -43,10 +43,37 @@ var parseTests = []parseTest{
 		},
 	},
 	{
+		"{% command %}",
+		[]token{
+			mkToken(tokenCommand, "command"),
+			tEnd,
+		},
+	},
+	{
 		"pre {{ key }}",
 		[]token{
 			mkToken(tokenText, "pre "),
 			mkToken(tokenIdentifier, "key"),
+			tEnd,
+		},
+	},
+	{
+		"pre {% command %} post",
+		[]token{
+			mkToken(tokenText, "pre "),
+			mkToken(tokenCommand, "command"),
+			mkToken(tokenText, " post"),
+			tEnd,
+		},
+	},
+	{
+		"pre {{ key }} between {% command %} post",
+		[]token{
+			mkToken(tokenText, "pre "),
+			mkToken(tokenIdentifier, "key"),
+			mkToken(tokenText, " between "),
+			mkToken(tokenCommand, "command"),
+			mkToken(tokenText, " post"),
 			tEnd,
 		},
 	},
@@ -81,7 +108,7 @@ var parseTests = []parseTest{
 
 // collect gathers the emitted items into a slice.
 func collectTokens(t parseTest) (tokens []token) {
-	p := parse(t.input, leftDelim, rightDelim)
+	p := parse(t.input)
 	for {
 		token := p.nextItem()
 		tokens = append(tokens, token)

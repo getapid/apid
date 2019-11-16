@@ -22,15 +22,16 @@ const (
 	tokenError tokenType = iota
 	tokenEnd
 	tokenIdentifier
+	tokenCommand
 	tokenText
 )
 
 type parseStateFn func(*parser) parseStateFn
 
-func parse(input, leftDelim, rightDelim string) *parser {
+func parse(input string) *parser {
 	p := &parser{
 		tokens: make(chan token),
-		lex:    lex(input, leftDelim, rightDelim),
+		lex:    lex(input),
 	}
 	go p.run()
 	return p
@@ -81,8 +82,10 @@ func (p *parser) run() {
 // parseStart scans for either an left delim, text or end of file
 func parseStart(p *parser) parseStateFn {
 	switch p.peek().typ {
-	case itemLeftDelim:
-		return parseLeftDelim
+	case itemTemplateLeftDelim:
+		return parseTemplateLeftDelim
+	case itemCommandLeftDelim:
+		return parseCommandLeftDelim
 	case itemText:
 		return parseText
 	case itemEOF:
@@ -100,14 +103,15 @@ func parseText(p *parser) parseStateFn {
 		switch p.peek().typ {
 		case itemEOF:
 			return parseEOF
-		default:
-			return parseLeftDelim
+		case itemTemplateLeftDelim:
+			return parseTemplateLeftDelim
+		case itemCommandLeftDelim:
+			return parseCommandLeftDelim
 		}
 	}
 	return p.errorf("expected text")
 }
 
-// parseEOF scans for end of file
 func parseEOF(p *parser) parseStateFn {
 	if p.getNext().typ != itemEOF {
 		return p.errorf("expected end of file")
@@ -116,28 +120,48 @@ func parseEOF(p *parser) parseStateFn {
 	return nil
 }
 
-// parseLeftDelim scans for left delim
-func parseLeftDelim(p *parser) parseStateFn {
-	if p.getNext().typ == itemLeftDelim {
+func parseTemplateLeftDelim(p *parser) parseStateFn {
+	if p.getNext().typ == itemTemplateLeftDelim {
 		return parseIdentifier
 	}
-	return p.errorf("expected identifier")
+	return p.errorf("expected template left delim")
 }
 
-// parseIdentifier scans for identifier
 func parseIdentifier(p *parser) parseStateFn {
 	i := p.getNext()
 	if i.typ == itemIdentifier {
 		p.emit(token{tokenIdentifier, i.val})
-		return parseRightDelim
+		return parseTemplateRightDelim
 	}
 	return p.errorf("expected identifier")
 }
 
-// parseRightDelim scans for left delim
-func parseRightDelim(p *parser) parseStateFn {
-	if p.getNext().typ == itemRightDelim {
+func parseTemplateRightDelim(p *parser) parseStateFn {
+	if p.getNext().typ == itemTemplateRightDelim {
 		return parseStart
 	}
-	return p.errorf("expected right delim")
+	return p.errorf("expected template right delim")
+}
+
+func parseCommandLeftDelim(p *parser) parseStateFn {
+	if p.getNext().typ == itemCommandLeftDelim {
+		return parseCommand
+	}
+	return p.errorf("expected command left delim")
+}
+
+func parseCommand(p *parser) parseStateFn {
+	i := p.getNext()
+	if i.typ == itemCommand {
+		p.emit(token{tokenCommand, i.val})
+		return parseCommandRightDelim
+	}
+	return p.errorf("expected command")
+}
+
+func parseCommandRightDelim(p *parser) parseStateFn {
+	if p.getNext().typ == itemCommandRightDelim {
+		return parseStart
+	}
+	return p.errorf("expected command right delim")
 }

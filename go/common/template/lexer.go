@@ -19,14 +19,20 @@ const (
 	itemError itemType = iota
 	itemEOF
 	itemIdentifier
+	itemCommand
 	itemText
-	itemLeftDelim
-	itemRightDelim
+	itemTemplateLeftDelim
+	itemTemplateRightDelim
+	itemCommandLeftDelim
+	itemCommandRightDelim
 
-	leftDelim  = "{{"
-	rightDelim = "}}"
+	templateLeftDelim  = "{{"
+	templateRightDelim = "}}"
+	commandLeftDelim  = "{%"
+	commandRightDelim = "%}"
 
 	eof = -1
+	spaceRune rune = ' '
 )
 
 // lexStateFn represents the state of the scanner as a function that returns the next state.
@@ -34,13 +40,11 @@ type lexStateFn func(*lexer) lexStateFn
 
 // lexer holds the state of the scanner.
 type lexer struct {
-	input      string // the string being scanned
-	pos        int    // current position in the input
-	start      int    // start position of this item
-	width      int    // width of last rune read from input
-	leftDelim  string
-	rightDelim string
-	items      chan item // channel of scanned items
+	input              string // the string being scanned
+	pos                int    // current position in the input
+	start              int    // start position of this item
+	width              int    // width of last rune read from input
+	items              chan item // channel of scanned items
 }
 
 // next returns the next rune in the input.
@@ -89,6 +93,20 @@ func (l *lexer) acceptRun(valid string) {
 	l.backup()
 }
 
+// acceptUntilString consumes a run of runes until the string is met.
+func (l *lexer) acceptUntilString(stopper string) {
+	x := strings.Index(l.input[l.pos:], stopper)
+	if x == -1 {
+		l.pos = len(l.input)
+		return
+	}
+	l.pos += x
+	//backup spaces
+	for rune(l.input[l.pos-1]) == spaceRune {
+		l.pos--
+	}
+}
+
 // acceptUntil consumes a run of runes until one from the set is met.
 func (l *lexer) acceptUntil(stopper string) {
 	for !strings.ContainsRune(stopper, l.next()) {
@@ -120,12 +138,10 @@ func (l *lexer) nextItem() item {
 }
 
 // lex creates a new scanner for the input string.
-func lex(input, leftDelim, rightDelim string) *lexer {
+func lex(input string) *lexer {
 	l := &lexer{
 		input:      input,
 		items:      make(chan item),
-		leftDelim:  leftDelim,
-		rightDelim: rightDelim,
 	}
 	go l.run()
 	return l
@@ -141,13 +157,26 @@ func (l *lexer) run() {
 
 func lexText(l *lexer) lexStateFn {
 	l.width = 0
-	if x := strings.Index(l.input[l.pos:], l.leftDelim); x >= 0 {
-		l.pos += x
-		if l.pos > l.start {
-			l.emit(itemText)
+	nextTemplatePos := strings.Index(l.input[l.pos:], templateLeftDelim)
+	nextCommandPos := strings.Index(l.input[l.pos:], commandLeftDelim)
+
+	if nextTemplatePos != -1 || nextCommandPos != -1 {
+		if nextCommandPos == -1 || (nextTemplatePos != -1 && nextTemplatePos < nextCommandPos) {
+			l.pos += nextTemplatePos
+			if l.pos > l.start {
+				l.emit(itemText)
+			}
+			return lexTemplateLeftDelim
 		}
-		return lexLeftDelim
+		if nextTemplatePos == -1 || (nextCommandPos != -1 && nextCommandPos < nextTemplatePos) {
+			l.pos += nextCommandPos
+			if l.pos > l.start {
+				l.emit(itemText)
+			}
+			return lexCommandLeftDelim
+		}
 	}
+
 	l.pos = len(l.input)
 	// Correctly reached EOF.
 	if l.pos > l.start {
@@ -157,10 +186,10 @@ func lexText(l *lexer) lexStateFn {
 	return nil
 }
 
-func lexLeftDelim(l *lexer) lexStateFn {
-	l.pos += len(l.leftDelim)
+func lexTemplateLeftDelim(l *lexer) lexStateFn {
+	l.pos += len(templateLeftDelim)
 	l.ignore()
-	l.emit(itemLeftDelim)
+	l.emit(itemTemplateLeftDelim)
 	return lexIdentifier
 }
 
@@ -178,9 +207,9 @@ func lexIdentifier(l *lexer) lexStateFn {
 			}
 			l.emit(itemIdentifier)
 			l.ignoreSpace()
-			x := len(rightDelim)
-			if l.input[l.pos:l.pos+x] == rightDelim {
-				return lexRightDelim
+			x := len(templateRightDelim)
+			if l.input[l.pos:l.pos+x] == templateRightDelim {
+				return lexTemplateRightDelim
 			}
 			l.errorf("expected right delimiter")
 			return nil
@@ -188,11 +217,39 @@ func lexIdentifier(l *lexer) lexStateFn {
 	}
 }
 
-func lexRightDelim(l *lexer) lexStateFn {
-	l.pos += len(l.rightDelim)
+func lexTemplateRightDelim(l *lexer) lexStateFn {
+	l.pos += len(templateRightDelim)
 	l.ignore()
-	l.emit(itemRightDelim)
+	l.emit(itemTemplateRightDelim)
 	return lexText
+}
+
+func lexCommandLeftDelim(l *lexer) lexStateFn {
+	l.pos += len(commandLeftDelim)
+	l.ignore()
+	l.emit(itemCommandLeftDelim)
+	return lexCommand
+}
+
+func lexCommand(l *lexer) lexStateFn {
+	l.ignoreSpace()
+	for {
+		l.acceptUntilString(commandRightDelim)
+		l.emit(itemCommand)
+		l.ignoreSpace()
+		return lexCommandRightDelim
+	}
+}
+
+func lexCommandRightDelim(l *lexer) lexStateFn {
+	if l.input[l.pos: l.pos + len(commandRightDelim)] == commandRightDelim {
+		l.pos += len(commandRightDelim)
+		l.ignore()
+		l.emit(itemCommandRightDelim)
+		return lexText
+	}
+	l.errorf("expected right command delimiter")
+	return nil
 }
 
 // isAlphaNumeric reports whether r is an alphabetic, digit, or underscore.

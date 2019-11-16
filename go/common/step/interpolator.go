@@ -1,9 +1,9 @@
 package step
 
 import (
-	"github.com/iv-p/apid/common/log"
-	"github.com/iv-p/apid/common/template"
-	"github.com/iv-p/apid/common/variables"
+	"github.com/getapid/apid/common/log"
+	"github.com/getapid/apid/common/template"
+	"github.com/getapid/apid/common/variables"
 )
 
 type interpolator interface {

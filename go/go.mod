@@ -1,4 +1,4 @@
-module github.com/iv-p/apid
+module github.com/getapid/apid
 
 go 1.13
 

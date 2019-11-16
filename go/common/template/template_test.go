@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/iv-p/apid/common/variables"
+	"github.com/getapid/apid/common/variables"
 )
 
 var (
@@ -97,6 +97,26 @@ func TestGet(t *testing.T) {
 			},
 			"",
 			true,
+		},
+
+		{
+			"command text",
+			args{
+				"text {% echo '1' %}",
+				nilData,
+			},
+			"text 1",
+			false,
+		},
+
+		{
+			"command with env text",
+			args{
+				"text {% echo $ONE %}",
+				data,
+			},
+			"text two",
+			false,
 		},
 
 		{

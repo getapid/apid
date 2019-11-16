@@ -1,9 +1,9 @@
 package step
 
-//go:generate mockgen -destination=../mock/runner_mock.go -package=mock github.com/iv-p/apid/common/step Runner
+//go:generate mockgen -destination=../mock/runner_mock.go -package=mock github.com/getapid/apid/common/step Runner
 
 import (
-	"github.com/iv-p/apid/common/variables"
+	"github.com/getapid/apid/common/variables"
 )
 
 // Runner takes a step and variables and checks if it

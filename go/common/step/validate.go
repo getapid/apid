@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/iv-p/apid/common/http"
+	"github.com/getapid/apid/common/http"
 	"go.uber.org/multierr"
 )
 

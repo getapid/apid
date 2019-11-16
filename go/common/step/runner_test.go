@@ -9,10 +9,10 @@ import (
 	"reflect"
 	"testing"
 
-	httpi "github.com/iv-p/apid/common/http"
-	"github.com/iv-p/apid/common/log"
-	"github.com/iv-p/apid/common/step"
-	"github.com/iv-p/apid/common/variables"
+	httpi "github.com/getapid/apid/common/http"
+	"github.com/getapid/apid/common/log"
+	"github.com/getapid/apid/common/step"
+	"github.com/getapid/apid/common/variables"
 	"github.com/stretchr/testify/assert"
 )
 

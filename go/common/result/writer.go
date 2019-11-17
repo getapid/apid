@@ -1,5 +1,7 @@
 package result
 
+//go:generate mockgen -destination=../mock/writer_mock.go -package=mock github.com/iv-p/apid/common/result Writer
+
 import (
 	"github.com/iv-p/apid/common/step"
 )

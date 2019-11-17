@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	commonmock "github.com/iv-p/apid/common/mock"
+	"github.com/iv-p/apid/common/mock"
 	"github.com/iv-p/apid/common/result"
-	climock "github.com/iv-p/apid/svc/cli/mock"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/iv-p/apid/common/step"
@@ -233,7 +232,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 	defer mockCtrl.Finish()
 
 	for _, tt := range tests {
-		stepRunner := commonmock.NewMockRunner(mockCtrl)
+		stepRunner := mock.NewMockRunner(mockCtrl)
 		var writerCalls []*gomock.Call
 		for _, tx := range tt.args.transactions {
 			exported := variables.New()
@@ -272,7 +271,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 		}
 		gomock.InOrder(writerCalls...)
 
-		writer := climock.NewMockWriter(mockCtrl)
+		writer := mock.NewMockWriter(mockCtrl)
 		writerCalls = []*gomock.Call{}
 		for _, txResult := range tt.want.Results {
 			writerCalls = append(writerCalls,

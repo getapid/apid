@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	commonmock "github.com/iv-p/apid/common/mock"
+	"github.com/iv-p/apid/common/mock"
 	"github.com/iv-p/apid/common/result"
-	climock "github.com/iv-p/apid/svc/cli/mock"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/iv-p/apid/common/step"
@@ -75,11 +74,11 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 		{
 			"empty",
 			args{
-				[]Transaction{},
-				rootVars,
+				transactions: []Transaction{},
+				vars:         rootVars,
 			},
 			want{
-				[]result.TransactionResult{},
+				Results: []result.TransactionResult{},
 			},
 			true,
 		},
@@ -88,7 +87,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id",
+						"test-id-1",
 						txVars,
 						[]step.Step{},
 					},
@@ -96,8 +95,8 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 				rootVars,
 			},
 			want{
-				[]result.TransactionResult{
-					{},
+				Results: []result.TransactionResult{
+					{Id: "test-id-1"},
 				},
 			},
 			true,
@@ -107,17 +106,17 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-2",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-3",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 							okStep,
@@ -125,9 +124,9 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-4",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 							okStep,
@@ -139,13 +138,15 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			want{
 				[]result.TransactionResult{
 					{
-						[]step.Result{
+						Id: "test-id-2",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-3",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 							okStepResult,
@@ -153,7 +154,8 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-4",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 							okStepResult,
@@ -168,17 +170,17 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-5",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-6",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							errStep,
 							okStep,
@@ -186,9 +188,9 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						},
 					},
 					{
-						"test-id",
-						txVars,
-						[]step.Step{
+						ID:        "test-id-7",
+						Variables: txVars,
+						Steps: []step.Step{
 							okStep,
 							okStep,
 							okStep,
@@ -200,19 +202,22 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			want{
 				[]result.TransactionResult{
 					{
-						[]step.Result{
+						Id: "test-id-5",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-6",
+						Steps: []step.Result{
 							okStepResult,
 							errStepResult,
 						},
 					},
 					{
-						[]step.Result{
+						Id: "test-id-7",
+						Steps: []step.Result{
 							okStepResult,
 							okStepResult,
 							okStepResult,
@@ -227,13 +232,13 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 	defer mockCtrl.Finish()
 
 	for _, tt := range tests {
-		stepRunner := commonmock.NewMockRunner(mockCtrl)
-		var runs []*gomock.Call
+		stepRunner := mock.NewMockRunner(mockCtrl)
+		var writerCalls []*gomock.Call
 		for _, tx := range tt.args.transactions {
 			exported := variables.New()
 			for _, step := range tx.Steps {
 				if step.ID == okStep.ID {
-					runs = append(runs,
+					writerCalls = append(writerCalls,
 						stepRunner.EXPECT().
 							Run(step, variables.New(
 								variables.WithOther(rootVars),
@@ -251,7 +256,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						),
 					)
 				} else {
-					runs = append(runs,
+					writerCalls = append(writerCalls,
 						stepRunner.EXPECT().
 							Run(step, variables.New(
 								variables.WithOther(rootVars),
@@ -264,17 +269,19 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 				}
 			}
 		}
-		gomock.InOrder(runs...)
+		gomock.InOrder(writerCalls...)
 
-		writer := climock.NewMockWriter(mockCtrl)
-		runs = []*gomock.Call{}
+		writer := mock.NewMockWriter(mockCtrl)
+		writerCalls = []*gomock.Call{}
 		for _, txResult := range tt.want.Results {
-			runs = append(runs,
+			writerCalls = append(writerCalls,
 				writer.EXPECT().
 					Write(txResult).
 					Return())
 		}
-		gomock.InOrder(runs...)
+
+		writerCalls = append(writerCalls, writer.EXPECT().Close())
+		gomock.InOrder(writerCalls...)
 
 		r := &TransactionRunner{
 			stepRunner: stepRunner,

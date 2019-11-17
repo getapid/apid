@@ -143,11 +143,11 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 
 	if exact {
 		if !reflect.DeepEqual(expected, received) {
-			return fmt.Errorf("expected body doesn't match actual: want = %#v, received = %#v", expected, received)
+			return fmt.Errorf("expected body doesn't match actual:\nwant =\n%s\nreceived =\n%s", exp.Content, actual)
 		}
 	} else {
 		if !nonExactEquals(expected, received) {
-			return fmt.Errorf("expected body's fields don't match actual: want = %#v, received = %#v", expected, received)
+			return fmt.Errorf("expected body's fields don't match actual:\nwant =\n%s\nreceived =\n%s", exp.Content, actual)
 		}
 	}
 	return nil

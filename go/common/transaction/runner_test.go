@@ -234,12 +234,12 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 
 	for _, tt := range tests {
 		stepRunner := commonmock.NewMockRunner(mockCtrl)
-		var runs []*gomock.Call
+		var writerCalls []*gomock.Call
 		for _, tx := range tt.args.transactions {
 			exported := variables.New()
 			for _, step := range tx.Steps {
 				if step.ID == okStep.ID {
-					runs = append(runs,
+					writerCalls = append(writerCalls,
 						stepRunner.EXPECT().
 							Run(step, variables.New(
 								variables.WithOther(rootVars),
@@ -257,7 +257,7 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						),
 					)
 				} else {
-					runs = append(runs,
+					writerCalls = append(writerCalls,
 						stepRunner.EXPECT().
 							Run(step, variables.New(
 								variables.WithOther(rootVars),
@@ -270,17 +270,19 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 				}
 			}
 		}
-		gomock.InOrder(runs...)
+		gomock.InOrder(writerCalls...)
 
 		writer := climock.NewMockWriter(mockCtrl)
-		runs = []*gomock.Call{}
+		writerCalls = []*gomock.Call{}
 		for _, txResult := range tt.want.Results {
-			runs = append(runs,
+			writerCalls = append(writerCalls,
 				writer.EXPECT().
 					Write(txResult).
 					Return())
 		}
-		gomock.InOrder(runs...)
+
+		writerCalls = append(writerCalls, writer.EXPECT().Close())
+		gomock.InOrder(writerCalls...)
 
 		r := &TransactionRunner{
 			stepRunner: stepRunner,

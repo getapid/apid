@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 
 	httpi "github.com/getapid/apid/common/http"
@@ -71,7 +70,8 @@ func TestHTTPRunner_Check(t *testing.T) {
 					assert.Equal(t, "random-uuid-key", r.Header.Get("X-APID-KEY"))
 					assert.Equal(t, "/test-endpoint", r.RequestURI)
 					body, _ := json.Marshal(endpointBody)
-					w.Write(body)
+					w.Header().Add("Test", "123")
+					_, _ = w.Write(body)
 				}),
 			},
 			args{
@@ -84,7 +84,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 						},
 					},
 					Export: step.Export{
-						"exported-key": "test",
+						"exported-key": "response.headers.Test",
 					},
 				},
 				vars,
@@ -99,11 +99,11 @@ func TestHTTPRunner_Check(t *testing.T) {
 						},
 					},
 					Export: step.Export{
-						"exported-key": "test",
+						"exported-key": "response.headers.Test",
 					},
 				},
 				step.Exported{
-					"exported-key": "value",
+					"exported-key": "123",
 				},
 				validResult,
 			},
@@ -121,9 +121,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 				step.NewBodyExtractor(),
 			)
 			got, _ := c.Run(tt.args.step, tt.args.vars)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Runner.Run() got %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, got, tt.want, tt.name)
 		})
 	}
 }

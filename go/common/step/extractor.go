@@ -57,6 +57,8 @@ func (e *bodyExtractor) extract(response *http.Response, export Export) Exported
 				continue
 			}
 			value = foundHeaders[0]
+		default:
+			continue
 		}
 		exported[exportAs] = value
 	}

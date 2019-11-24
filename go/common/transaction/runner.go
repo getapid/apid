@@ -1,8 +1,6 @@
 package transaction
 
 import (
-	"fmt"
-
 	"github.com/getapid/apid/common/result"
 	"github.com/getapid/apid/common/step"
 	"github.com/getapid/apid/common/variables"
@@ -54,10 +52,7 @@ func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars v
 			variables.WithVars(step.Variables),
 			variables.WithOther(exportedVars),
 		)
-		stepResult, err := r.stepRunner.Run(step, stepVars)
-		if err != nil {
-			fmt.Println(err)
-		}
+		stepResult, _ := r.stepRunner.Run(step, stepVars)
 		exportedVars = variables.New(
 			variables.WithOther(exportedVars),
 			variables.WithRaw(

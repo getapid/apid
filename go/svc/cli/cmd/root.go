@@ -15,7 +15,7 @@ var rootCmd = &cobra.Command{
 	Use:  "apid",
 	Long: "Apid is a command to help you test and verify the performance of you APIs",
 	PersistentPreRun: func(*cobra.Command, []string) {
-		log.Init(int(zap.ErrorLevel) - logVerbosity)
+		log.Init(int(zap.WarnLevel) - logVerbosity + 1)
 	},
 	PersistentPostRun: func(*cobra.Command, []string) {
 		log.L.Sync()
@@ -23,7 +23,8 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().IntVarP(&logVerbosity, "verbosity", "v", 0, "log verbosity (default: Error)")
+	// default log level for zap is computed in the persistent pre run for the root command
+	rootCmd.PersistentFlags().IntVarP(&logVerbosity, "verbosity", "v", 1, "log verbosity (default: Warn)")
 }
 
 func Execute() {

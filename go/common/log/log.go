@@ -26,6 +26,7 @@ func Init(lvl int) {
 	consoleInfos := zapcore.Lock(os.Stdout)
 	consoleErrors := zapcore.Lock(os.Stderr)
 	ecfg := zap.NewProductionEncoderConfig()
+	ecfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	ecfg.EncodeTime = func(time time.Time, encoder zapcore.PrimitiveArrayEncoder) {
 		encoder.AppendString(time.Format("Mon Jan _2 15:04:05 2006"))
 	}

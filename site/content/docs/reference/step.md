@@ -42,7 +42,7 @@ steps:
     request:
       method: "GET"
       endpoint: "{{ var.api_url }}/users/1"
-    response:
+    expect:
       code: 200
       body:
         type: "json"

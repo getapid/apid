@@ -45,7 +45,7 @@ transactions:
           endpoint: "{{ var.api_url }}/todos/1"
           headers:
             X-APIDAUTH: "{{ authenticate.auth_header }}"
-        response:
+        expect:
           code: 200
           body:
             type: "json"

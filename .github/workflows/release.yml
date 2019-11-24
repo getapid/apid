@@ -40,34 +40,7 @@ jobs:
 
     - name: Build CLI executables
       run: |
-        export VERSION=$(cat version)
-        cd go
-        GOOS=darwin GOARCH=amd64  go build -v -o build/apid-${VERSION}-darwin-amd64      svc/cli/main.go
-        GOOS=linux GOARCH=amd64   go build -v -o build/apid-${VERSION}-linux-amd64       svc/cli/main.go
-        GOOS=linux GOARCH=386     go build -v -o build/apid-${VERSION}-linux-386         svc/cli/main.go
-        GOOS=linux GOARCH=arm     go build -v -o build/apid-${VERSION}-linux-arm         svc/cli/main.go
-        GOOS=freebsd GOARCH=amd64 go build -v -o build/apid-${VERSION}-freebsd-amd64     svc/cli/main.go
-        GOOS=freebsd GOARCH=386   go build -v -o build/apid-${VERSION}-freebsd-386       svc/cli/main.go
-        GOOS=freebsd GOARCH=arm   go build -v -o build/apid-${VERSION}-freebsd-arm       svc/cli/main.go
-        GOOS=openbsd GOARCH=amd64 go build -v -o build/apid-${VERSION}-openbsd-amd64     svc/cli/main.go
-        GOOS=openbsd GOARCH=386   go build -v -o build/apid-${VERSION}-openbsd-386       svc/cli/main.go
-        GOOS=solaris GOARCH=amd64 go build -v -o build/apid-${VERSION}-solaris-amd64     svc/cli/main.go
-        GOOS=windows GOARCH=amd64 go build -v -o build/apid-${VERSION}-windows-amd64.exe svc/cli/main.go
-        GOOS=windows GOARCH=386   go build -v -o build/apid-${VERSION}-windows-386.exe   svc/cli/main.go
-
-        mkdir latest
-        cp build/apid-${VERSION}-darwin-amd64 latest/apid-latest-darwin-amd64
-        cp build/apid-${VERSION}-linux-amd64 latest/apid-latest-linux-amd64
-        cp build/apid-${VERSION}-linux-386 latest/apid-latest-linux-386
-        cp build/apid-${VERSION}-linux-arm latest/apid-latest-linux-arm
-        cp build/apid-${VERSION}-freebsd-amd64 latest/apid-latest-freebsd-amd64
-        cp build/apid-${VERSION}-freebsd-386 latest/apid-latest-freebsd-386
-        cp build/apid-${VERSION}-freebsd-arm latest/apid-latest-freebsd-arm
-        cp build/apid-${VERSION}-openbsd-amd64 latest/apid-latest-openbsd-amd64
-        cp build/apid-${VERSION}-openbsd-386 latest/apid-latest-openbsd-386
-        cp build/apid-${VERSION}-solaris-amd64 latest/apid-latest-solaris-amd64
-        cp build/apid-${VERSION}-windows-amd64.exe latest/apid-latest-windows-amd64.exe
-        cp build/apid-${VERSION}-windows-386.exe latest/apid-latest-windows-386.exe
+        make go-build-cli-release
 
     - name: Build docker cli images
       run: |
@@ -106,7 +79,7 @@ jobs:
         HOST_BUCKET: "%(bucket)s.fra1.digitaloceanspaces.com"
       run: |
         export VERSION=$(cat version)
-        cd go/build
+        cd go/bin/build
         s3cmd put * s3://apid-production-space/cli/${VERSION}/ \
         --acl-public \
         --add-header=Cache-Control:max-age=86400 \

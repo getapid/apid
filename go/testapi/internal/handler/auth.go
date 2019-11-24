@@ -23,7 +23,7 @@ func (h GinHandler) HandleLogin(c *gin.Context) {
 	jsonToken := struct {
 		Token string `json:"token"`
 	}{token}
-
+	c.Header("Test", "test123")
 	c.JSON(http.StatusOK, jsonToken)
 }
 

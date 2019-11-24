@@ -34,16 +34,31 @@ func (e *bodyExtractor) extract(response *http.Response, export Export) Exported
 		return exported
 	}
 	var value interface{}
-	for exportedKey, bodyKey := range export {
-		bodyKey = strings.TrimPrefix(bodyKey, "response.")
-		bodyKey = strings.TrimPrefix(bodyKey, "body.")
+	for exportAs, keyToExport := range export {
+		keyToExport = strings.TrimPrefix(keyToExport, "response.")
 
-		value, err = mapaccess.Get(jsonBody, bodyKey)
-		if err != nil {
-			log.L.Warnf("could not fetch key %v : %v", bodyKey, err)
-			continue
+		switch {
+		case strings.HasPrefix(keyToExport, "body."):
+			keyToExport = strings.TrimPrefix(keyToExport, "body.")
+			value, err = mapaccess.Get(jsonBody, keyToExport)
+			if err != nil {
+				log.L.Warnf("could not find key %v : %v", keyToExport, err)
+				continue
+			}
+		case strings.HasPrefix(keyToExport, "headers."):
+			keyToExport = strings.TrimPrefix(keyToExport, "headers.")
+			foundHeaders, ok := response.Header[keyToExport]
+			if !ok {
+				log.L.Warnf("could not find key %v from headers %v", keyToExport, response.Header)
+				continue
+			}
+			if len(foundHeaders) > 1 {
+				log.L.Warnf("found multiple header values for key %v", keyToExport)
+				continue
+			}
+			value = foundHeaders[0]
 		}
-		exported[exportedKey] = value
+		exported[exportAs] = value
 	}
 	return exported
 }

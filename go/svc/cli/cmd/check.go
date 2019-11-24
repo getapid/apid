@@ -19,12 +19,14 @@ var configFilepath string
 var checkCmd = &cobra.Command{
 	Use:   "check",
 	Short: "Executes a config",
-	Long: `Check gets the default config or the one you have provided and executes it.
-It will run all the transactions in you config, verify the responses,
-and record the time it took to action each request`,
+	Long: `Loads either a config file, or if a directory is provided it 
+recursively loads all .yaml files and executes them. It will run all the 
+transactions in you config, verify the responses, and record the time it 
+took to action each request`,
 	Example: `
 	apid check	
-	apid check --config my-api.yaml`,
+	apid check --config my-api.yaml
+	apid check --config ./e2e-tests/`,
 	Args: cobra.NoArgs,
 	Run:  checkRun,
 }

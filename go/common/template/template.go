@@ -32,7 +32,7 @@ func Render(template string, data variables.Variables) (string, error) {
 		case tokenIdentifier:
 			val, err := mapaccess.Get(data.Raw(), token.val)
 			if err != nil {
-				multiErr = multierr.Append(multiErr, fmt.Errorf("key not found in data: %v : %v", token.val, err))
+				multiErr = multierr.Append(multiErr, fmt.Errorf("%v: %v", token.val, err))
 				continue
 			}
 			switch c := val.(type) {

@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	validResult = step.ValidationResult{
+	okResult = step.ValidationResult{
 		Errors: map[string]string{},
 	}
 
@@ -90,7 +90,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 				vars,
 			},
 			step.Result{
-				step.PreparedStep{
+				Step: step.PreparedStep{
 					Request: step.Request{
 						Type:     "GET",
 						Endpoint: "http://test.com/test-endpoint",
@@ -102,10 +102,40 @@ func TestHTTPRunner_Check(t *testing.T) {
 						"exported-key": "response.headers.Test",
 					},
 				},
-				step.Exported{
+				Exported: step.Exported{
 					"exported-key": "123",
 				},
-				validResult,
+				Valid: okResult,
+			},
+		}, {
+			"trying to export non template var",
+			fields{
+				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}),
+			},
+			args{
+				step.Step{
+					Request: step.Request{
+						Type:     "GET",
+						Endpoint: "http://test.com/{{ vars.non-existent }}",
+						Headers:  map[string][]string{},
+					},
+					Export: step.Export{},
+				},
+				vars,
+			},
+			step.Result{
+				Step: step.PreparedStep{
+					Request: step.Request{
+						Type:     "GET",
+						Endpoint: "http://test.com/",
+						Headers:  map[string][]string{},
+					},
+					Export: step.Export{},
+				},
+				Exported: nil,
+				Valid: step.ValidationResult{
+					Errors: map[string]string{"prepare": "interpolating step endpoint: vars.non-existent: key not found"},
+				},
 			},
 		},
 	}

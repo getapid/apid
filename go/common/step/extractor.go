@@ -26,6 +26,8 @@ func NewBodyExtractor() extractor {
 	return &bodyExtractor{}
 }
 
+// extract will try to extract all the variables specified in the provided Export.
+// It will ignore any keys it cannot find in the response (headers, body or others).
 func (e *bodyExtractor) extract(response *http.Response, export Export) Exported {
 	exported := make(Exported, len(export))
 	var jsonBody interface{}

@@ -1,7 +1,8 @@
 package step
 
 import (
-	"github.com/getapid/apid/common/log"
+	"fmt"
+
 	"github.com/getapid/apid/common/template"
 	"github.com/getapid/apid/common/variables"
 )
@@ -23,14 +24,17 @@ func NewTemplateInterpolator() *templateInterpolator {
 func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) (PreparedStep, error) {
 	var err error
 	if step.Request.Endpoint, err = template.Render(step.Request.Endpoint, vars); err != nil {
-		log.L.Warnf("interpolating step endpoint: %v", err)
+		err = fmt.Errorf("interpolating step endpoint: %v", err)
+		return PreparedStep(step), err
 	}
 	if step.Request.Body, err = template.Render(step.Request.Body, vars); err != nil {
-		log.L.Warnf("interpolating step body: %v", err)
+		err = fmt.Errorf("interpolating step body: %v", err)
+		return PreparedStep(step), err
 	}
 	if step.Response.Body != nil {
 		if step.Response.Body.Content, err = template.Render(step.Response.Body.Content, vars); err != nil {
-			log.L.Warnf("interpolating step response body: %v", err)
+			err = fmt.Errorf("interpolating step response body: %v", err)
+			return PreparedStep(step), err
 		}
 	}
 
@@ -38,11 +42,13 @@ func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) 
 	var key, value string
 	for k, vals := range step.Request.Headers {
 		if key, err = template.Render(k, vars); err != nil {
-			log.L.Warnf("interpolating step header key: %v", err)
+			err = fmt.Errorf("interpolating step header key: %v", err)
+			return PreparedStep(step), err
 		}
 		for _, v := range vals {
 			if value, err = template.Render(v, vars); err != nil {
-				log.L.Warnf("interpolating step header value: %v", err)
+				err = fmt.Errorf("interpolating step header value: %v", err)
+				return PreparedStep(step), err
 			}
 			headers[key] = append(headers[key], value)
 		}

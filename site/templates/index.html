@@ -5,9 +5,9 @@
 <section class="hero is-bold">
     <div class="hero-body">
         <div class="container">
-            <div class="columns is-variable is-8 is-vcentered">
+            <div class="columns is-8 is-vcentered reverse-columns">
                 <div class="column">
-                    <h1 class="title is-2">
+                    <h1 class="title is-2 is-size-3-mobile">
                         API <span class="has-text-primary">testing</span> doesn't have to be tedious
                     </h1>
                     <h2 class="subtitle is-6">
@@ -20,13 +20,14 @@
                         <a class="button is-text is-large is-fullwidth" href="{{ get_url(path="/docs") }}">Read docs</a>
                     </div>
                 </div>
-                <div class="column">
+                <div class="column is-paddingless-mobile">
                     <img src="./images/apid_yaml.png" class="image" alt="image code representing fixing bugs" />
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <section class="container">
     <div class="columns">
         <div class="column has-text-centered">
@@ -53,19 +54,19 @@
             <img class="image is-inline is-128x128" src="./images/complete_task_1.svg"
                 alt="a developer on a computer" />
             <h2 class="title is-4 is-marginless">
-                End-to-end testing framework
+                Testing framework
             </h2>
             <p>
                 Run before deployments, make sure your service hasn't regressed
             </p>
         </div>
         <div class="column has-text-centered">
-            <img class="image is-inline is-128x128" src="./images/health_2.svg" alt="a developer on a computer" />
+            <img class="image is-inline is-128x128" src="./images/programming_code_2.svg" alt="a developer on a computer" />
             <h2 class="title is-4 is-marginless">
-                Operational health monitoring
+                Versatile
             </h2>
             <p>
-                For peace of mind, run periodically versus your production service
+                APId supports shell command execution to provide all the flexibility you might need
             </p>
         </div>
     </div>
@@ -92,7 +93,7 @@
                         version</li>
                     <li style="margin: 20px 0px"><span class="icon has-text-success">
                             <i class="icon ion-md-checkmark-circle-outline"></i>
-                        </span><b>No extra coding</b> - no need to add any code, just define your transactions</li>
+                        </span><b>Flexible</b> - run shell scripts to model your data the way you want it</li>
                 </ul>
                 <a href="{{ get_url(path="/docs") }}" class="button is-text is-pulled-right">Read docs</a>
             </p>

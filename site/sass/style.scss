@@ -43,10 +43,6 @@ $body-size: $size-5;
     font-weight: 700;
 }
 
-.title, .subtitle {
-    letter-spacing: 1px;
-}
-
 .columns, .is-variable {
   margin-left: 0rem !important;
   margin-right: 0rem !important;
@@ -54,4 +50,15 @@ $body-size: $size-5;
 
 p {
   margin: 40px 0px;
+}
+
+@media(max-width: 767px) { /* <== You can change this break point as per your  needs */
+  .reverse-columns {
+    flex-direction: column-reverse;
+    display: flex;
+  }
+  
+  .is-paddingless-mobile {
+    padding: 0px 0px;
+  }
 }

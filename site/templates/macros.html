@@ -106,20 +106,19 @@
 {% endmacro next_link %}
 
 {% macro newsletter() %}
-
-<section style="padding: 50px 0px; margin: 50px 0px; background-color: #f8f9fc;">
-  <div class="columns">
+<section style="background-color: #f8f9fc;">
+  <div class="columns is-paddingless">
     <div class="column is-8 is-offset-2 has-text-centered">
-      <h3 class="title is-4">That sounds awesome, please keep me up to date!</h3>
+      <h3 class="title is-4 is-marginless">That sounds awesome, please keep me up to date!</h3>
       <form action="https://gmail.us20.list-manage.com/subscribe/post?u=cb2a947d7ab1a96ab7b6c8a54&amp;id=b2cbd3d806"
         method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank"
         novalidate>
         <div class="field is-grouped">
           <p class="control is-expanded">
-            <input class="input is-large" type="email" placeholder="Your email" name="EMAIL" id="mce-EMAIL">
+            <input class="input" type="email" placeholder="Your email" name="EMAIL" id="mce-EMAIL">
           </p>
           <p class="control">
-            <button type="submit" class="button is-large is-primary">
+            <button type="submit" class="button is-primary">
               Subscribe
             </button>
           </p>

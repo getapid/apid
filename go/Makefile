@@ -3,7 +3,7 @@ BIN:=bin/apid
 VERSION:=`cat ../version`
 OSARCHLIST:=`cat svc/cli/osarchlist`
 
-build-cli-local:
+build-cli:
 	go build $(GOFLAGS) -ldflags "-X github.com/getapid/apid/svc/cli/cmd.version=$(VERSION)" -o $(BIN) svc/cli/main.go
 
 build-cli-release:

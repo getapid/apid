@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/getapid/apid/common/config"
 	"github.com/getapid/apid/common/http"
-	"github.com/getapid/apid/common/log"
 	"github.com/getapid/apid/common/result"
 	"github.com/getapid/apid/common/step"
 	"github.com/getapid/apid/common/transaction"
@@ -28,7 +28,7 @@ took to action each request`,
 	apid check --config my-api.yaml
 	apid check --config ./e2e-tests/`,
 	Args: cobra.NoArgs,
-	Run:  checkRun,
+	RunE: checkRun,
 }
 
 func init() {
@@ -36,15 +36,15 @@ func init() {
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 }
 
-func checkRun(cmd *cobra.Command, args []string) {
+func checkRun(cmd *cobra.Command, args []string) error {
 	c, err := config.Load(configFilepath)
 	if err != nil {
-		log.L.Fatalf("could not load config file: %v", err)
+		return fmt.Errorf("could not load config file: %v", err)
 	}
 
 	err = config.Validate(c)
 	if err != nil {
-		log.L.Fatal("the config failed validation: ", err)
+		return fmt.Errorf("the config failed validation: %v", err)
 	}
 
 	consoleWriter := cmdResult.NewConsoleWriter(cmd.OutOrStdout())
@@ -65,4 +65,5 @@ func checkRun(cmd *cobra.Command, args []string) {
 	if !ok {
 		os.Exit(1)
 	}
+	return nil
 }

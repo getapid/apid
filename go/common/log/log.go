@@ -2,6 +2,7 @@ package log
 
 import (
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -25,6 +26,10 @@ func Init(lvl int) {
 	consoleInfos := zapcore.Lock(os.Stdout)
 	consoleErrors := zapcore.Lock(os.Stderr)
 	ecfg := zap.NewProductionEncoderConfig()
+	ecfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	ecfg.EncodeTime = func(time time.Time, encoder zapcore.PrimitiveArrayEncoder) {
+		encoder.AppendString(time.Format("Mon Jan _2 15:04:05 2006"))
+	}
 	consoleEncoder := zapcore.NewConsoleEncoder(ecfg)
 	core := zapcore.NewTee(
 		zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),

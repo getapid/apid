@@ -1,15 +1,14 @@
-GOFLAGS:=-v
 BIN:=bin/apid
 VERSION:=`cat ../version`
 OSARCHLIST:=`cat svc/cli/osarchlist`
+GOFLAGS:=-ldflags "-X github.com/getapid/apid/svc/cli/cmd.version=$(VERSION)"
 
 build-cli:
 	go build $(GOFLAGS) -o $(BIN) svc/cli/main.go
 
 build-cli-release:
-	echo $(OSARCHLIST)
-	gox -osarch="$(OSARCHLIST)" -output="./bin/build/apid-$(VERSION)-{{.OS}}-{{.Arch}}" ./svc/cli/
-	gox -osarch="$(OSARCHLIST)" -output="./bin/latest/apid-latest-{{.OS}}-{{.Arch}}" ./svc/cli/
+	gox -osarch="$(OSARCHLIST)" -output="./bin/build/apid-$(VERSION)-{{.OS}}-{{.Arch}}" $(GOFLAGS) ./svc/cli/
+	gox -osarch="$(OSARCHLIST)" -output="./bin/latest/apid-latest-{{.OS}}-{{.Arch}}" $(GOFLAGS) ./svc/cli/
 
 install:
 	go mod download

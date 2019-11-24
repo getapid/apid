@@ -13,12 +13,12 @@ transactions:
           endpoint: "{{ var.api_url }}/auth"
           headers:
             Authorization: "Basic {{ var.auth }}"
+        expect:
+          code: 200
+          exact: false
         export:
           auth_token: "response.body.token"
           test_header: "response.headers.Test"
-        response:
-          code: 200
-          exact: false
 
       - id: get-beers
         request:
@@ -27,7 +27,7 @@ transactions:
           headers:
             Authorization: "Bearer {{ auth.auth_token }}"
             Test: "{{ auth.test_header }}"
-        response:
+        expect:
           code: 200
           exact: false
 
@@ -37,7 +37,7 @@ transactions:
           endpoint: "{{ var.api_url }}/beer/1"
           headers:
             Authorization: "Bearer {{ auth.auth_token }}"
-        response:
+        expect:
           code: 200
           body:
             exact: true
@@ -58,7 +58,7 @@ transactions:
         request:
           method: GET
           endpoint: "{{ var.api_url }}/health"
-        response:
+        expect:
           code: 200
           body:
             type: "plaintext"
@@ -70,7 +70,7 @@ transactions:
           method: POST
           endpoint: "{{ var.api_url }}/echo"
           body: "some text h3re"
-        response:
+        expect:
           code: 200
           body:
             type: "plaintext"

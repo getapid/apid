@@ -11,7 +11,7 @@ type Step struct {
 	ID        string                 `yaml:"id" validate:"required"`
 	Variables map[string]interface{} `yaml:"variables"`
 	Request   Request                `yaml:"request" validate:"required"`
-	Response  ExpectedResponse       `yaml:"response"`
+	Response  ExpectedResponse       `yaml:"expect"`
 	Export    Export                 `yaml:"export"`
 }
 

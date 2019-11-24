@@ -196,24 +196,25 @@ func lexTemplateLeftDelim(l *lexer) lexStateFn {
 // lexIdentifier scans an alphanumeric.
 func lexIdentifier(l *lexer) lexStateFn {
 	l.ignoreSpace()
-	switch r := l.next(); {
-	case isValidIdentifierRune(r):
-		// absorb.
-	default:
-		l.backup()
-		if l.pos == l.start {
-			return l.errorf("expected identifier")
+	for {
+		switch r := l.next(); {
+		case isValidIdentifierRune(r):
+			// absorb.
+		default:
+			l.backup()
+			if l.pos == l.start {
+				return l.errorf("expected identifier")
+			}
+			l.emit(itemIdentifier)
+			l.ignoreSpace()
+			x := len(templateRightDelim)
+			if l.input[l.pos:l.pos+x] == templateRightDelim {
+				return lexTemplateRightDelim
+			}
+			l.errorf("expected right delimiter")
+			return nil
 		}
-		l.emit(itemIdentifier)
-		l.ignoreSpace()
-		x := len(templateRightDelim)
-		if l.input[l.pos:l.pos+x] == templateRightDelim {
-			return lexTemplateRightDelim
-		}
-		l.errorf("expected right delimiter")
-		return nil
 	}
-	return nil
 }
 
 func lexTemplateRightDelim(l *lexer) lexStateFn {
@@ -232,12 +233,10 @@ func lexCommandLeftDelim(l *lexer) lexStateFn {
 
 func lexCommand(l *lexer) lexStateFn {
 	l.ignoreSpace()
-	for {
-		l.acceptUntilString(commandRightDelim)
-		l.emit(itemCommand)
-		l.ignoreSpace()
-		return lexCommandRightDelim
-	}
+	l.acceptUntilString(commandRightDelim)
+	l.emit(itemCommand)
+	l.ignoreSpace()
+	return lexCommandRightDelim
 }
 
 func lexCommandRightDelim(l *lexer) lexStateFn {

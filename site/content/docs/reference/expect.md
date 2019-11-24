@@ -1,6 +1,6 @@
 +++
-title = "response"
-description = "the block specifying what request to make"
+title = "expect"
+description = "the block specifying what response you're expecting"
 template = "docs/article.html"
 sort_by = weight
 weight = 181
@@ -9,7 +9,7 @@ weight = 181
 
 {{ h2(text="Summary") }}
 
-Response is a set of validations that can be done on the response in a step.
+Expect is a set of validations that can be done on the response in a step.
 
 {{ h2(text="Fields") }}
 
@@ -38,7 +38,7 @@ if `body.type=plaintext`, the the response needs to contain the `body.content`, 
 {{ h3(text="Exact json") }}
 
 ```yaml
-response:
+expect:
   code: 200
   body:
     type: "json"
@@ -88,7 +88,7 @@ In this case an API response on the left will pass validation, but the one of th
 {{ h3(text="Non-exact json") }}
 
 ```yaml
-response:
+expect:
   code: 200
   body:
     type: "json"

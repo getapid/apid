@@ -80,6 +80,8 @@ func (w consoleWriter) printFailedStep(s step.Result) {
 
 	req := s.Step.Request
 
+	w.out.increaseIndent(4)
+	defer w.out.decreaseIndent(4)
 	w.printf("request: %s %s\n", req.Type, req.Endpoint)
 	w.out.increaseIndent(4)
 	if body := formatBody(req); len(body) != 0 {

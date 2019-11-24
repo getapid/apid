@@ -6,26 +6,27 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/getapid/apid/common/log"
-	"github.com/getapid/apid/common/variables"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/getapid/apid/common/log"
+	"github.com/getapid/apid/common/variables"
 )
 
-type CommandExecutor interface {
+type Executor interface {
 	Exec(string, variables.Variables) ([]byte, error)
 }
 
-type ShellCommandExecutor struct {}
+type ShellExecutor struct{}
 
-func NewShellCommandExecutor() CommandExecutor {
-	return &ShellCommandExecutor{}
+func NewShellExecutor() Executor {
+	return &ShellExecutor{}
 }
 
-func (e *ShellCommandExecutor) Exec(command string, vars variables.Variables) ([]byte, error) {
+func (e *ShellExecutor) Exec(command string, vars variables.Variables) ([]byte, error) {
 	if len(command) == 0 {
 		return []byte{}, errors.New("empty command")
 	}
@@ -46,7 +47,11 @@ func (e *ShellCommandExecutor) Exec(command string, vars variables.Variables) ([
 	err := cmd.Run()
 
 	res := out.String()
-	return 	[]byte(strings.ReplaceAll(res, "\n", "")), err
+	end := len(res) - 1
+	if end < 0 {
+		end = 0
+	}
+	return []byte(res[:end]), err
 }
 
 func getEnvFromVars(vars variables.Variables) []string {
@@ -58,20 +63,22 @@ func getEnvFromVars(vars variables.Variables) []string {
 }
 
 func flattenVars(namespace string, vars interface{}) []string {
+	var result []string
 	this, err := json.Marshal(vars)
-	if err != nil {
+	if err == nil {
+		result = []string{fmt.Sprintf("%s=%s", strings.ToUpper(namespace), this)}
+	} else {
 		log.L.Debug("could not marshall variables: %s", err)
 	}
-	result := []string{fmt.Sprintf("%s=%s", strings.ToUpper(namespace), this)}
 	switch val := vars.(type) {
 	case map[string]interface{}:
 		for key, value := range val {
-			result = append(result, flattenVars(strings.ToUpper(namespace + "_" + key), value)...)
+			result = append(result, flattenVars(strings.ToUpper(namespace+"_"+key), value)...)
 		}
 		return result
 	case []interface{}:
 		for index, value := range val {
-			result = append(result, fmt.Sprintf("%s=%v", strings.ToUpper(namespace + "_" + strconv.Itoa(index)), value))
+			result = append(result, fmt.Sprintf("%s=%v", strings.ToUpper(namespace+"_"+strconv.Itoa(index)), value))
 		}
 		return result
 	default:

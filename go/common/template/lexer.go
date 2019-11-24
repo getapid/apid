@@ -28,10 +28,10 @@ const (
 
 	templateLeftDelim  = "{{"
 	templateRightDelim = "}}"
-	commandLeftDelim  = "{%"
-	commandRightDelim = "%}"
+	commandLeftDelim   = "{%"
+	commandRightDelim  = "%}"
 
-	eof = -1
+	eof            = -1
 	spaceRune rune = ' '
 )
 
@@ -40,11 +40,11 @@ type lexStateFn func(*lexer) lexStateFn
 
 // lexer holds the state of the scanner.
 type lexer struct {
-	input              string // the string being scanned
-	pos                int    // current position in the input
-	start              int    // start position of this item
-	width              int    // width of last rune read from input
-	items              chan item // channel of scanned items
+	input string    // the string being scanned
+	pos   int       // current position in the input
+	start int       // start position of this item
+	width int       // width of last rune read from input
+	items chan item // channel of scanned items
 }
 
 // next returns the next rune in the input.
@@ -140,8 +140,8 @@ func (l *lexer) nextItem() item {
 // lex creates a new scanner for the input string.
 func lex(input string) *lexer {
 	l := &lexer{
-		input:      input,
-		items:      make(chan item),
+		input: input,
+		items: make(chan item),
 	}
 	go l.run()
 	return l
@@ -196,25 +196,24 @@ func lexTemplateLeftDelim(l *lexer) lexStateFn {
 // lexIdentifier scans an alphanumeric.
 func lexIdentifier(l *lexer) lexStateFn {
 	l.ignoreSpace()
-	for {
-		switch r := l.next(); {
-		case isValidIdentifierRune(r):
-			// absorb.
-		default:
-			l.backup()
-			if l.pos == l.start {
-				return l.errorf("expected identifier")
-			}
-			l.emit(itemIdentifier)
-			l.ignoreSpace()
-			x := len(templateRightDelim)
-			if l.input[l.pos:l.pos+x] == templateRightDelim {
-				return lexTemplateRightDelim
-			}
-			l.errorf("expected right delimiter")
-			return nil
+	switch r := l.next(); {
+	case isValidIdentifierRune(r):
+		// absorb.
+	default:
+		l.backup()
+		if l.pos == l.start {
+			return l.errorf("expected identifier")
 		}
+		l.emit(itemIdentifier)
+		l.ignoreSpace()
+		x := len(templateRightDelim)
+		if l.input[l.pos:l.pos+x] == templateRightDelim {
+			return lexTemplateRightDelim
+		}
+		l.errorf("expected right delimiter")
+		return nil
 	}
+	return nil
 }
 
 func lexTemplateRightDelim(l *lexer) lexStateFn {
@@ -242,7 +241,7 @@ func lexCommand(l *lexer) lexStateFn {
 }
 
 func lexCommandRightDelim(l *lexer) lexStateFn {
-	if l.input[l.pos: l.pos + len(commandRightDelim)] == commandRightDelim {
+	if l.input[l.pos:l.pos+len(commandRightDelim)] == commandRightDelim {
 		l.pos += len(commandRightDelim)
 		l.ignore()
 		l.emit(itemCommandRightDelim)

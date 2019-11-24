@@ -30,6 +30,13 @@ func (r Result) OK() bool {
 	return r.Valid.OK()
 }
 
+func (r *Result) AddErr(key string, err error) {
+	if r.Valid.Errors == nil {
+		r.Valid.Errors = make(map[string]string)
+	}
+	r.Valid.Errors[key] = err.Error()
+}
+
 // NewRunner instantiates a new HTTPRunner
 func NewRunner(
 	executor executor,
@@ -46,10 +53,12 @@ func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
 
 	result.Step, err = c.interpolator.interpolate(step, vars)
 	if err != nil {
-		return Result{}, err
+		result.AddErr("prepare", err)
+		return result, err
 	}
 	response, err := c.executor.do(result.Step.Request)
 	if err != nil {
+		result.AddErr("execute", err)
 		return result, err
 	}
 

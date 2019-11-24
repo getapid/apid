@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 
 	httpi "github.com/getapid/apid/common/http"
@@ -17,7 +16,7 @@ import (
 )
 
 var (
-	validResult = step.ValidationResult{
+	okResult = step.ValidationResult{
 		Errors: map[string]string{},
 	}
 
@@ -71,7 +70,8 @@ func TestHTTPRunner_Check(t *testing.T) {
 					assert.Equal(t, "random-uuid-key", r.Header.Get("X-APID-KEY"))
 					assert.Equal(t, "/test-endpoint", r.RequestURI)
 					body, _ := json.Marshal(endpointBody)
-					w.Write(body)
+					w.Header().Add("Test", "123")
+					_, _ = w.Write(body)
 				}),
 			},
 			args{
@@ -84,13 +84,13 @@ func TestHTTPRunner_Check(t *testing.T) {
 						},
 					},
 					Export: step.Export{
-						"exported-key": "test",
+						"exported-key": "response.headers.Test",
 					},
 				},
 				vars,
 			},
 			step.Result{
-				step.PreparedStep{
+				Step: step.PreparedStep{
 					Request: step.Request{
 						Type:     "GET",
 						Endpoint: "http://test.com/test-endpoint",
@@ -99,13 +99,43 @@ func TestHTTPRunner_Check(t *testing.T) {
 						},
 					},
 					Export: step.Export{
-						"exported-key": "test",
+						"exported-key": "response.headers.Test",
 					},
 				},
-				step.Exported{
-					"exported-key": "value",
+				Exported: step.Exported{
+					"exported-key": "123",
 				},
-				validResult,
+				Valid: okResult,
+			},
+		}, {
+			"trying to export non template var",
+			fields{
+				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}),
+			},
+			args{
+				step.Step{
+					Request: step.Request{
+						Type:     "GET",
+						Endpoint: "http://test.com/{{ vars.non-existent }}",
+						Headers:  map[string][]string{},
+					},
+					Export: step.Export{},
+				},
+				vars,
+			},
+			step.Result{
+				Step: step.PreparedStep{
+					Request: step.Request{
+						Type:     "GET",
+						Endpoint: "http://test.com/",
+						Headers:  map[string][]string{},
+					},
+					Export: step.Export{},
+				},
+				Exported: nil,
+				Valid: step.ValidationResult{
+					Errors: map[string]string{"prepare": "interpolating step endpoint: vars.non-existent: key not found"},
+				},
 			},
 		},
 	}
@@ -121,9 +151,7 @@ func TestHTTPRunner_Check(t *testing.T) {
 				step.NewBodyExtractor(),
 			)
 			got, _ := c.Run(tt.args.step, tt.args.vars)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Runner.Run() got %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, got, tt.want, tt.name)
 		})
 	}
 }

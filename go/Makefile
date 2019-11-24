@@ -4,7 +4,7 @@ VERSION:=`cat ../version`
 OSARCHLIST:=`cat svc/cli/osarchlist`
 
 build-cli:
-	go build $(GOFLAGS) -ldflags "-X github.com/getapid/apid/svc/cli/cmd.version=$(VERSION)" -o $(BIN) svc/cli/main.go
+	go build $(GOFLAGS) -o $(BIN) svc/cli/main.go
 
 build-cli-release:
 	echo $(OSARCHLIST)

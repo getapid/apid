@@ -9,8 +9,8 @@ import (
 	"io"
 
 	"github.com/fatih/color"
-	"github.com/iv-p/apid/common/result"
-	"github.com/iv-p/apid/common/step"
+	"github.com/getapid/apid/common/result"
+	"github.com/getapid/apid/common/step"
 )
 
 var (

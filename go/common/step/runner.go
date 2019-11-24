@@ -3,6 +3,7 @@ package step
 //go:generate mockgen -destination=../mock/runner_mock.go -package=mock github.com/getapid/apid/common/step Runner
 
 import (
+	"github.com/getapid/apid/common/http"
 	"github.com/getapid/apid/common/variables"
 )
 
@@ -22,6 +23,7 @@ type runner struct {
 // Result has all the data about the step execution
 type Result struct {
 	Step     PreparedStep
+	Timings  http.Timings
 	Exported Exported
 	Valid    ValidationResult
 }
@@ -64,5 +66,6 @@ func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
 
 	result.Valid = c.validator.validate(result.Step.Response, response)
 	result.Exported = c.extractor.extract(response, result.Step.Export)
+	result.Timings = response.Timings
 	return result, nil
 }

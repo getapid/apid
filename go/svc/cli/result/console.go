@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"time"
+
+	"github.com/getapid/apid/common/http"
 
 	"github.com/fatih/color"
 	"github.com/getapid/apid/common/result"
@@ -91,13 +94,31 @@ func (w consoleWriter) printFailedStep(s step.Result) {
 
 	w.print("errors:\n")
 	w.out.increaseIndent(4)
-	defer w.out.decreaseIndent(4)
 	for k, err := range s.Valid.Errors {
 		w.print(k + ":\n")
 		w.out.increaseIndent(4)
 		w.print(err + "\n")
 		w.out.decreaseIndent(4)
 	}
+	w.print("timings:\n")
+	w.out.increaseIndent(4)
+	w.printTimings(s.Timings)
+	w.out.decreaseIndent(4)
+	w.out.decreaseIndent(4)
+}
+
+func (w consoleWriter) printTimings(t http.Timings) {
+	w.printf("DNS Lookup: \t%s\n", fmtDuration(t.DNSLookup))
+	w.printf("TCP Connection: \t%s\n", fmtDuration(t.TCPConnection))
+	w.printf("TLS Handshake: \t%s\n", fmtDuration(t.TLSHandshake))
+	w.printf("Server Processing: \t%s\n", fmtDuration(t.ServerProcessing))
+	w.printf("Content Transfer: \t%s\n", fmtDuration(t.ContentTransfer))
+}
+
+func fmtDuration(d time.Duration) string {
+	d = d.Round(time.Minute)
+	mili := d / time.Millisecond
+	return fmt.Sprintf("%5d", mili)
 }
 
 func formatBody(r step.Request) string {
@@ -116,6 +137,9 @@ func formatBody(r step.Request) string {
 
 func (w consoleWriter) printSuccStep(s step.Result) {
 	w.print(greenOk + "\t\t" + s.Step.ID + "\n")
+	w.out.increaseIndent(4)
+	w.printTimings(s.Timings)
+	w.out.decreaseIndent(4)
 }
 
 func (w consoleWriter) Close() {

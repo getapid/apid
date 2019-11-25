@@ -1,6 +1,6 @@
 +++
 title = "How to end-to-end test an API"
-description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu feugiat sapien. Aenean ligula nunc, laoreet id sem in, interdum bibendum felis. Donec vel dui neque. Praesent ac sem ut justo volutpat rutrum a imperdiet tellus."
+description = "A quick overview of testing out a REST API"
 template = "blog/article.html"
 slug = "how-to-test-rest-api"
 +++

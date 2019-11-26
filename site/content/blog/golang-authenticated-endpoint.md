@@ -1,6 +1,6 @@
 +++
-title = "How to add authentication to a endpoint in Golang"
-description = "A tutorial on securing an endpoint from unauthenticated access"
+title = "How to add JWT authentication to an API in Golang"
+description = "A tutorial on securing API endpoints from unauthenticated access by verifying JWT tokens"
 template = "blog/article.html"
 slug = "authenticated-endpoint-in-golang"
 +++
@@ -29,46 +29,124 @@ type beer struct {
   Price float32 `json:"price"`
 }
 
-type handler struct {
-  inventory []beer
+var inventory = []beer{
+  {
+    Id:    1,
+    Name:  "Stella Artois",
+    Type:  "pilsner",
+    Price: 2.50,
+  },
+  {
+    Id:    2,
+    Name:  "Guinness",
+    Type:  "Irish dry stout",
+    Price: 3.50,
+  },
 }
 
-func (s handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-  bytes, _ := json.Marshal(s.inventory)
-  w.Write(bytes)
+// ListBeers takes the inventory of beers, converts them to JSON and returns them
+func ListBeers(w http.ResponseWriter, r *http.Request) {
+  jsonBytes, _ := json.Marshal(inventory)
+  w.Write(jsonBytes)
 }
 
 func main() {
-  // create the handler with an inventory of two beers
-  beerServer := handler{
-    inventory: []beer{
-      {
-        Id:    1,
-        Name:  "Stella Artois",
-        Type:  "pilsner",
-        Price: 2.50,
-      },
-      {
-        Id:    2,
-        Name:  "Guinness",
-        Type:  "Irish dry stout",
-        Price: 3.50,
-      },
-    },
-  }
-  
+  // wire the ListBeers function to handle requests sent to /beers
+  http.HandleFunc("/beers", ListBeers)
   // start the HTTP server
-  log.Fatal(http.ListenAndServe("localhost:8080", beerServer))
+  log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
 ```
 
 Simple enough. We started an HTTP server listening on port 8080.
-We provided a handler (`beerServer`) for that server. Go is going to forward every request 
-that comes on port 8080 to the `ServeHTTP` function we wrote. 
-What `ServeHTTP` does is convert its inventory of beers to a slice of bytes so that they can be
+We provided a handler function (`ListBeers`) for that server. Go is going to forward every request 
+that comes on port 8080 to the `ListBeers` function we wrote. 
+What `ListBeers` does is convert its inventory of beers to JSON so that they can be
 sent back to whoever made the request.
 
-{{ h3(text="Open to everyone") }}
-
 As we already mentioned, the problem with this is that now everyone can send a request and read our list of beers.
-But we don't want that. We want to make sure that only people we know can see our beers.
+But we don't want that. We want to make sure that only people we know can see our list of beers.
+
+{{ h2(text="Verifying users") }}
+
+The simplest way of verifying who a user is is by checking their username and password. However, sending these 
+constantly increases the risk of them being compromised. Queue [**JWT**](https://jwt.io/) tokens.
+
+{{ h3(text="JWT") }}
+
+JWT tokens allow to verify someones identity without them showing you their password. The way they work is
+by cryptographically signing information about the user. The user then sends this token along with every
+request they make. This way we know that the request came from them.
+
+A JWT token looks like this:
+
+```text
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+
+It contains three parts separated by dots: a **header**, **payload**, and **signature**.
+
+The **header** contains information about the cryptographic algorithm that is used to sign the token.
+
+The **payload** is defined by whoever issues the token. This means that it can contain practically anything.
+
+The **signature** is the combined payload and header encrypted with a secret key and then hashed. Each part
+is then Base64-encoded and all the part are appended to each other so that it's easier to move around.
+Then you get the string above.
+
+If you decode the payload above and actually see what is contains:
+
+```sh
+echo 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ' | base64 --decode
+```
+
+In our case it contains only the user's name, their id in the subject(`sub`) field and the time the token was issued
+in a Unix timestamp in seconds:
+
+```json
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}
+```
+
+{{ h2(text="JWT tokens in Go") }}
+
+JWT tokens may seem complex but we will see that actually integrating them into our beer API isn't that hard. 
+First, we are going to look at issuing tokens.
+
+{{ h3(text="Issuing JWT") }}
+
+We will need a place to keep our list of users and their passwords so that we can verify them.
+For now a `map` should do that job. We will have a single user:
+
+```go
+var users = map[string]string{
+  "john.doe": "Pa55word",
+}
+
+type beer struct {
+  Id    int     `json:"id"`
+...
+```
+
+Next, we will add an endpoint that will receive user's credentials via Basic Auth and issue a JWT token.
+
+```go
+func Login(w http.ResponseWriter, r *http.Request) {
+  // grab the basic auth from the request 
+  username, password, ok := r.BasicAuth()
+  if !ok {
+    w.WriteHeader(http.Unauthorized)
+  }  
+}
+
+func main() {
+  // wire the ListBeers and Login functions
+  http.HandleFunc("/beers", ListBeers)
+  http.HandleFunc("/login", Login)
+  // start the HTTP server
+  log.Fatal(http.ListenAndServe("localhost:8080", nil))
+}
+```

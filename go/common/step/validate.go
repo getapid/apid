@@ -111,7 +111,7 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 	switch typ {
 	case "json":
 		unmarshall = json.Unmarshal
-		nonExactEquals = mapFieldsEqual
+		nonExactEquals = mapStructsEqual
 	case "plaintext":
 		unmarshall = func(b []byte, v interface{}) error {
 			reflect.ValueOf(v).Elem().Set(reflect.ValueOf(string(b)))
@@ -153,11 +153,13 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 	return nil
 }
 
-// mapFieldsEqual checks if the actual map has all the fields that exp has. If the value for a field in exp is also
-// a map, then mapFieldsEqual will check recursively there as well (returning false if the type in actual
+// mapStructsEqual checks if the actual map has all the fields that exp has. If the value for a field in exp is also
+// a map, then mapStructsEqual will check recursively there as well (returning false if the type in actual
 // is not another map)
-func mapFieldsEqual(exp, actual interface{}) bool {
-	if expMap, ok := exp.(map[string]interface{}); ok {
+func mapStructsEqual(exp, actual interface{}) bool {
+	switch exp.(type) {
+	case map[string]interface{}:
+		expMap := exp.(map[string]interface{})
 		actualMap, ok := actual.(map[string]interface{})
 		if !ok {
 			return false
@@ -166,9 +168,21 @@ func mapFieldsEqual(exp, actual interface{}) bool {
 			if actualNested, ok := actualMap[k]; !ok {
 				return false
 			} else {
-				if !mapFieldsEqual(expNested, actualNested) {
+				if !mapStructsEqual(expNested, actualNested) {
 					return false
 				}
+			}
+		}
+	case []interface{}:
+		expSlice := exp.([]interface{})
+		actualSlice, ok := actual.([]interface{})
+		if len(expSlice) == 0 || !ok {
+			return ok
+		}
+
+		for _, val := range actualSlice {
+			if !mapStructsEqual(expSlice[0], val) {
+				return false
 			}
 		}
 	}

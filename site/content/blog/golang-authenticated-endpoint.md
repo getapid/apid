@@ -5,19 +5,22 @@ template = "blog/article.html"
 slug = "authenticated-endpoint-in-golang"
 +++
 
+Many of us often ignore security in favor of completing the core functionality of our application.
+Maybe because we don't have time, maybe because we aren't exactly sure how or maybe because we didn't
+remember to do it. In this post we will talk about adding authentication to your API.
+
 Authentication is the process of proving that you are who you say you are (which is different from authorization).
-It is often that you want authentication on your endpoints. 
-Maybe not everyone should be able to use your API or maybe you really care who it is that is using it.
-These are cases where you need to make sure you protect your API from unauthenticated access.
-I am going to show you how to do this in Golang.
+It is often that you want authentication on your API endpoints. 
+For example, not everyone should be able to use your API. Or it will come in quite handy if you know exactly who is
+using it. This blog post is going to show you how to add an industry-proven authentication mechanism to an API in Go.
 
 Before starting I should mention that this article assumes you are familiar with Go.
-If not, you can head over to the [tour of Go](https://tour.golang.org/list).
+If not, you can head over to the [tour of Go](https://tour.golang.org/list) first.
 
 {{ h2(text="A simple web API") }}
 
-We are going to start off with a simple server serving HTTP (we are using HTTP because it's simpler to implement;
-you should always use HTTPS; a really nice [talk on that by Eric Chiang](https://www.youtube.com/watch?v=VwPQKS9Njv0)).
+We are going to start off with a simple server serving HTTP. We are using HTTP because it's simpler to implement, but
+you should always use HTTPS (a really nice [talk on that by Eric Chiang](https://www.youtube.com/watch?v=VwPQKS9Njv0)).
 Because we at APId like beer, that server is going to serve different brands of beer (no pun intended).
 Without further ado, here's the code:
 
@@ -58,10 +61,11 @@ func main() {
 }
 ```
 
-Simple enough. We started an HTTP server listening on port 8080.
-We provided a handler function (`ListBeers`) for that server. Go is going to forward every request 
+Simple enough. We define the data type of a `beer` and an `inventory` of two beers.
+We start an HTTP server listening on port 8080.
+We provide a handler function (`ListBeers`) for that server. Go is going to forward every request 
 that comes on port 8080 to the `ListBeers` function we wrote. 
-What `ListBeers` does is convert its inventory of beers to JSON so that they can be
+What `ListBeers` does is convert our inventory of beers to JSON so that they can be
 sent back to whoever made the request.
 
 You can test it out with `curl` in the terminal: 
@@ -87,19 +91,25 @@ This should return (formatted here):
 ]
 ```
 
-As we already mentioned, the problem with this is that now everyone can send a request and read our list of beers.
-But we don't want that. We want to make sure that only people we know can see our list of beers.
+The problem with this is that now everyone can send a request and read our list of beers.
+We want to make sure that only people we know can see our list of beers.
 
 {{ h2(text="Verifying users") }}
 
 The simplest way of verifying who a user is is by checking their username and password. However, sending these 
-constantly increases the risk of them being compromised. Queue [**JWT**](https://jwt.io/) tokens.
+constantly increases the risk of them being compromised. And if you needed any additional information about the user
+such as their full name or location, you need a separate secure store for that. Queue [**JWT**](https://jwt.io/) tokens.
 
 {{ h3(text="JWT") }}
 
-JWT tokens allow to verify someones identity without them showing you their password. The way they work is
-by cryptographically signing information about the user. The user then sends this token along with every
-request they make. This way we know that the request came from them.
+JWT tokens are short-lived pieces of text that prove the identity of a user
+(or provide an assertion, if we had to use proper terms).
+Usually an authority such as a central authentication server issues them in exchange for username and password.
+In our tutorial we are going to play the role of the authentication server.
+JWT tokens allow to verify someone's identity without them showing their password. The way they work is
+by cryptographically signing information about the user with a secret key.
+The user then sends this token along with every request they make.
+After that we can verify the legitimacy of the token and know that the request came from that specific user.
 
 A JWT token looks like this:
 
@@ -111,20 +121,22 @@ It contains three parts separated by dots:
 
 1. A **header** containing information about the cryptographic algorithm that is used to sign the token.
 
-2. **Payload** which is defined by whoever issues the token. This means that it can contain practically anything.
+2. **Payload** which is defined by whoever issues the token. 
+It typically contains the expiration date of the token, when it was issued, who issued it, username of
+the user, etc. But it can contain practically anything.
 
-3. A **signature**; this is the combined payload and header encrypted with a secret key and then hashed.
+3. A **signature**; this is the combined payload and header encrypted with the secret key and then hashed.
 
-Each part is then Base64-encoded and all the part are appended to each other so that it's easier to move around.
-Then you get the string above.
+Each part is then Base64-encoded and all the part are joined by dots so that it's easier to move them around.
+Then you get the jumbled up string above.
 
-If you decode the payload above and actually see what is contains:
+But if you decode the payload above, you can see what is contains:
 
 ```sh
 echo -n 'eyJleHAiOjE1NzQ4ODY0MDcsInVzZXJuYW1lIjoiam9obi5kb2UifQ' | base64 --decode
 ```
 
-In our case it contains only the user's name and the expiry time of the token in a Unix timestamp in seconds:
+In our case it's only the user's name and the expiry time of the token as a Unix timestamp:
 
 ```json
 {
@@ -135,16 +147,15 @@ In our case it contains only the user's name and the expiry time of the token in
 
 {{ h2(text="JWT tokens in Go") }}
 
-JWT tokens may seem complex but we will see that actually integrating them into our beer API isn't that hard.
-There is a convenient package that we will use for dealing with JWT called [jwt-go](https://github.com/dgrijalva/jwt-go).
-We are going to use that in our example.
+JWT tokens may seem complex but we will see that integrating them into our beer API isn't going to be difficult.
+We are going to use a package for dealing with JWT called [jwt-go](https://github.com/dgrijalva/jwt-go).
 
 First, we are going to look at issuing tokens.
 
 {{ h3(text="Issuing JWT") }}
 
-We will need a place to keep our list of users and their passwords so that we can verify them.
-For now a `map` should do that job. We will have a single user:
+We will need a place to keep our list of users and their passwords so that we can look them up when a user comes for a token.
+For now a `map` should do the job:
 
 ```go
 var users = map[string]string{
@@ -152,10 +163,10 @@ var users = map[string]string{
 }
 ```
 
-We also need to define a `struct` which can hold the information we want in the token about the user.
-In JWT terms this is called the claims of the token. We will keep our claims simple. The claims will
-contain only the user's username and possibly some of the
-[standard JWT claims](https://auth0.com/docs/tokens/jwt-claims#reserved-claims) (such as expiry time and audience)
+We also need to define a `struct` type which can hold the information we want in the token about the user.
+In JWT terms this is called the claims of the token. We will keep our claims simple. They will
+contain only the username and some of the
+[standard JWT claims](https://auth0.com/docs/tokens/jwt-claims#reserved-claims) (such as expiry time).
 
 ```go
 import "github.com/dgrijalva/jwt-go"
@@ -169,10 +180,12 @@ type claims struct {
 }
 ```
 
-Next, we will add an endpoint that will receive user's credentials via Basic Auth and issue a JWT token.
-I will first show the code and then go through what it does.
+Next, we will add a login endpoint that will receive user's credentials via Basic Auth and issue a JWT token.
+I will first show the code first and then go through what it does.
 
 ```go
+var secretKey = []byte("very-secret-key")
+
 func Login(w http.ResponseWriter, r *http.Request) {
   // grab the basic auth from the request
   username, providedPassword, ok := r.BasicAuth()
@@ -192,7 +205,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
   // this will be the payload of our JWT token
   userClaims := claims{
     StandardClaims: jwt.StandardClaims{
-      // we give an expiration of 1 hour
+      // we give an expiration of 1 hour;
+      // the shorter, the more secure
       ExpiresAt: time.Now().Add(time.Hour).Unix(),
     },
     Username: username,
@@ -213,11 +227,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
   }{tokenString}
 
   // serialize the response into JSON bytes
-  serializedToken, err := json.Marshal(response)
-  if err != nil {
-    w.WriteHeader(http.StatusInternalServerError)
-    return
-  }
+  serializedToken, _ := json.Marshal(response)
 
   // send back the token
   w.Write(serializedToken)
@@ -230,17 +240,18 @@ func main() {
   log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
 ```
+<br>
 
-1. We get the username and password that the user sent. If they didn't send any, we send back 
-HTTP 400 (Bad Request).
-2. Next we check if the user actually exists in our records and if their password matches what we have.
-If not, we reply with HTTP 401 (Unauthorized)
-3. We proceed to construct the claims we will put in the token. We keep them simple by specifying only the expiry
+1. We get the username and password that the user sent. If they didn't send any, we reply with 
+status 400 (Bad Request).
+2. Next, we check if the user actually exists in our records and if their password matches what we have.
+If not, we reply with status 401 (Unauthorized)
+3. We proceed to construct the claims we will include in the token. We keep them simple by specifying only the expiry
 time of the token and the user's username.
-4. The next step is to create and sign the token. We create the token with the claims we have and specify 
-the algorithm we want to use for signing it. Then we pass in our secret key and let the package do its magic.
-5. Now that we have the token we need to pack it in a consumable way. We will do the same as we did for 
-our beer list: we will JSON-serialize it.
+4. The next step is to create and sign the JWT token. We create the token by providing the claims and 
+the algorithm we want to use for signing it. Then we pass in our secret key and let `jwt-go` do its magic.
+5. Now that we have the token we need to pack it in a consumable way. We do the same as we did for 
+our beer list.
 
 You can try it out again with `curl`:
 ```sh
@@ -254,11 +265,11 @@ Which should return something along the lines of:
 
 {{ h3(text="Validating JWT") }}
 
-We have a way of issuing tokens but our `/beer` endpoint is still open to anyone.
-We will be requiring the user to send their token in the request so that we can verify they
+We have a way of issuing tokens but our `/beer` endpoint is still open to everyone.
+We will require the user to send their token in the request so that we can verify they
 have access to view our list of beers. The convention for sending JWT tokens is that the token
 is sent as a `Bearer` token in an `Authorization` header. Sending a `Bearer` token just means that
-you need to prepend `Bearer ` to your token.
+you need to prepend `Bearer ` to the token.
 
 ```go
 func ListBeers(w http.ResponseWriter, r *http.Request) {
@@ -280,20 +291,25 @@ func ListBeers(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-Validation has less steps than issuing a token. We only need to get the header, remove the `Bearer ` prefix and pass is to 
-the `jwt` package. Out we get a parsed token. Because we used some of the standard claims, `jwt-go` is able to check
-the expiry time of the token. We check if the parsing went OK and if the token hasn't expired yet;
-if everything is correct, we proceed to returning the list of beers.
+Validation has less steps than issuing a token. 
 
-Note that we are not using the claims we encoded in our token (namely the username). This is because 
-we verify the token using our secret key. It is a secret key, so we know that it's only us who could have issued it
-and we already check the user during login. If for example the token has a long expiry time and the list of
-acceptable users may change before the token has expired, then it might be worth it also checking if
-the username in the token is in our list.
+1. Get the request header.
+2. Remove the `Bearer ` prefix
+3. Pass is to the `jwt-go` package along with our secret key.
 
-You can give it a go yourself. Just make sure to replace the token string with a valid token you have from `/login`:
+Out we get a parsed token. Because we used some of the standard claims, `jwt-go` is able to check
+the expiry time of the token for us. If the parsing went OK and if the token hasn't expired yet,
+we return the list of beers.
+
+Note that we don't use all the claims we included in our token (namely the username). This is because 
+we verify the token using our secret key. It is a secret key, so we know that it's only us who could have issued the token.
+And we already check the user during login, so everything is good.
+If, for example, the token has a long expiry time and our list of users may change during that time,
+then it might be worth it also checking if the username in the token is valid.
+
+You can give it a go yourself. Just make sure to replace `<token>` with a valid token you have from your `/login`:
 ```sh
-curl localhost:8080/beer -H 'Authorization:Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzQ4ODg4NTAsInVzZXJuYW1lIjoiam9obi5kb2UifQ.1JdnFVPKZ6AWP_TsR-G3LGhrpLttwCvGBr0H64U7RMqwbWzL0YKlAJU3TB30cFa2W5SKYJggBOqmk53-0m9Sgw'
+curl localhost:8080/beer -H 'Authorization:Bearer <token>'
 ```
 
 We have successfully added authentication to our API. You can now easily access control your API and be
@@ -301,10 +317,11 @@ certain that it is accessed only by the right users.
 
 {{ h3(text="Adding authentication on multiple endpoints") }}
 
-We have the code to check a user token. However, if you want to extend that to many endpoints, you will need to 
-either move it to a function that each handler calls or copy it. None of these are really convenient.
-What we are going to use is the pattern of middleware. We are going to create a wrapper handler that 
-verifies a token and forwards to another handler if the token is valid.
+We have the code to check a user token. However, it is mixed with the code that lists beers.
+If you want to extend that to many endpoints, you will need to 
+either move it to a function that each handler calls or copy it in every handler. None of these are really convenient.
+We are going to implement a middleware to solve this. The middleware is just a wrapper handler that 
+verifies a token and then delegates to another handler if the token is valid. 
 
 ```go
 func Authenticated(handler http.HandlerFunc) http.HandlerFunc {
@@ -332,9 +349,15 @@ func ListBeers(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-We write a function that takes a function and returns a function. It takes a handler function and returns 
-a new handler function which first checks the token and then calls the handler that we passed to it. Then we
-make sure to update our `main` with the new `Authenticated` function:
+We write a function that takes a function and returns a function.
+`Authenticated` takes a handler (`handler`) and wraps it in another handler function.
+The wrapper first checks the token from the request and then calls the wrapped handler function (`handler`). 
+`Authenticated` then returns the wrapper.
+
+You may notice that the function for listing beers is back to how it
+was in the very first example. Now it doesn't have check itself the user that is making the request. 
+The middleware ensures that. We also update the `main` to use the middleware:
+
 ```go
 func main() {
   // wire the ListBeers function to handle requests sent to /beers
@@ -343,7 +366,7 @@ func main() {
 }
 ```
 
-That way you can wrap any handler function you have. You will not have to copy code or clutter your business logic
+Using this middleware you can wrap any handler function you have. You will not have to copy code or clutter your business logic
 (listing beers in our case) with authentication logic.
 
 You can give it another go with `curl` to make sure it works.
@@ -351,13 +374,13 @@ You can give it another go with `curl` to make sure it works.
 {{ h2(text="Making sure it always works") }}
 
 We built a secure API, open only to certain users. However, now the process of verifying that the API works
-isn't that trivial. You need to send a request to get a token, copy the token and send it in a header, then verify
-if the response is correct.
+isn't that trivial. You need to send a request, get a token, copy the token, send it in a header, then finally verify
+that the response is correct. This may become tedious when extending your API.
 
-Another way of testing your API is using [APId](../../). With APId you only need a `.yaml` file specifying the
-endpoints you want to test and the order in which to send requests.
-Then you can use the APId [CLI tool](../../download) to run those tests any time you want.
-To test the authenticated `/beer` endpoint our `apid.yaml` will contain the following:
+Another way of testing your API is using [APId](../../). With APId you only need a `.yaml` file with the
+endpoints you want to test, what requests you send and what responses you expect.
+The [APId CLI tool](../../download) can run those tests any time you need.
+To test the authenticated `/beer` endpoint our `apid.yaml` will contain the following (with explanation below):
 
 ```yaml
 transactions:
@@ -396,34 +419,33 @@ transactions:
               ]
 ```
 
-I am going to go through the contents explaining what each block does.
+I am going to go through in details the contents explaining what each block does.
 
 This is a single transaction with two steps: one to authenticate (`auth`) and another one to list beers (`list-beers`).
 
 We set a variable for the URL of our API so that we don't have to repeat it in every step (`api_url: "http://localhost:8080"`)
 
 The first step is sending the request for the JWT token. The endpoint that we want to hit would be `http://localhost:8080/login`
-but we use the variable we set above. Then we set the Basic Auth
+but we use a template with the variable we set above. Then we set the Basic Auth
 header with the following: `Authorization: "Basic {% echo -n 'john.doe:Pa55word' | base64 %}"`.
-This will base64-encode the credentials so that they are in the expected format.
+This runs a command to base64-encode the credentials so that they are in the expected format.
 Then we say that we want to export the auth token from the response. Exporting will set another variable that we can
-then use for the beers endpoint.
+use for the beers endpoint.
 
 The seconds step makes a request to `http://localhost:8080/beer`. It uses the token we exported just like it would any
 other variable. This is the endpoint we want to verify that works. So this step also has an `expect` block.
-In it we say that we expect HTTP 200 (OK) back from the server. We also say that we want to check the body of the
-response. We don't care about the particular values of the response, we are interested in its structure.
-As long as it returns a JSON array of beers, everything is good. We do this by saying `exact: false` and giving the
-structure of what we want: that is an array of items, each of which has a `"name"`, `"type"`, `"price"` and `"id"`.
+In the `expect` block we say that we expect status 200 (OK) back from the server.
+We also say that we expect the body of the response to be JSON. We don't care about the particular values of the response, we are interested in its structure.
+As long as it returns a JSON array of beers, everything is OK. We do this with `exact: false` and giving the
+structure of what we want: an array of items, each of which has a `"name"`, `"type"`, `"price"` and `"id"`.
 The values of these don't matter so we leave them as empty strings.
 
-You can now save this in a file named `apid.yaml` and run APId to see if it works
-
+You can now save this in a file named `apid.yaml` and run APId to see if it works:
 ```sh
 apid check
 ```
 
-You can now add this to pipelines or schedule its runs to ensure your product is working as expected at all times.
+You can now add this to CI pipelines or schedule its runs to ensure your product is working as expected at all times.
 
 For more details on the syntax of the APId YAML config you can have a glimpse of our [documentation](../../docs).
 

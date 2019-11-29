@@ -5,7 +5,7 @@ template = "blog/article.html"
 slug = "authenticated-endpoint-in-golang"
 +++
 
-Many of us often ignore security in favor of completing the core functionality of our application.
+The security of an API is often ignored in favor of completing the core functionality of our application.
 Maybe because we don't have time, maybe because we aren't exactly sure how or maybe because we didn't
 remember to do it. In this post we will talk about adding authentication to your API.
 

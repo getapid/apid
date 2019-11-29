@@ -8,7 +8,7 @@ request:
     {
       "username": "ironman",
       "password": "love-you-3000",
-      "secret" "{% curl $VARS_API-URL/get-secret-token $}"
+      "secret" "{% curl $VAR_API-URL/get-secret-token $}"
     }
 expect:
   code: 200

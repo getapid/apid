@@ -30,8 +30,9 @@ Expect is a set of validations that can be done on the response in a step.
 {{ h4(text="body.exact") }}
 
 {{ field(type="bool", required="false", default="true", desc="Whether or not to strictly validate the response body. 
-If `false` and `body.type=json`, just the fields are recursively validated, but not scalar (ints, strings, etc.) or array values;
-if `body.type=plaintext`, the the response needs to contain the `body.content`, but doesn't have to fully match it.") }}
+If `false` and `body.type=json`, just the fields are recursively validated, but not scalar (ints, strings, etc.);
+for arrays, the fields of each element of the response array are validated recursively against the first element in the `expect` array. 
+If `false` and `body.type=plaintext`, the the response needs to contain the `body.content`, but doesn't have to fully match it.") }}
 
 {{ h2(text="Examples") }}
 

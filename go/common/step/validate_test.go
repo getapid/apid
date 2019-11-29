@@ -192,6 +192,44 @@ func (s *ValidatorSuite) TestValidate() {
 			},
 			expResult: incorrectBodyResult,
 		},
+		{
+			name: "body json array not exact correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: &ExpectBody{
+						Type:    pstring("json"),
+						Content: `[{"field1":{"a":1}}]`,
+						Exact:   pbool(false),
+					},
+				},
+				actual: &http.Response{
+					Response: &stdhttp.Response{
+						Body: &stringReadCloser{},
+					},
+					ReadBody: []byte(`[{"field1":{"a":1}}]`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body json array not exact incorrect",
+			args: args{
+				exp: ExpectedResponse{
+					Body: &ExpectBody{
+						Type:    pstring("json"),
+						Content: `[{"field1":{"a":1}}]`,
+						Exact:   pbool(false),
+					},
+				},
+				actual: &http.Response{
+					Response: &stdhttp.Response{
+						Body: &stringReadCloser{},
+					},
+					ReadBody: []byte(`[{"field1":{"a":1}},{"field1":{"b":1}}]`),
+				},
+			},
+			expResult: incorrectBodyResult,
+		},
 	}
 
 	validator := httpValidator{}

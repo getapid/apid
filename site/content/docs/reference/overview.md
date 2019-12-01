@@ -1,6 +1,6 @@
 +++
 title = "Overview"
-description = "an overview of the structure of the yaml configuration file"
+description = "the structure of the YAML configuration file"
 template = "docs/article.html"
 sort_by = weight
 weight = 10

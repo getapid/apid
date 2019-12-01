@@ -1,6 +1,6 @@
 +++
 title = "variables"
-description = ""
+description = "variables can be used in templates in some strings in the YAML config"
 template = "docs/article.html"
 sort_by = weight
 weight = 220
@@ -21,7 +21,7 @@ using the `var` prefix - `"{{ var.api_url }}"`
 {{ h3(text="Exported variables") }}
 
 Each step can export a set of variables. This is useful when you want to make a request and then use part of the response
-in another request, like when you authenticate to get a token and then use this token in subsequent requests. See
+in another request. For example, when you authenticate to get a token and then use this token in subsequent requests. See
 [step](../step) about the exact syntax of exporting variables in a step. Exported variables will be available in
 subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth_token }}"`
 

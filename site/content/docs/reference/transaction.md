@@ -28,12 +28,12 @@ transaction is aborted.
 {{ h2(text="Examples") }}
 
 ```yaml
-id: transaction-one
+id: "transaction-one"
 variables:
   api_url: "https://jsonplaceholder.typicode.com"
 steps:
-  - id: todos-1
+  - id: "todos-1"
     request:
-      method: GET
+      method: "GET"
       endpoint: "{{ var.api_url }}/todos/1"
 ```

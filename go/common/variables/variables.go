@@ -2,7 +2,10 @@ package variables
 
 import (
 	"os"
+	"reflect"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -22,6 +25,18 @@ func New(opts ...option) Variables {
 		o(&v)
 	}
 	return v
+}
+
+func (v *Variables) UnmarshalYAML(value *yaml.Node) error {
+	vars := make(map[string]interface{})
+	v.data = map[string]interface{}{
+		varNamespace: vars,
+	}
+	return value.Decode(&vars)
+}
+
+func (v Variables) MarshalYAML() (interface{}, error) {
+	return v.data[varNamespace], nil
 }
 
 func newEmptyVars() Variables {
@@ -97,8 +112,49 @@ func mergeMaps(this, other map[string]interface{}) map[string]interface{} {
 				}
 			}
 		}
-		this[key] = newVal
+		this[key] = deepCopyInterface(newVal)
 	}
 
 	return this
+}
+
+func (v Variables) DeepCopy() Variables {
+	// we are guaranteed this type because the type of v.data is this
+	// and deepCopy will return the same type
+	copiedMap := deepCopyInterface(v.data).(map[string]interface{})
+	return Variables{data: copiedMap}
+}
+
+func deepCopyInterface(i interface{}) interface{} {
+	return deepCopy(reflect.ValueOf(i)).Interface()
+}
+
+func deepCopy(value reflect.Value) reflect.Value {
+	switch value.Kind() {
+	case reflect.Interface, reflect.Ptr:
+		if value.IsNil() {
+			return reflect.ValueOf(nil)
+		}
+		return deepCopy(value.Elem())
+	case reflect.Map:
+		copied := reflect.MakeMapWithSize(value.Type(), value.Len())
+
+		iter := value.MapRange()
+		for iter.Next() {
+			k, v := iter.Key(), iter.Value()
+			copied.SetMapIndex(k, deepCopy(v))
+		}
+		return copied
+	case reflect.Slice, reflect.Array:
+		copyLen := value.Len()
+		copied := reflect.MakeSlice(value.Type(), copyLen, copyLen)
+
+		for i := 0; i < copyLen; i++ {
+			copiedElement := deepCopy(value.Index(i))
+			copied.Index(i).Set(copiedElement)
+		}
+		return copied
+	default:
+		return value
+	}
 }

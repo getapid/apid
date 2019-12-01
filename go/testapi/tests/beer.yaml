@@ -4,6 +4,8 @@ variables:
   api_url: http://localhost:80
 transactions:
   - id: authenticated-transaction
+    matrix:
+      beer_id: [1, 2]
     steps:
       - id: auth
         variables:
@@ -30,49 +32,36 @@ transactions:
         expect:
           code: 200
           exact: false
+          type: json
+          content: |
+            {
+              "beers": [
+                {
+                  "id": 0,
+                  "name": "",
+                  "type": "",
+                  "price": 0
+                }
+              ]
+            }
 
       - id: get-beer-1
         request:
           method: GET
-          endpoint: "{{ var.api_url }}/beer/1"
+          endpoint: "{{ var.api_url }}/beer/{{ var.beer_id }}"
           headers:
             Authorization: "Bearer {{ auth.auth_token }}"
         expect:
           code: 200
           body:
-            exact: true
+            exact: false
             type: json
             content: |
               {
                 "beer": {
-                  "id": 1,
-                  "name": "Stella Artois",
-                  "type": "pilsner",
-                  "price": 2.5
+                  "id": 0,
+                  "name": "",
+                  "type": "",
+                  "price": 0
                 }
               }
-
-  - id: simple-transaction
-    steps:
-      - id: health-endpoint-test-get
-        request:
-          method: GET
-          endpoint: "{{ var.api_url }}/health"
-        expect:
-          code: 200
-          body:
-            type: "plaintext"
-            content: "OK"
-            exact: true
-
-      - id: echo-endpoint-test-post
-        request:
-          method: POST
-          endpoint: "{{ var.api_url }}/echo"
-          body: "some text h3re"
-        expect:
-          code: 200
-          body:
-            type: "plaintext"
-            content: "some text h3re"
-            exact: true

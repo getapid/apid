@@ -15,12 +15,12 @@ import (
 
 var (
 	rootVars = variables.New()
-	txVars   = map[string]interface{}{
+	txVars   = newVarsWithVars(map[string]interface{}{
 		"url": "one",
-	}
-	stepVars = map[string]interface{}{
+	})
+	stepVars = newVarsWithVars(map[string]interface{}{
 		"url": "two",
-	}
+	})
 
 	errStepErr = errors.New("error")
 
@@ -87,9 +87,9 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 			args{
 				[]Transaction{
 					{
-						"test-id-1",
-						txVars,
-						[]step.Step{},
+						ID:        "test-id-1",
+						Variables: txVars,
+						Steps:     []step.Step{},
 					},
 				},
 				rootVars,
@@ -233,19 +233,18 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 
 	for _, tt := range tests {
 		stepRunner := mock.NewMockRunner(mockCtrl)
-		var writerCalls []*gomock.Call
+		var mockedCalls []*gomock.Call
 		for _, tx := range tt.args.transactions {
 			exported := variables.New()
 			for _, step := range tx.Steps {
 				if step.ID == okStep.ID {
-					writerCalls = append(writerCalls,
+					mockedCalls = append(mockedCalls,
 						stepRunner.EXPECT().
-							Run(step, variables.New(
-								variables.WithOther(rootVars),
-								variables.WithVars(txVars),
-								variables.WithOther(exported),
-								variables.WithVars(step.Variables),
-							)).
+							Run(step, rootVars.DeepCopy().
+								Merge(txVars).
+								Merge(exported).
+								Merge(step.Variables),
+							).
 							Return(okStepResult, nil))
 					exported = variables.New(
 						variables.WithOther(exported),
@@ -256,32 +255,31 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 						),
 					)
 				} else {
-					writerCalls = append(writerCalls,
+					mockedCalls = append(mockedCalls,
 						stepRunner.EXPECT().
-							Run(step, variables.New(
-								variables.WithOther(rootVars),
-								variables.WithVars(txVars),
-								variables.WithOther(exported),
-								variables.WithVars(step.Variables),
-							)).
+							Run(step, rootVars.DeepCopy().
+								Merge(txVars).
+								Merge(exported).
+								Merge(step.Variables),
+							).
 							Return(errStepResult, errStepErr))
 					break
 				}
 			}
 		}
-		gomock.InOrder(writerCalls...)
+		gomock.InOrder(mockedCalls...)
 
 		writer := mock.NewMockWriter(mockCtrl)
-		writerCalls = []*gomock.Call{}
+		mockedCalls = []*gomock.Call{}
 		for _, txResult := range tt.want.Results {
-			writerCalls = append(writerCalls,
+			mockedCalls = append(mockedCalls,
 				writer.EXPECT().
 					Write(txResult).
 					Return())
 		}
 
-		writerCalls = append(writerCalls, writer.EXPECT().Close())
-		gomock.InOrder(writerCalls...)
+		mockedCalls = append(mockedCalls, writer.EXPECT().Close())
+		gomock.InOrder(mockedCalls...)
 
 		r := &TransactionRunner{
 			stepRunner: stepRunner,
@@ -290,6 +288,54 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 		ok := r.Run(tt.args.transactions, tt.args.vars)
 		s.Equal(tt.ok, ok, tt.name)
 	}
+}
+
+func (s *RunnerSuite) TestTransactionRunner_RunWithMatrix() {
+	transaction := Transaction{
+		ID:        "test-with-matrix",
+		Variables: variables.Variables{},
+		Steps:     []step.Step{okStep},
+		Matrix: &Matrix{
+			M: map[string][]interface{}{
+				"var1": {1, 2},
+				"var2": {"a", "b"},
+			},
+		},
+	}
+	matrixClone := Matrix{
+		M: transaction.Matrix.M,
+	}
+	expectedVarSets := make([]variables.Variables, 0, 4)
+	for matrixClone.HasNext() {
+		expectedVarSets = append(expectedVarSets, matrixClone.NextSet())
+	}
+
+	mockCtrl := gomock.NewController(s.T())
+	defer mockCtrl.Finish()
+	mockStepRunner := mock.NewMockRunner(mockCtrl)
+	mockWriter := mock.NewMockWriter(mockCtrl)
+
+	for _, oneExpSet := range expectedVarSets {
+		mockStepRunner.EXPECT().
+			Run(okStep, stepVars.DeepCopy().Merge(oneExpSet)).
+			Return(okStepResult, nil).
+			Times(1)
+		mockWriter.EXPECT().
+			Write(gomock.Any()).
+			Times(1)
+	}
+	mockWriter.EXPECT().Close()
+
+	r := &TransactionRunner{
+		stepRunner: mockStepRunner,
+		writer:     mockWriter,
+	}
+	ok := r.Run([]Transaction{transaction}, rootVars)
+	s.True(ok)
+}
+
+func newVarsWithVars(m map[string]interface{}) variables.Variables {
+	return variables.New(variables.WithVars(m))
 }
 
 func TestRunnerSuite(t *testing.T) {

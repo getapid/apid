@@ -1,9 +1,9 @@
 +++
-title = "request"
+title = "step.request"
 description = "the block specifying what request to make"
 template = "docs/article.html"
 sort_by = weight
-weight = 180
+weight = 198
 +++
 
 
@@ -23,7 +23,7 @@ Request specifies how to make the request - which endpoint to go to, what body t
 
 {{ h3(text="headers") }}
 
-{{ field(type="[headers](../headers)", required="false", desc="Headers to attach to the request") }}
+{{ field(type="mapping", required="false", desc="Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header.") }}
 
 {{ h3(text="body") }}
 
@@ -41,4 +41,9 @@ request:
   endpoint: "http://https://jsonplaceholder.typicode.com/posts/1"
   headers:
     X-APIDAUTH: "{{ env.AUTH_TOKEN }}"
+    Accept: "application/json"
+    Accept: "application/ld+json"
+    Accept:
+      - "application/json"
+      - "application/ld+json"
 ```

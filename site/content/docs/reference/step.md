@@ -1,6 +1,6 @@
 +++
 title = "step"
-description = ""
+description = "a step is a call to a single endpoint"
 template = "docs/article.html"
 sort_by = weight
 weight = 190
@@ -56,5 +56,5 @@ steps:
             }
           }
     export:
-      auth_token: "{{ response.headers.X-APIDAUTH }}"
+      auth_token: "response.headers.X-APIDAUTH"
 ```

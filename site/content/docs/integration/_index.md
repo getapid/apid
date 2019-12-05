@@ -1,6 +1,6 @@
 +++
 title = "Integration"
-description = "learn how to use APId with various continuous integration tools" 
+description = "Learn how to use APId with various continuous integration tools" 
 weight = 2
 sort_by = "weight"
 template = "docs/root.html"

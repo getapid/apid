@@ -10,12 +10,13 @@ weight = 220
 {{ h2(text="Summary") }}
 
 Variables are scoped either globally, to a transaction or to a step. Variables in a narrower scope have precedence over
-those in a broader one. Variables are available in templates - `"{{ var.api_url }}"`
+those in a broader one. Variables are available in templates - `"{{ var.api_url }}"`. Make sure to add quotes to it
+so that the YAML parser doesn't confuse it for a YAML object.
 
 {{ h3(text="Regular variables") }}
 
 These are declared either in the transaction, step or the root yaml document. There they are simply declared as a mapping
-from Those will be available in templates
+ from variable name to its value. Those will be available in templates
 using the `var` prefix - `"{{ var.api_url }}"`
 
 {{ h3(text="Exported variables") }}
@@ -35,6 +36,6 @@ other kinds of secrets. They will be available like so: `"{{ env.PASSWORD }}"`
 ```yaml
 variables:
   title: "A long time ago"
-  subtitle: "in a {{ var.place }} far far away"
+  subtitle: "in a {{ var.place }} far far away {{ env.DATABASE_USER }} accidentally dropped all tables"
   year: 2187
 ```

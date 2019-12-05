@@ -1,6 +1,6 @@
 +++
 title = "transaction"
-description = ""
+description = "A sequence of steps"
 template = "docs/article.html"
 sort_by = weight
 weight = 200

@@ -1,6 +1,6 @@
 +++
 title = "step.expect"
-description = "the block specifying what response you are expecting"
+description = "The block specifying what response you are expecting"
 template = "docs/article.html"
 sort_by = weight
 weight = 192

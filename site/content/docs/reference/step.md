@@ -1,6 +1,6 @@
 +++
 title = "step"
-description = "a step is a call to a single endpoint"
+description = "A step is a call to a single endpoint"
 template = "docs/article.html"
 sort_by = weight
 weight = 190

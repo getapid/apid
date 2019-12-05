@@ -4,6 +4,9 @@
 {% block inner_content %}
     <h1 class="title is-3">{{ page.title }}</h1>
     {{ page.content | safe }}
+    <div class="column is-1" style="margin-top: 150px"></div>
+    <h3 class="title is-5">Didn't find what you were looking for?</h3>
+    <p>You can head over to our <a href="https://faq.getapid.com">FAQ page</a></p>
     {{ macros::prev_link(section=page) }}
     {{ macros::next_link(section=page) }}
 {% endblock inner_content %}

@@ -1,6 +1,6 @@
 +++
 title = "CLI"
-description = "CLI"
+description = "How to get going with the APId CLI"
 template = "docs/article.html"
 weight = 2
 sort_by = "weight"

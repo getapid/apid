@@ -1,6 +1,6 @@
 +++
 title = "transaction.matrix"
-description = "running the same transaction with different variables"
+description = "Running the same transaction with different variables"
 template = "docs/article.html"
 sort_by = weight
 weight = 205

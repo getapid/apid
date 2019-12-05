@@ -1,6 +1,6 @@
 +++
 title = "step.request"
-description = "the block specifying what request to make"
+description = "The block specifying what request to make"
 template = "docs/article.html"
 sort_by = weight
 weight = 198

@@ -1,6 +1,6 @@
 +++
 title = "variables"
-description = "variables can be used in templates in some strings in the YAML config"
+description = "Variables can be used in templates in the YAML config"
 template = "docs/article.html"
 sort_by = weight
 weight = 220

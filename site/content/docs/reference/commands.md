@@ -1,6 +1,6 @@
 +++
 title = "commands"
-description = "using shell commands in templates"
+description = "Using shell commands in templates"
 template = "docs/article.html"
 sort_by = weight
 weight = 30

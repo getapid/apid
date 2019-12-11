@@ -26,7 +26,7 @@ type consoleWriter struct {
 	out                 indentedWriter
 }
 
-func NewConsoleWriter(dest io.Writer) result.Writer {
+func NewConsoleWriter(dest io.Writer, displayTimings bool) result.Writer {
 	return &consoleWriter{
 		out: indentedWriter{
 			out: dest,

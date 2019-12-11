@@ -151,7 +151,8 @@ func TestHTTPRunner_Check(t *testing.T) {
 				step.NewBodyExtractor(),
 			)
 			got, _ := c.Run(tt.args.step, tt.args.vars)
-			assert.Equal(t, got, tt.want, tt.name)
+			got.Timings = httpi.Timings{}
+			assert.Equal(t, tt.want, got, tt.name)
 		})
 	}
 }

@@ -137,9 +137,9 @@ func formatBody(r step.Request) string {
 
 func (w consoleWriter) printSuccStep(s step.Result) {
 	w.print(greenOk + "\t\t" + s.Step.ID + "\n")
-	w.out.increaseIndent(4)
-	w.printTimings(s.Timings)
-	w.out.decreaseIndent(4)
+	//w.out.increaseIndent(4)
+	//w.printTimings(s.Timings)
+	//w.out.decreaseIndent(4)
 }
 
 func (w consoleWriter) Close() {

@@ -3,7 +3,6 @@ title = "How is APId different from..."
 description = "A compare and contrast with APId alternatives"
 template = "blog/article.html"
 slug = "comparison"
-draft = true
 +++
 
 {{ h2(text="Postman, Newman, Postwoman, Insomnia") }}

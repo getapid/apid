@@ -2,13 +2,14 @@ package config
 
 import (
 	"github.com/getapid/apid/common/transaction"
+	"github.com/getapid/apid/common/variables"
 )
 
 // Config holds the internal representation of the config
 type Config struct {
 	Version      string
 	APIKey       string
-	Variables    map[string]interface{}
+	Variables    variables.Variables
 	Transactions []transaction.Transaction
 }
 
@@ -16,7 +17,7 @@ type Config struct {
 type config struct {
 	Version             string                    `yaml:"version"`
 	APIKey              string                    `yaml:"apikey"`
-	Variables           map[string]interface{}    `yaml:"variables"`
+	Variables           variables.Variables       `yaml:"variables"`
 	Transactions        []transaction.Transaction `yaml:"transactions" validate:"unique=ID"`
 	SkipSSLVerification bool                      `yaml:"skip_ssl_verify"`
 }

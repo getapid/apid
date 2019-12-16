@@ -80,21 +80,10 @@ func mergeConfigs(configs []Config) (Config, error) {
 	var err error = nil
 
 	for _, other := range configs {
-		result.Variables = mergeVariables(result.Variables, other.Variables)
+		result.Variables = result.Variables.Merge(other.Variables)
 		result.Transactions = append(result.Transactions, other.Transactions...)
 	}
 	return result, err
-}
-
-func mergeVariables(this, other map[string]interface{}) map[string]interface{} {
-	result := make(map[string]interface{})
-	for key, value := range this {
-		result[key] = value
-	}
-	for key, value := range other {
-		result[key] = value
-	}
-	return result
 }
 
 func isFile(path string) bool {

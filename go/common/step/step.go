@@ -3,16 +3,17 @@ package step
 import (
 	"fmt"
 
+	"github.com/getapid/apid/common/variables"
 	"gopkg.in/yaml.v3"
 )
 
 // Step is the data for a single endpoint
 type Step struct {
-	ID        string                 `yaml:"id" validate:"required"`
-	Variables map[string]interface{} `yaml:"variables"`
-	Request   Request                `yaml:"request" validate:"required"`
-	Response  ExpectedResponse       `yaml:"expect"`
-	Export    Export                 `yaml:"export"`
+	ID        string              `yaml:"id" validate:"required"`
+	Variables variables.Variables `yaml:"variables"`
+	Request   Request             `yaml:"request" validate:"required"`
+	Response  ExpectedResponse    `yaml:"expect"`
+	Export    Export              `yaml:"export"`
 }
 
 // Request is a single step request data

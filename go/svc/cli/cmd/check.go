@@ -60,7 +60,7 @@ func checkRun(cmd *cobra.Command, args []string) error {
 
 	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
 
-	vars := variables.New(variables.WithVars(c.Variables), variables.WithEnv())
+	vars := c.Variables.Merge(variables.New(variables.WithEnv()))
 	ok := transactionRunner.Run(c.Transactions, vars)
 	if !ok {
 		os.Exit(1)

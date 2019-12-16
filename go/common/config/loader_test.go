@@ -7,6 +7,7 @@ import (
 
 	"github.com/getapid/apid/common/step"
 	"github.com/getapid/apid/common/transaction"
+	"github.com/getapid/apid/common/variables"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v2"
 )
@@ -93,17 +94,17 @@ func newConfigPair() (config, Config) {
 	external := config{
 		APIKey:              "",
 		SkipSSLVerification: true,
-		Variables: map[string]interface{}{
+		Variables: newVars(map[string]interface{}{
 			"key": "some value",
-		},
+		}),
 		Transactions: []transaction.Transaction{
 			{
 				ID:        "1234",
-				Variables: map[string]interface{}{"one": "1"},
+				Variables: newVars(map[string]interface{}{"one": "1"}),
 				Steps: []step.Step{
 					{
 						ID:        "non-empty",
-						Variables: map[string]interface{}{"two": "2"},
+						Variables: newVars(map[string]interface{}{"two": "2"}),
 						Request: step.Request{
 							Type:     "t",
 							Endpoint: "e",
@@ -153,9 +154,13 @@ func pbool(b bool) *bool {
 }
 
 func (s *LoaderSuite) tempFile() *os.File {
-	f, err := ioutil.TempFile("", "*****")
+	f, err := ioutil.TempFile("", "")
 	s.Require().NoError(err)
 	return f
+}
+
+func newVars(m map[string]interface{}) variables.Variables {
+	return variables.New(variables.WithVars(m))
 }
 
 func TestLoaderSuite(t *testing.T) {

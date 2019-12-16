@@ -37,7 +37,11 @@ func validateStruct(s interface{}, accErr error) error {
 	for i := 0; i < v.NumField(); i++ {
 		typeField := v.Type().Field(i)
 		typeOfTypeField := typeField.Type
-		field := v.Field(i).Interface()
+		f := v.Field(i)
+		if !f.CanInterface() { // e.g. if field is private
+			continue
+		}
+		field := f.Interface()
 
 		// Get the field tag value
 		tag := typeField.Tag.Get("validate")

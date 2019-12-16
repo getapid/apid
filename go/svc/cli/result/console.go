@@ -1,60 +1,66 @@
 package result
 
-//go:generate mockgen -destination=../mock/console_mock.go -package=mock github.com/getapid/apid/common/result Writer
-
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
+	"text/template"
 
 	"github.com/fatih/color"
+	"github.com/getapid/apid/common/log"
 	"github.com/getapid/apid/common/result"
-	"github.com/getapid/apid/common/step"
 )
+
+const templateExecuteMessage = "something went wrong displaying results; try again or report a bug at faq.getapid.com"
 
 var (
 	redFail = color.New(color.FgHiRed, color.Bold).Sprint("FAIL")
 	greenOk = color.New(color.FgHiGreen, color.Bold).Sprint("OK")
+	tmpl    *template.Template
 )
+
+func init() {
+	tmpl = template.New("output").Funcs(template.FuncMap{
+		"increment": increment,
+		"greenOk":   func() string { return greenOk },
+		"redFail":   func() string { return redFail },
+		"indent":    indent,
+		"time":      renderTime,
+		"add":       add,
+	})
+
+	_, err := tmpl.Parse(schema)
+	if err != nil {
+		fmt.Println(err)
+		tmpl, _ = tmpl.Parse("couldn't compile output template\n")
+	}
+}
 
 type consoleWriter struct {
 	successes, failures int
-	out                 indentedWriter
+	showTimings         bool
+	out                 io.Writer
 }
 
-func NewConsoleWriter(dest io.Writer) result.Writer {
+func NewConsoleWriter(dest io.Writer, displayTimings bool) result.Writer {
 	return &consoleWriter{
-		out: indentedWriter{
-			out: dest,
-		},
+		out:         dest,
+		showTimings: displayTimings,
 	}
 }
 
-func (w *consoleWriter) Write(result result.TransactionResult) {
-	w.count(result)
-	w.out.setIndent(0)
+func (w *consoleWriter) Write(r result.TransactionResult) {
+	w.count(r)
 
-	w.print(result.Id + ":\n")
+	data := struct {
+		result.TransactionResult
+		ShowTimings bool
+	}{r, w.showTimings}
 
-	w.out.setIndent(4)
-
-	for _, s := range result.Steps {
-		if !s.OK() {
-			w.printFailedStep(s)
-		} else {
-			w.printSuccStep(s)
-		}
+	err := tmpl.Execute(w.out, data)
+	if err != nil {
+		log.L.Debugf("parsing output template: %s", err)
+		fmt.Println(templateExecuteMessage)
 	}
-	w.out.setIndent(0)
-}
-
-func (w consoleWriter) print(args ...interface{}) {
-	_, _ = fmt.Fprint(w.out, args...)
-}
-
-func (w consoleWriter) printf(format string, args ...interface{}) {
-	_, _ = fmt.Fprintf(w.out, format, args...)
 }
 
 func (w *consoleWriter) count(result result.TransactionResult) {
@@ -63,7 +69,6 @@ func (w *consoleWriter) count(result result.TransactionResult) {
 	} else {
 		w.successes++
 	}
-	return
 }
 
 func isFailed(r result.TransactionResult) bool {
@@ -75,50 +80,14 @@ func isFailed(r result.TransactionResult) bool {
 	return false
 }
 
-func (w consoleWriter) printFailedStep(s step.Result) {
-	w.print(redFail + "\t" + s.Step.ID + "\n")
-
-	req := s.Step.Request
-
-	w.out.increaseIndent(4)
-	defer w.out.decreaseIndent(4)
-	w.printf("request: %s %s\n", req.Type, req.Endpoint)
-	w.out.increaseIndent(4)
-	if body := formatBody(req); len(body) != 0 {
-		w.print(formatBody(req) + "\n")
-	}
-	w.out.decreaseIndent(4)
-
-	w.print("errors:\n")
-	w.out.increaseIndent(4)
-	defer w.out.decreaseIndent(4)
-	for k, err := range s.Valid.Errors {
-		w.print(k + ":\n")
-		w.out.increaseIndent(4)
-		w.print(err + "\n")
-		w.out.decreaseIndent(4)
-	}
-}
-
-func formatBody(r step.Request) string {
-	switch r.Type {
-	case "json":
-		formatted := &bytes.Buffer{}
-		err := json.Indent(formatted, []byte(r.Body), "", "  ")
-		if err != nil {
-			return r.Body
-		}
-		return formatted.String()
-	default:
-		return r.Body
-	}
-}
-
-func (w consoleWriter) printSuccStep(s step.Result) {
-	w.print(greenOk + "\t\t" + s.Step.ID + "\n")
-}
-
 func (w consoleWriter) Close() {
-	total := w.failures + w.successes
-	w.printf("\nsuccessful transactions:\t%d/%d\nfailed transactions:\t\t%d/%d\n", w.successes, total, w.failures, total)
+	data := struct {
+		SuccessSteps, FailedSteps int
+	}{w.successes, w.failures}
+
+	err := tmpl.ExecuteTemplate(w.out, "closingLines", data)
+	if err != nil {
+		log.L.Debugf("parsing output template: %s", err)
+		fmt.Println(templateExecuteMessage)
+	}
 }

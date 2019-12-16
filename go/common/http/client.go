@@ -86,17 +86,18 @@ func (t *DefaultTracer) Tracer() *httptrace.ClientTrace {
 		GotFirstResponseByte: func() { t.firstResponseByte = time.Now() },
 		TLSHandshakeStart:    func() { t.tlsStart = time.Now() },
 		TLSHandshakeDone:     func(_ tls.ConnectionState, _ error) { t.tlsDone = time.Now() },
+		WroteRequest:         func(_ httptrace.WroteRequestInfo) { t.wroteRequest = time.Now() },
 	}
 }
 
 // Timings computes and returns the timings for a request
 func (t *DefaultTracer) Timings() Timings {
 	return Timings{
-		DNSLookup:        t.dnsStart.Sub(t.dnsDone),
-		TCPConnection:    t.connectStart.Sub(t.connectDone),
-		TLSHandshake:     t.tlsStart.Sub(t.tlsDone),
-		ServerProcessing: t.firstResponseByte.Sub(t.connectDone),
-		ContentTransfer:  t.wroteRequest.Sub(t.firstResponseByte),
+		DNSLookup:        t.dnsDone.Sub(t.dnsStart),
+		TCPConnection:    t.connectDone.Sub(t.connectStart),
+		TLSHandshake:     t.tlsDone.Sub(t.tlsStart),
+		ServerProcessing: t.firstResponseByte.Sub(t.wroteRequest),
+		ContentTransfer:  t.connectDone.Sub(t.firstResponseByte),
 	}
 }
 

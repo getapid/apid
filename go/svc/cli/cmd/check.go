@@ -14,7 +14,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var configFilepath string
+var (
+	configFilepath string
+	showTimings    bool
+)
 
 var checkCmd = &cobra.Command{
 	Use:   "check",
@@ -34,6 +37,7 @@ took to action each request`,
 func init() {
 	rootCmd.AddCommand(checkCmd)
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
+	checkCmd.Flags().BoolVarP(&showTimings, "timings", "", false, "output the durations of request steps")
 }
 
 func checkRun(cmd *cobra.Command, args []string) error {
@@ -47,7 +51,7 @@ func checkRun(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("the config failed validation: %v", err)
 	}
 
-	consoleWriter := cmdResult.NewConsoleWriter(cmd.OutOrStdout())
+	consoleWriter := cmdResult.NewConsoleWriter(cmd.OutOrStdout(), showTimings)
 	writer := result.NewMultiWriter(consoleWriter)
 
 	httpClient := http.NewTimedClient(http.DefaultClient)

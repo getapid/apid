@@ -28,7 +28,7 @@ jobs:
 
       - name: Go Test
         run: |
-          make go-test
+          make test
 
       - name: End to end tests
         run: |

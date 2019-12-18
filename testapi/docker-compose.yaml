@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  test-api:
+    build:
+      context: ..
+      dockerfile: testapi/dockerfile
+    ports:
+      - 80:80

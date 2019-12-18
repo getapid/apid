@@ -15,7 +15,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of APId",
 	Long:  `Print the version number of APId`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("APId v%s\n", version)
+		fmt.Printf("APId %s\n", version)
 	},
 }
 

@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  apid:
+    build:
+      context: ../../go
+      dockerfile: dockerfile
+    volumes: 
+      - ./config.yaml:/config.yaml

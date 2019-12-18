@@ -1,9 +1,0 @@
-version: "3"
-
-services:
-  apid:
-    build:
-      context: ../../
-      dockerfile: svc/cli/dockerfile
-    volumes: 
-      - ./config.yaml:/config.yaml

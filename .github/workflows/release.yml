@@ -33,7 +33,7 @@ jobs:
 
     - name: Go Test
       run: |
-        make go-test
+        make test
 
     - name: End to end tests
       run: |
@@ -42,7 +42,7 @@ jobs:
     - name: Build CLI executables
       run: |
         export VERSION="${GITHUB_REF:10}"
-        make go-build-cli-release
+        make build-release
 
     - name: Build docker cli images
       run: |
@@ -80,7 +80,7 @@ jobs:
         HOST_BUCKET: "%(bucket)s.fra1.digitaloceanspaces.com"
       run: |
         VERSION="${GITHUB_REF:10}"
-        cd go/bin/build
+        cd bin/build
         s3cmd put * s3://apid-production-space/cli/${VERSION}/ \
         --acl-public \
         --add-header=Cache-Control:max-age=86400 \

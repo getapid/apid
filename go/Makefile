@@ -1,5 +1,4 @@
 BIN:=bin/apid
-VERSION:=`cat ../version`
 OSARCHLIST:=`cat svc/cli/osarchlist`
 GOFLAGS:=-ldflags "-X github.com/getapid/apid/svc/cli/cmd.version=$(VERSION)"
 

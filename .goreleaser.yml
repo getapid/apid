@@ -34,6 +34,7 @@ changelog:
 
 archives:
   - id: default
+    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
     format_overrides:
       - goos: windows
@@ -46,13 +47,13 @@ archives:
       - goos: windows
         format: zip
 
-#dockers:
-#  - goos: linux
-#    goarch: amd64
-#    binaries:
-#      - apid
-#
-#    image_templates:
-#      - "getapid/apid:latest"
-#      - "getapid/apid:{{ .Tag }}"
-#    dockerfile: svc/cli/dockerfile
+dockers:
+  - goos: linux
+    goarch: amd64
+    binaries:
+      - apid
+
+    image_templates:
+      - "getapid/apid:latest"
+      - "getapid/apid:{{ .Version }}"
+    dockerfile: svc/cli/dockerfile

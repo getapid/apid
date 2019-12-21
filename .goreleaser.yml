@@ -16,11 +16,11 @@ builds:
     - '-X github.com/getapid/apid-cli/svc/cli/cmd.version={{ .Version }}'
   goos:
     - linux
-#  - openbsd
-#  - solaris
-#  - freebsd
-#  - darwin
-#  - windows
+    - openbsd
+    - solaris
+    - freebsd
+    - darwin
+    - windows
   goarch: [386, amd64, arm]
 
 checksum:
@@ -33,16 +33,8 @@ changelog:
   sort: asc
 
 archives:
-  - id: default
-    name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+  - name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
-    format_overrides:
-      - goos: windows
-        format: zip
-
-  - id: latest
-    format: tar.gz
-    name_template: "{{ .ProjectName }}-latest-{{ .Os }}-{{ .Arch }}"
     format_overrides:
       - goos: windows
         format: zip

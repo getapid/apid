@@ -11,7 +11,7 @@ You can find all APId documentation [here](https://www.getapid.com/docs/).
 
 ## First steps
 
-### Running the tests
+### Using APId
 ```bash
 apid check --config path/to/apid_config.yml
 ```

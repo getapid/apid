@@ -14,9 +14,8 @@ build-e2e: test-api-build
 build:
 	go build $(GOFLAGS) -o $(BIN) svc/cli/main.go
 
-build-release:
-	gox -osarch="$(OSARCHLIST)" -output="./bin/build/apid-$(VERSION)-{{.OS}}-{{.Arch}}" $(GOFLAGS) ./svc/cli/
-	gox -osarch="$(OSARCHLIST)" -output="./bin/latest/apid-latest-{{.OS}}-{{.Arch}}" $(GOFLAGS) ./svc/cli/
+release:
+	goreleaser release
 
 install:
 	go mod download

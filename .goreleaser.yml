@@ -1,0 +1,51 @@
+project_name: apid
+
+before:
+  hooks:
+    - go generate ./...
+    - go mod tidy
+
+builds:
+- main: svc/cli/main.go
+  env:
+    - CGO_ENABLED=0
+  binary: apid
+  ldflags:
+    - '-w'
+    - '-s'
+    - '-X github.com/getapid/apid-cli/svc/cli/cmd.version={{ .Version }}'
+  goos:
+    - linux
+    - openbsd
+    - solaris
+    - freebsd
+    - darwin
+    - windows
+  goarch: [386, amd64, arm]
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .ShortCommit }}"
+
+changelog:
+  sort: asc
+
+archives:
+  - name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+
+dockers:
+  - goos: linux
+    goarch: amd64
+    binaries:
+      - apid
+
+    image_templates:
+      - "getapid/apid:latest"
+      - "getapid/apid:{{ .Version }}"
+    dockerfile: svc/cli/dockerfile

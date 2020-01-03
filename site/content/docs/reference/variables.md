@@ -28,8 +28,12 @@ subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth
 
 {{ h3(text="Environment variables") }}
 
-These will contain anything environment variable that the APId CLI has inherited. Useful for injecting passwords or
+These will contain any environment variable that the APId CLI has inherited. Useful for injecting passwords or
 other kinds of secrets. They will be available like so: `"{{ env.PASSWORD }}"`
+
+{{ h3(text="Inside commands") }}
+
+Variables are also available inside commands (`{% %}`). See [commands](../commands) for details.
 
 {{ h2(text="Examples") }}
 

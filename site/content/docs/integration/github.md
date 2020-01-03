@@ -6,11 +6,6 @@ weight = 2
 sort_by = "weight"
 +++
 
-{{ h2(text="Summary") }}
-
-Integrating APId is simple because of the flexibility it offers - you can either use the official docker image, or if that doesn't suit your taste, 
-you can use the CLI straight from your shell.
-
 {{ h4(text="Docker") }}
 
 Currently, there is no official APId action for github workflows, but you can always use the CLI (see below).
@@ -31,7 +26,8 @@ jobs:
     steps:
       - name: run tests
         run: |
-            curl -o apid https://cdn.getapid.com/cli/latest/apid-latest-linux-amd64
+            wget https://github.com/getapid/apid-cli/releases/download/v<version>/apid-<version>-linux-amd64.tar.gz
+            tar -xzf apid-*.tzr.gz
             chmod u+x apid
             apid check -c path/to/apid.yaml
 ```

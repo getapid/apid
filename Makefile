@@ -15,7 +15,7 @@ build:
 	go build $(GOFLAGS) -o $(BIN) svc/cli/main.go
 
 release:
-	./goreleaser release --snapshot
+	goreleaser release --snapshot
 
 install:
 	go mod download

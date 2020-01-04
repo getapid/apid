@@ -21,7 +21,7 @@ response from your API. Most string values in the yaml config can contain templa
 
 {{ h3(text="Commands") }}
 
-Commands allow to execute shell commands (using your default `$SHELL`) and use the output inside the request. They can be used anywhere where templates
+Commands allow to execute shell commands (using your default `$SHELL`) and use the output inside the request. They can be used anywhere templates
 can. They use the `{% %}` delimiters. See [commands](../commands) for more details.
 
 {{ h3(text="Examples") }}

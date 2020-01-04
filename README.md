@@ -6,7 +6,7 @@ Powerful declarative end-to-end testing for APIs that works for you! No coding r
 You can find all APId documentation [here](https://www.getapid.com/docs/).
 
 ## Instalation
-1. Head to our [downloads page](https://www.getapid.com/download/) and select the download link for your operating system.
+1. Head to the [latest release](https://github.com/getapid/apid-cli/releases/latest) and select the binary for your operating system.
 2. Once downloaded open the archive and place the executable in a durectory on your PATH.
 
 ## First steps

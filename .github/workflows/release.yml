@@ -45,7 +45,8 @@ jobs:
         DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       run: |
         curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-        make release
+        docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+        PATH=$PATH:./bin/ make release
 
     - name: Set up zola 0.9.0
       run: |

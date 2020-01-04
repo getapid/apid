@@ -6,4 +6,5 @@ sort_by = "weight"
 template = "docs/root.html"
 +++
 
-In this section you'll learn how to integrate APId with your CI of choice.
+Integrating APId into any CI system is simple
+You can either use the official docker image, or if that doesn't suit your taste, you can use the CLI straight from the shell.

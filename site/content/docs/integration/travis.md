@@ -6,11 +6,6 @@ weight = 2
 sort_by = "weight"
 +++
 
-{{ h2(text="Summary") }}
-
-Integrating APId is simple because of the flexibility it offers - you can either use the official docker image, or if that doesn't suit your taste, 
-you can use the CLI straight from your shell.
-
 {{ h4(text="Docker") }}
 
 Due to the nature of Travis, using a docker image has no real benefits over using the CLI. That being said, you can still use it.
@@ -35,7 +30,8 @@ Integrating the CLI with Travis is the nois just as simple as using the docker i
 ---
 before_install:
   - docker run -v /path/to/apid.yaml:/apid.yaml run getapid/apid:latest check -c /apid.yaml
-  - curl -o apid https://cdn.getapid.com/cli/latest/apid-latest-linux-amd64
+  - wget https://github.com/getapid/apid-cli/releases/download/v<version>/apid-<version>-linux-amd64.tar.gz
+  - tar -xzf apid-*.tzr.gz
   - chmod u+x apid
 script:
   - apid check -c path/to/apid.yaml

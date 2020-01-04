@@ -23,7 +23,7 @@ Request specifies how to make the request - which endpoint to go to, what body t
 
 {{ h3(text="headers") }}
 
-{{ field(type="mapping", required="no", desc="Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header.") }}
+{{ field(type="mapping", required="no", desc="Headers to attach to the request. Keys may repeat. If keys repeat or the values are arrays, all the values are added to the header.") }}
 
 {{ h3(text="body") }}
 

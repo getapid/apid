@@ -9,7 +9,7 @@ weight = 200
 {{ h2(text="Summary") }}
 
 A transaction is a list of [steps](../step) which are executed sequentially. If a step fails, the whole
-transaction fails.
+transaction fails and further steps are not executed.
 
 {{ h2(text="Fields") }}
  
@@ -19,11 +19,11 @@ transaction fails.
  
 {{ h3(text="variables") }}
 
-{{ field(type="[`variables`](../variables)", required="no", desc="Variables scoped to this transaction") }}
+{{ field(type="[`variables`](../variables)", required="no", desc="Variables scoped to this transaction. See [variables](../variables)") }}
  
 {{ h3(text="steps") }}
 
-{{ field(type="[`[]step`](../step)", required="yes", desc="A list of steps") }}
+{{ field(type="[`[]step`](../step)", required="yes", desc="A list of steps. See [step](../step)") }}
 
 {{ h2(text="Examples") }}
 

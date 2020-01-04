@@ -8,7 +8,7 @@ weight = 190
 
 {{ h2(text="Summary") }}
 
-A step is a call to a single endpoint with optional validation of the response.
+A step is a call to a single endpoint. Optionally the response can be validated.
 
 {{ h2(text="Fields") }}
 
@@ -18,11 +18,11 @@ A step is a call to a single endpoint with optional validation of the response.
 
 {{ h3(text="request") }}
 
-{{ field(type="[`request`](../request)", required="yes", desc="The request to send") }}
+{{ field(type="[`request`](../request)", required="yes", desc="The request to send. See [step.request](../request)") }}
 
-{{ h3(text="response") }}
+{{ h3(text="expect") }}
 
-{{ field(type="[`response`](../response)", required="no", desc="Validation on the response") }}
+{{ field(type="[`response`](../response)", required="no", desc="Validation on the response. See [step.expect](../expect)") }}
 
 {{ h3(text="export") }}
 
@@ -59,4 +59,5 @@ steps:
     export:
       auth_header: "response.headers.X-APIDAUTH"
       auth_token: "response.body.access_token"
+      array_item: "response.body.array[2]"
 ```

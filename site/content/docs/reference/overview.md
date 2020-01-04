@@ -14,7 +14,7 @@ its response. Transactions bundle steps together to help you represent meaningfu
 
 {{ h3(text="Variables") }}
 
-APId has [variables](../variables) that can be inplaced throughout you steps and transactions.
+APId has [variables](../variables) that can be inplaced throughout your steps and transactions.
 Variables can be declared for the transaction or step scope or be global.
 They can also come from the environment, which can be handy for things like secrets and passwords, or from a
 response from your API. Most string values in the yaml config can contain templates (`{{ }}`).

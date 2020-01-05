@@ -8,11 +8,12 @@ sort_by = "weight"
 
 {{ h2(text="How to install") }}
 
-Head over to our [Download page](../../../download).
+Head over to the [Github releases page](https://github.com/getapid/apid-cli/releases/) and choose your platform and architecture.
 <br><br>
-This should get you a binary that can run as is. Just make sure to add execute permissions:
+This should get you an archive that contains the binary. For unix follow below are the instructions:
 <br><br>
 ```sh
+tar -xzf apid-*.tar.gz
 chmod u+x apid
 ./apid version
 ```

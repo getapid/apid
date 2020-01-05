@@ -14,10 +14,15 @@ its response. Transactions bundle steps together to help you represent meaningfu
 
 {{ h3(text="Variables") }}
 
-APId allows you to have [variables](../variables) that will be inplaced throughout your steps. Any string value in 
-the yaml config can contain templates. Variables can be declared for the transaction or step scope or be global.
+APId has [variables](../variables) that can be inplaced throughout your steps and transactions.
+Variables can be declared for the transaction or step scope or be global.
 They can also come from the environment, which can be handy for things like secrets and passwords, or from a
-response from your API.
+response from your API. Most string values in the yaml config can contain templates (`{{ }}`).
+
+{{ h3(text="Commands") }}
+
+Commands allow to execute shell commands (using your default `$SHELL`) and use the output inside the request. They can be used anywhere templates
+can. They use the `{% %}` delimiters. See [commands](../commands) for more details.
 
 {{ h3(text="Examples") }}
 
@@ -35,7 +40,8 @@ transactions:
         request:
           method: POST
           endpoint: "{{ var.api_url }}/auth"
-          body: "{{ env.USERNAME }}:{{ env.PASSWORD }}"
+          headers:
+            Authorization: "Basic {% echo -n $USERNAME:$PASSWORD | base64 %}"
         export:
           auth_header: "response.headers.X-APIDAUTH"
 

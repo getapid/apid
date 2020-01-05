@@ -25,15 +25,15 @@ You can use whatever commands you want, obviously you need to have them set up o
 
 {{ h3(text="Docker") }}
 
-The default docker image of APId is using alpine as the base image, thus it has very few executables pre-installed.
+The default docker image of APId is using alpine as the base image, therefore, it has very few executables pre-installed.
 If you need a more versatile docker image, feel free to build your own.
 
 {{ h2(text="Using variables") }}
 
-In certain cases, one might want to access [variables](./variables) from within commands. All the variables are exported 
+You can use step and transaction [variables](./variables) from within commands. All the variables are exported 
 for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd
 use `{% echo $STEP_ONE_AUTH_TOKEN %}`. Another example might be `{{ var.my-name }}`, which will be available as 
-`{% VAR_MY-NAME %}`.
+`{% VAR_MY_NAME %}`. Note that dashes are replaced with underscores because most shells don't accept dashes inside variable names.
 
 {{ h2(text="Examples") }}
 

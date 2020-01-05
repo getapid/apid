@@ -31,7 +31,7 @@ steps:
       endpoint: "{{ var.api_url }}/todos/{{ var.todo_id }}"
 ```
 
-the different sets:
+the different transactions and requests:
 * `transaction-1: GET http://localhost:8080/todos/1`
 * `transaction-2: GET http://localhost:8080/todos/2`
 * `transaction-3: GET https://jsonplaceholder.typicode.com/todos/1`

@@ -7,7 +7,7 @@ You can find all APId documentation [here](https://www.getapid.com/docs/).
 
 ## Instalation
 1. Head to the [latest release](https://github.com/getapid/apid-cli/releases/latest) and select the binary for your operating system.
-2. Once downloaded open the archive and place the executable in a durectory on your PATH.
+2. Once downloaded open the archive and place the executable in a directory on your `$PATH`.
 
 ## First steps
 

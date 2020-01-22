@@ -24,6 +24,10 @@ response from your API. Most string values in the yaml config can contain templa
 Commands allow to execute shell commands (using your default `$SHELL`) and use the output inside the request. They can be used anywhere templates
 can. They use the `{% %}` delimiters. See [commands](../commands) for more details.
 
+{{ h3(text="Skipping SSL verification") }}
+
+You can set `skip_ssl_verify: true` in the root level of the config to set APId to ignore all certificate errors.
+
 {{ h3(text="Examples") }}
 
 ```yaml

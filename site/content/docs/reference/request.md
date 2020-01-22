@@ -29,10 +29,6 @@ Request specifies how to make the request - which endpoint to go to, what body t
 
 {{ field(type="string", required="no", desc="A string of the body of the request") }}
 
-{{ h3(text="skip_ssl_verify") }}
-
-{{ field(type="bool", required="no", default="false" desc="Whether or not to ignore certificate errors") }}
-
 {{ h2(text="Examples") }}
 
 ```yaml

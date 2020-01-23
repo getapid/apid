@@ -1,0 +1,51 @@
+name: Release docs
+on:
+  push:
+    tags:
+      - '**'
+jobs:
+    release-docs:
+      name: Build docs
+      runs-on: ubuntu-latest
+      steps:
+
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Set up zola 0.9.0
+        run: |
+          wget -q -O - "https://github.com/getzola/zola/releases/download/v0.9.0/zola-v0.9.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
+
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Build static site
+        env:
+          CLICOLOR: 0
+        run: |
+          cd site
+          npm i
+          zola build --base-url https://getapid.com
+
+      - name: Set up s3cmd 2.0.1
+        run: |
+          sudo apt install s3cmd
+
+      - name: Publish static site
+        env:
+          SITE_NAME: unruffled-franklin-e163c9
+          NETLIFY_PERSONAL_TOKEN: ${{ secrets.NETLIFY_PERSONAL_TOKEN }}
+        run: |
+          cd site
+          zip -r site.zip public
+          curl -H "Content-Type: application/zip" \
+            -H "Authorization: Bearer ${NETLIFY_PERSONAL_TOKEN}" \
+            --data-binary "@site.zip" \
+            https://api.netlify.com/api/v1/sites/${SITE_NAME}.netlify.com/deploys
+
+      - name: Update sitemaps
+        run: |
+          curl https://www.google.com/webmasters/sitemaps/ping?sitemap=https://www.getapid.com/sitemap.xml || true
+          curl https://www.bing.com/ping?sitemap=https://www.getapid.com/sitemap.xml || true

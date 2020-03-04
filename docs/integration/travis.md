@@ -6,7 +6,6 @@ you can use the CLI straight from your shell.
 ## Docker
 
 Due to the nature of Travis, using a docker image has no real benefits over using the CLI. That being said, you can still use it.
-<br><br>
 
 ```yaml
 ---
@@ -21,7 +20,6 @@ script:
 ## CLI
 
 Integrating the CLI with Travis is the nois just as simple as using the docker image. Download the latest version of the CLI, make it executable and run it.
-<br><br>
 
 ```yaml
 ---

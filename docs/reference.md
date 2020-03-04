@@ -92,7 +92,7 @@ steps:
       endpoint: '{{ var.api_url }}/todos/1'
 ```
 
-# Step
+## Step
 
 A step is a call to a single endpoint with optional validation of the response.
 

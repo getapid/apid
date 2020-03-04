@@ -1,4 +1,5 @@
 # Installation
 
-- [CLI](cli.md)
-- [Docker](docker.md)
+* [CLI](cli.md)
+* [Docker](docker.md)
+

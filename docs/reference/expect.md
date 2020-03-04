@@ -1,34 +1,32 @@
-# Summary
+# expect
+
+## Summary
 
 Expect are the validations to be done on the response.
 
-# Fields
+## Fields
 
-## code
+### code
 
-{{ field(type="int", required="no", desc="The expected status code
+{{ field\(type="int", required="no", desc="The expected status code
 
-## body
+### body
 
-### body.type
+#### body.type
 
-This affect how some other fields are interpreted, such as `body.exact`.
-Currently only JSON and plaintext are supported.
+This affect how some other fields are interpreted, such as `body.exact`. Currently only JSON and plaintext are supported.
 
-### body.content
+#### body.content
 
 A string with the expected response body. See `body.exact` about more details
 
-### body.exact
+#### body.exact
 
-Whether or not to strictly validate the response body.
-If `false` and `body.type=json`, just the fields are recursively validated, but not scalar (ints, strings, etc.);
-for arrays, the fields of each element of the response array are validated recursively against the first element in the `expect` array.
-If `false` and `body.type=plaintext`, the the response needs to contain the `body.content`, but doesn't have to fully match it.
+Whether or not to strictly validate the response body. If `false` and `body.type=json`, just the fields are recursively validated, but not scalar \(ints, strings, etc.\); for arrays, the fields of each element of the response array are validated recursively against the first element in the `expect` array. If `false` and `body.type=plaintext`, the the response needs to contain the `body.content`, but doesn't have to fully match it.
 
-# Examples
+## Examples
 
-## Exact JSON
+### Exact JSON
 
 ```yaml
 expect:
@@ -46,42 +44,18 @@ expect:
       }
 ```
 
-<br>
-In this case an API response below on the left will pass validation, but the one of the right will not ("Boris" != "Bobby")
-<br><br>
+  
+ In this case an API response below on the left will pass validation, but the one of the right will not \("Boris" != "Bobby"\)   
+  
 
-<div class="columns">
-<div class="column is-6">
 
-```json
-{
-  "first_name": "Bobby",
-  "last_name": "Hounslow",
-  "address": {
-    "postcode": "TW4 7AE"
-  }
-}
-```
+ \`\`\`json { "first\_name": "Bobby", "last\_name": "Hounslow", "address": { "postcode": "TW4 7AE" } } \`\`\`
 
-</div>
+ \`\`\`json { "first\_name": "Boris", "last\_name": "Hounslow", "address": { "postcode": "TW4 7AE" } } \`\`\`
 
-<div class="column is-6">
+&lt;/div&gt;
 
-```json
-{
-  "first_name": "Boris",
-  "last_name": "Hounslow",
-  "address": {
-    "postcode": "TW4 7AE"
-  }
-}
-```
-
-</div>
-
-</div>
-
-## Non-exact JSON
+### Non-exact JSON
 
 ```yaml
 expect:
@@ -99,35 +73,10 @@ expect:
       }
 ```
 
-<br>
-In this case an API response below on the left will pass validation, but the one of the right won't ("code" != "postcode")
-<br><br>
+  
+ In this case an API response below on the left will pass validation, but the one of the right won't \("code" != "postcode"\)   
+  
 
-<div class="columns">
-<div class="column is-6">
 
-```json
-{
-  "first_name": "John",
-  "last_name": "Leicester",
-  "address": {
-    "postcode": "LE9 6HF"
-  }
-}
-```
+ \`\`\`json { "first\_name": "John", "last\_name": "Leicester", "address": { "postcode": "LE9 6HF" } } \`\`\` \`\`\`json { "first\_name": "John", "last\_name": "Leicester", "address": { "code": "LE9 6HF" } } \`\`\`
 
-</div>
-<div class="column is-6">
-
-```json
-{
-  "first_name": "John",
-  "last_name": "Leicester",
-  "address": {
-    "code": "LE9 6HF"
-  }
-}
-```
-
-</div>
-</div>

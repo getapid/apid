@@ -1,30 +1,32 @@
-# Summary
+# request
+
+## Summary
 
 Request specifies how to make the request - which endpoint to go to, what body to use, etc.
 
-# Fields
+## Fields
 
-## method
+### method
 
-{{ field(type="string", required="yes", desc="The HTTP method of the request
+{{ field\(type="string", required="yes", desc="The HTTP method of the request
 
-## endpoint
+### endpoint
 
-{{ field(type="string", required="yes", desc="The complete URL of the request
+{{ field\(type="string", required="yes", desc="The complete URL of the request
 
-## headers
+### headers
 
-{{ field(type="mapping", required="no", desc="Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header.
+{{ field\(type="mapping", required="no", desc="Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header.
 
-## body
+### body
 
-{{ field(type="string", required="no", desc="A string of the body of the request
+{{ field\(type="string", required="no", desc="A string of the body of the request
 
-## skip_ssl_verify
+### skip\_ssl\_verify
 
-{{ field(type="bool", required="no", default="false" desc="Whether or not to ignore certificate errors
+{{ field\(type="bool", required="no", default="false" desc="Whether or not to ignore certificate errors
 
-# Examples
+## Examples
 
 ```yaml
 request:
@@ -38,3 +40,4 @@ request:
       - "application/json"
       - "application/ld+json"
 ```
+

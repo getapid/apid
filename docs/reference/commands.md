@@ -1,35 +1,40 @@
-# Summary
+# commands
 
-Commands are a familiar way to manipulate variables. They allow you to run shell commands and use their output.
-There are practically no limitations as to what you can do.
+## Summary
 
-The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters,
-it uses `{%` and `%}`. For example `{% echo $ENV_VARIABLE %}`
+Commands are a familiar way to manipulate variables. They allow you to run shell commands and use their output. There are practically no limitations as to what you can do.
 
-# Executables
+The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses \`
 
-Commands are executed in the default shell (defined in `$SHELL`), or `/bin/sh` if none is set.
+`. For example`
 
-## CLI
+\`
+
+## Executables
+
+Commands are executed in the default shell \(defined in `$SHELL`\), or `/bin/sh` if none is set.
+
+### CLI
 
 You can use whatever commands you want, obviously you need to have them set up on you dev machine / build server.
 
-## Docker
+### Docker
 
-The default docker image of APId is using alpine as the base image, thus it has very few executables pre-installed.
-If you need a more versatile docker image, feel free to build your own.
+The default docker image of APId is using alpine as the base image, thus it has very few executables pre-installed. If you need a more versatile docker image, feel free to build your own.
 
-# Using variables
+## Using variables
 
-In certain cases, one might want to access [variables](./variables) from within commands. All the variables are exported
-for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd
-use `{% echo $STEP_ONE_AUTH_TOKEN %}`. Another example might be `{{ var.my-name }}`, which will be available as
-`{% VAR_MY-NAME %}`.
+In certain cases, one might want to access [variables](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/reference/variables/README.md) from within commands. All the variables are exported for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd use \`
 
-# Examples
+`. Another example might be, which will be available as`
+
+\`.
+
+## Examples
 
 ```yaml
 steps:
   request:
     endpoint: '{{ var.api_url }}/avengers/{% curl https://dynamic-avengers-api.io/random-avenger-id %}'
 ```
+

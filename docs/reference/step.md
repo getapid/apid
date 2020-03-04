@@ -1,31 +1,32 @@
-# Summary
+# step
+
+## Summary
 
 A step is a call to a single endpoint with optional validation of the response.
 
-# Fields
+## Fields
 
-## id
+### id
 
-{{ field(type="string", required="yes", desc="A string to uniquely identify a step within a transaction.
+{{ field\(type="string", required="yes", desc="A string to uniquely identify a step within a transaction.
 
-## request
+### request
 
-{{ field(type="[`request`](../request)", required="yes", desc="The request to send
+{{ field\(type="[`request`](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/request/README.md)", required="yes", desc="The request to send
 
-## response
+### response
 
-{{ field(type="[`response`](../response)", required="no", desc="Validation on the response
+{{ field\(type="[`response`](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/response/README.md)", required="no", desc="Validation on the response
 
-## export
+### export
 
-{{ field(type="mapping", required="no", desc="The variables to export; a mapping from variable names to JSON paths
-to the value in the response. You can export values from headers and JSON bodies. See the examples below.
+{{ field\(type="mapping", required="no", desc="The variables to export; a mapping from variable names to JSON paths to the value in the response. You can export values from headers and JSON bodies. See the examples below.
 
-## variables
+### variables
 
-{{ field(type="[`variables`](../variables)", required="no", desc="Variables scoped to this step
+{{ field\(type="[`variables`](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/variables/README.md)", required="no", desc="Variables scoped to this step
 
-# Examples
+## Examples
 
 ```yaml
 steps:
@@ -52,3 +53,4 @@ steps:
       auth_header: 'response.headers.X-APIDAUTH'
       auth_token: 'response.body.access_token'
 ```
+

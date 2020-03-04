@@ -1,7 +1,6 @@
 # TravisCI
 
-Integrating APId is simple because of the flexibility it offers - you can either use the official docker image, or if that doesn't suit your taste,
-you can use the CLI straight from your shell.
+Integrating APId is simple because of the flexibility it offers - you can either use the official docker image, or if that doesn't suit your taste, you can use the CLI straight from your shell.
 
 ## Docker
 
@@ -30,3 +29,4 @@ before_install:
 script:
   - apid check -c path/to/apid.yaml
 ```
+

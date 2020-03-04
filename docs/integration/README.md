@@ -4,8 +4,8 @@ APId is easily integratable with your CI tool of choice. You can add it as an ex
 
 Here are a few examples with the most common CI solutions out there:
 
-- [CircleCI](integration/circleci.md)
-- [Drone](integration/drone.md)
-- [Github actions](integration/github.md)
-- [Jenkins](integration/jenkins.md)
-- [TravisCI](integration/travis.md)
+- [CircleCI](circleci.md)
+- [Drone](drone.md)
+- [Github actions](github.md)
+- [Jenkins](jenkins.md)
+- [TravisCI](travis.md)

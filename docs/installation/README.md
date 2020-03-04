@@ -1,4 +1,4 @@
 # Installation
 
-- [CLI](installation/cli.md)
-- [Docker](installation/docker.md)
+- [CLI](cli.md)
+- [Docker](docker.md)

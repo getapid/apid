@@ -2,7 +2,7 @@
 
 ## Check
 
-Check will run all the transactions defined in `apid.yaml` in the current directory or optionally take a path to the config via the `-c|--config` flag. To get familiar with the syntax of a config file, see [Reference](../reference/README.md)
+Check will run all the transactions defined in `apid.yaml` in the current directory or optionally take a path to the config via the `-c` or `--config` flag. To get familiar with the syntax of a config file, see [Reference](../reference/README.md)
 
 ## Details
 

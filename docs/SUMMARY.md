@@ -1,6 +1,5 @@
 # Table of contents
 
-- [Initial page](README.md)
 - [Installation](installation/README.md)
   - [Docker](installation/docker.md)
   - [CLI](installation/cli.md)

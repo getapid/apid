@@ -1,128 +1,92 @@
 name: Release
 on:
   push:
-    branches:
-      - master
+    tags:
+      - "*"
 jobs:
   build-cli:
     name: Build cli
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.13
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+        id: go
 
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
-      id: go
+      - name: Set GOPATH
+        # temporary fix
+        # see https://github.com/actions/setup-go/issues/14
+        run: |
+          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
+          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+        shell: bash
 
-    - name: Set GOPATH
-      # temporary fix
-      # see https://github.com/actions/setup-go/issues/14
-      run: |
-        echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
-        echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
-      shell: bash
+      - name: Check out code
+        uses: actions/checkout@v1
 
-    - name: Check out code
-      uses: actions/checkout@v1
+      - name: Get Go dependencies
+        run: |
+          go get github.com/golang/mock/mockgen
+          go get github.com/mitchellh/gox
 
-    - name: Get Go dependencies
-      run: |
-        go get github.com/golang/mock/mockgen
-        go get github.com/mitchellh/gox
+      - name: Go Test
+        run: |
+          make go-test
 
-    - name: Go Test
-      run: |
-        make go-test
+      - name: End to end tests
+        run: |
+          make build-e2e e2e
 
-    - name: End to end tests
-      run: |
-        make build-e2e e2e
+      - name: Build CLI executables
+        run: |
+          make go-build-cli-release
 
-    - name: Build CLI executables
-      run: |
-        make go-build-cli-release
+      - name: Build docker cli images
+        run: |
+          export VERSION=$(cat version)
+          cd go
+          docker build -t getapid/apid:${VERSION} -f svc/cli/dockerfile .
+          docker tag getapid/apid:${VERSION} getapid/apid:latest
 
-    - name: Build docker cli images
-      run: |
-        export VERSION=$(cat version)
-        cd go
-        docker build -t getapid/apid:${VERSION} -f svc/cli/dockerfile .
-        docker tag getapid/apid:${VERSION} getapid/apid:latest
+      - name: Set up s3cmd 2.0.1
+        run: |
+          sudo apt install s3cmd
 
-    - name: Set up zola 0.9.0
-      run: |
-        wget -q -O - "https://github.com/getzola/zola/releases/download/v0.9.0/zola-v0.9.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
+      - name: Publish CLI
+        env:
+          ACCESS_KEY: "NXGZW6TX5E55CFJ574AR"
+          SECRET_KEY: ${{ secrets.DIGITAL_OCEAN_SPACE_SECRET_KEY }}
+          HOST_NAME: "fra1.digitaloceanspaces.com"
+          HOST_BUCKET: "%(bucket)s.fra1.digitaloceanspaces.com"
+        run: |
+          export VERSION=$(cat version)
+          cd go/bin/build
+          s3cmd put * s3://apid-production-space/cli/${VERSION}/ \
+          --acl-public \
+          --add-header=Cache-Control:max-age=86400 \
+          --recursive \
+          --access_key=${ACCESS_KEY} \
+          --secret_key=${SECRET_KEY} \
+          --host=${HOST_NAME} \
+          --host-bucket=${HOST_BUCKET}
 
+          cd ../latest
+          s3cmd put * s3://apid-production-space/cli/latest/ \
+          --acl-public \
+          --add-header=Cache-Control:max-age=86400 \
+          --recursive \
+          --access_key=${ACCESS_KEY} \
+          --secret_key=${SECRET_KEY} \
+          --host=${HOST_NAME} \
+          --host-bucket=${HOST_BUCKET}
 
-    - name: Set up node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-
-    - name: Build static site
-      env:
-        CLICOLOR: 0
-      run: |
-        cd site
-        npm i
-        zola build --base-url https://getapid.com
-
-    - name: Set up s3cmd 2.0.1
-      run: |
-        sudo apt install s3cmd
-
-    - name: Publish CLI
-      env:
-        ACCESS_KEY: "NXGZW6TX5E55CFJ574AR"
-        SECRET_KEY: ${{ secrets.DIGITAL_OCEAN_SPACE_SECRET_KEY }}
-        HOST_NAME: "fra1.digitaloceanspaces.com"
-        HOST_BUCKET: "%(bucket)s.fra1.digitaloceanspaces.com"
-      run: |
-        export VERSION=$(cat version)
-        cd go/bin/build
-        s3cmd put * s3://apid-production-space/cli/${VERSION}/ \
-        --acl-public \
-        --add-header=Cache-Control:max-age=86400 \
-        --recursive \
-        --access_key=${ACCESS_KEY} \
-        --secret_key=${SECRET_KEY} \
-        --host=${HOST_NAME} \
-        --host-bucket=${HOST_BUCKET}
-
-        cd ../latest
-        s3cmd put * s3://apid-production-space/cli/latest/ \
-        --acl-public \
-        --add-header=Cache-Control:max-age=86400 \
-        --recursive \
-        --access_key=${ACCESS_KEY} \
-        --secret_key=${SECRET_KEY} \
-        --host=${HOST_NAME} \
-        --host-bucket=${HOST_BUCKET}
-
-    - name: Publish static site
-      env:
-        SITE_NAME: unruffled-franklin-e163c9
-        NETLIFY_PERSONAL_TOKEN: ${{ secrets.NETLIFY_PERSONAL_TOKEN }}
-      run: |
-        cd site
-        zip -r site.zip public
-        curl -H "Content-Type: application/zip" \
-          -H "Authorization: Bearer ${NETLIFY_PERSONAL_TOKEN}" \
-          --data-binary "@site.zip" \
-          https://api.netlify.com/api/v1/sites/${SITE_NAME}.netlify.com/deploys
-
-    - name: Update sitemaps
-      run: |
-        curl https://www.google.com/webmasters/sitemaps/ping?sitemap=https://www.getapid.com/sitemap.xml || true
-        curl https://www.bing.com/ping?sitemap=https://www.getapid.com/sitemap.xml || true
-
-    - name: Publish docker cli images
-      env:
-        DOCKER_HUB_USERNAME: getapid
-        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      run: |
-        export VERSION=$(cat version)
-        echo "${DOCKER_HUB_PASSWORD}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
-        docker push getapid/apid:${VERSION}
-        docker push getapid/apid:latest
+      - name: Publish docker cli images
+        env:
+          DOCKER_HUB_USERNAME: getapid
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        run: |
+          export VERSION=$(cat version)
+          echo "${DOCKER_HUB_PASSWORD}" | docker login -u "${DOCKER_HUB_USERNAME}" --password-stdin
+          docker push getapid/apid:${VERSION}
+          docker push getapid/apid:latest

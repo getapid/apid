@@ -2,7 +2,7 @@
 
 ## Summary
 
-A transaction is a list of [steps](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/step/README.md) which are executed sequentially. If a step fails, the whole transaction fails.
+A transaction is a list of [steps](step/README.md) which are executed sequentially. If a step fails, the whole transaction fails.
 
 ## Fields
 
@@ -12,11 +12,11 @@ A transaction is a list of [steps](https://github.com/getapid/apid-cli/tree/2253
 
 ### variables
 
-{{ field\(type="[`variables`](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/variables/README.md)", required="no", desc="Variables scoped to this transaction
+{{ field\(type="[`variables`](variables/README.md)", required="no", desc="Variables scoped to this transaction
 
 ### steps
 
-{{ field\(type="[`[]step`](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/step/README.md)", required="yes", desc="A list of steps
+{{ field\(type="[`[]step`](step/README.md)", required="yes", desc="A list of steps
 
 ## Examples
 
@@ -30,4 +30,3 @@ steps:
       method: 'GET'
       endpoint: '{{ var.api_url }}/todos/1'
 ```
-

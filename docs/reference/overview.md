@@ -2,11 +2,11 @@
 
 ## Transactions and steps
 
-An APId configuration file consists of [transactions](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/transactions/README.md) which in turn consist of [steps](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/steps/README.md). Steps are the basic elements of the configuration. They specify how to make a request and then how to validate its response. Transactions bundle steps together to help you represent meaningful stories.
+An APId configuration file consists of [transactions](transactions/README.md) which in turn consist of [steps](steps/README.md). Steps are the basic elements of the configuration. They specify how to make a request and then how to validate its response. Transactions bundle steps together to help you represent meaningful stories.
 
 ## Variables
 
-APId allows you to have [variables](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/variables/README.md) that will be inplaced throughout your steps. Any string value in the yaml config can contain templates. Variables can be declared for the transaction or step scope or be global. They can also come from the environment, which can be handy for things like secrets and passwords, or from a response from your API.
+APId allows you to have [variables](variables/README.md) that will be inplaced throughout your steps. Any string value in the yaml config can contain templates. Variables can be declared for the transaction or step scope or be global. They can also come from the environment, which can be handy for things like secrets and passwords, or from a response from your API.
 
 ## Examples
 
@@ -47,4 +47,3 @@ transactions:
                 "completed": false
               }
 ```
-

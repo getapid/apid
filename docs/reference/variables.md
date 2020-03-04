@@ -10,7 +10,7 @@ These are declared either in the transaction, step or the root yaml document. Th
 
 ## Exported variables
 
-Each step can export a set of variables. This is useful when you want to make a request and then use part of the response in another request. For example, when you authenticate to get a token and then use this token in subsequent requests. See [step](https://github.com/getapid/apid-cli/tree/22534ec0dafbcd65c14c4b649fbab9b5f7ae7398/docs/step/README.md) about the exact syntax of exporting variables in a step. Exported variables will be available in subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth_token }}"`
+Each step can export a set of variables. This is useful when you want to make a request and then use part of the response in another request. For example, when you authenticate to get a token and then use this token in subsequent requests. See [step](step/README.md) about the exact syntax of exporting variables in a step. Exported variables will be available in subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth_token }}"`
 
 ## Environment variables
 
@@ -24,4 +24,3 @@ variables:
   subtitle: 'in a {{ var.place }} far far away {{ env.DATABASE_USER }} accidentally dropped all tables'
   year: 2187
 ```
-

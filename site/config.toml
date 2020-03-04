@@ -1,6 +1,0 @@
-base_url = "https://example.com"
-compile_sass = true
-highlight_code = true
-build_search_index = true
-default_language = "en"
-generate_rss = true

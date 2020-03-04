@@ -26,6 +26,8 @@ Each step can export a set of variables. This is useful when you want to make a 
 
 These will contain anything environment variable that the APId CLI has inherited. Useful for injecting passwords or other kinds of secrets. They will be available like so: `"{{ env.PASSWORD }}"`
 
+### Example
+
 ```yaml
 variables:
   title: 'A long time ago'
@@ -59,13 +61,15 @@ You can use step and transaction variables from within commands. All the variabl
 
 \`. Note that dashes are replaced with underscores because most shells don't accept dashes inside variable names.
 
+### Example
+
 ```yaml
 steps:
   request:
     endpoint: '{{ var.api_url }}/avengers/{% curl https://dynamic-avengers-api.io/random-avenger-id %}'
 ```
 
-## Transactions
+## Transaction
 
 A transaction is a list of [steps](reference.md/#step) which are executed sequentially. If a step fails, the whole transaction fails.
 
@@ -75,7 +79,7 @@ A transaction is a list of [steps](reference.md/#step) which are executed sequen
 | variables | [`variables`](reference.md/#variables) | no       | Variables scoped to this transaction        |
 | steps     | [`[]step`](reference.md/#step)         | yes      | A list of steps to execute                  |
 
-## Example
+### Example
 
 ```yaml
 id: 'transaction-one'
@@ -88,7 +92,7 @@ steps:
       endpoint: '{{ var.api_url }}/todos/1'
 ```
 
-# Steps
+# Step
 
 A step is a call to a single endpoint with optional validation of the response.
 
@@ -100,7 +104,7 @@ A step is a call to a single endpoint with optional validation of the response.
 | expect    | [`expect`](reference.md/#expect)       | no       | How to validate the response                                         |
 | export    | [`export`](reference.md/#export)       | no       | Data to export from this step as variables to be used in other steps |
 
-## Example
+### Example
 
 ```yaml
 steps:
@@ -139,7 +143,7 @@ Request specifies what request to make - which endpoint to go to, what body to u
 | headers  | mapping | no       | Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header. |
 | body     | string  | no       | A string of the body of the request                                                                        |
 
-## Example
+### Example
 
 ```yaml
 request:
@@ -164,7 +168,7 @@ Expect will define what we are expecting as a valid response from the API.
 | headers | mapping                    | no       | What headers to expect          |
 | body    | [body](reference.md/#body) | no       | What body to expect             |
 
-## Example
+### Example
 
 ```yaml
 expect:
@@ -194,6 +198,8 @@ On the other hand, if `type` is `string` and `exact` is:
 | type    | enum   | no       | The type of the reponse, either `json` or `string` |
 | content | string | no       | What content of the body to expect                 |
 | exact   | bool   | no       | Is this the entire body, or a part of it           |
+
+### Example
 
 ```yaml
 body:

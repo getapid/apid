@@ -1,8 +1,8 @@
-# APId test suite configuration reference
+# Reference
 
 The APId tests are configured using one or more `YAML` files. These `YAML` files define what checks and what steps each check has to perform.
 
-For more information on how to setup your environemnt, please follow our [installation guide](../installation/README.md).
+For more information on how to setup your environemnt, please follow our [installation guide](https://github.com/getapid/apid-cli/tree/c89ab8593880509f8996788a4c2628616cf89aeb/installation/README.md).
 
 ## Introduction
 
@@ -20,7 +20,7 @@ These are declared either in the transaction, step or the root yaml document. Th
 
 ### Exported variables
 
-Each step can export a set of variables. This is useful when you want to make a request and then use part of the response in another request. For example, when you authenticate to get a token and then use this token in subsequent requests. See [step](#step) about the exact syntax of exporting variables in a step. Exported variables will be available in subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth_token }}"`
+Each step can export a set of variables. This is useful when you want to make a request and then use part of the response in another request. For example, when you authenticate to get a token and then use this token in subsequent requests. See [step](reference.md#step) about the exact syntax of exporting variables in a step. Exported variables will be available in subsequent steps by using the step id that exported them; e.g `"{{ step_one.auth_token }}"`
 
 ### Environment variables
 
@@ -39,11 +39,11 @@ variables:
 
 Commands are a familiar way to manipulate variables. They allow you to run shell commands and use their output. There are practically no limitations as to what you can do.
 
-The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses `{\%` and `\%}`. For example `{% echo $ENV_VARIABLE %}`
+The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses `{%` and `%}`. For example `{% echo $ENV_VARIABLE %}`
 
 ### Executables
 
-Commands are executed in the default shell (defined in `$SHELL`), or `/bin/sh` if none is set.
+Commands are executed in the default shell \(defined in `$SHELL`\), or `/bin/sh` if none is set.
 
 #### CLI
 
@@ -55,7 +55,11 @@ The default docker image of APId is using alpine as the base image, therefore, i
 
 ### Using variables
 
-You can use step and transaction variables from within commands. All the variables are exported for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd use `{% echo $STEP_ONE_AUTH_TOKEN %}`. Another example might be `{{ var.my-name }}`, which will be available as `{% VAR_MY_NAME %}`. Note that dashes are replaced with underscores because most shells don't accept dashes inside variable names.
+You can use step and transaction variables from within commands. All the variables are exported for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd use \`
+
+`. Another example might be, which will be available as`
+
+\`. Note that dashes are replaced with underscores because most shells don't accept dashes inside variable names.
 
 ### Examples
 
@@ -64,3 +68,4 @@ steps:
   request:
     endpoint: '{{ var.api_url }}/avengers/{% curl https://dynamic-avengers-api.io/random-avenger-id %}'
 ```
+

@@ -10,14 +10,14 @@ Maybe because we don't have time, maybe because we aren't exactly sure how or ma
 remember to do it. In this post we will talk about adding authentication to your API.
 
 Authentication is the process of proving that you are who you say you are (which is different from authorization).
-It is often that you want authentication on your API endpoints. 
+It is often that you want authentication on your API endpoints.
 For example, not everyone should be able to use your API. Or it will come in quite handy if you know exactly who is
 using it. This blog post is going to show you how to add an industry-proven authentication mechanism to an API in Go.
 
 Before starting I should mention that this article assumes you are familiar with Go.
 If not, you can head over to the [tour of Go](https://tour.golang.org/list) first.
 
-{{ h2(text="A simple web API") }}
+{{ h2(text="A simple web API
 
 We are going to start off with a simple server serving HTTP. We are using HTTP because it's simpler to implement, but
 you should always use HTTPS (a really nice [talk on that by Eric Chiang](https://www.youtube.com/watch?v=VwPQKS9Njv0)).
@@ -63,17 +63,19 @@ func main() {
 
 Simple enough. We define the data type of a `beer` and an `inventory` of two beers.
 We start an HTTP server listening on port 8080.
-We provide a handler function (`ListBeers`) for that server. Go is going to forward every request 
-that comes on port 8080 to the `ListBeers` function we wrote. 
+We provide a handler function (`ListBeers`) for that server. Go is going to forward every request
+that comes on port 8080 to the `ListBeers` function we wrote.
 What `ListBeers` does is convert our inventory of beers to JSON so that they can be
 sent back to whoever made the request.
 
-You can test it out with `curl` in the terminal: 
+You can test it out with `curl` in the terminal:
+
 ```sh
 curl localhost:8080/beer
 ```
 
 This should return (formatted here):
+
 ```json
 [
   {
@@ -94,13 +96,13 @@ This should return (formatted here):
 The problem with this is that now everyone can send a request and read our list of beers.
 We want to make sure that only people we know can see our list of beers.
 
-{{ h2(text="Verifying users") }}
+{{ h2(text="Verifying users
 
-The simplest way of verifying who a user is is by checking their username and password. However, sending these 
+The simplest way of verifying who a user is is by checking their username and password. However, sending these
 constantly increases the risk of them being compromised. And if you needed any additional information about the user
 such as their full name or location, you need a separate secure store for that. Queue [**JWT**](https://jwt.io/) tokens.
 
-{{ h3(text="JWT") }}
+{{ h3(text="JWT
 
 JWT tokens are short-lived pieces of text that prove the identity of a user
 (or provide an assertion, if we had to use proper terms).
@@ -121,9 +123,9 @@ It contains three parts separated by dots:
 
 1. A **header** containing information about the cryptographic algorithm that is used to sign the token.
 
-2. **Payload** which is defined by whoever issues the token. 
-It typically contains the expiration date of the token, when it was issued, who issued it, username of
-the user, etc. But it can contain practically anything.
+2. **Payload** which is defined by whoever issues the token.
+   It typically contains the expiration date of the token, when it was issued, who issued it, username of
+   the user, etc. But it can contain practically anything.
 
 3. A **signature**; this is the combined payload and header encrypted with the secret key and then hashed.
 
@@ -145,14 +147,14 @@ In our case it's only the user's name and the expiry time of the token as a Unix
 }
 ```
 
-{{ h2(text="JWT tokens in Go") }}
+{{ h2(text="JWT tokens in Go
 
 JWT tokens may seem complex but we will see that integrating them into our beer API isn't going to be difficult.
 We are going to use a package for dealing with JWT called [jwt-go](https://github.com/dgrijalva/jwt-go).
 
 First, we are going to look at issuing tokens.
 
-{{ h3(text="Issuing JWT") }}
+{{ h3(text="Issuing JWT
 
 We will need a place to keep our list of users and their passwords so that we can look them up when a user comes for a token.
 For now a `map` should do the job:
@@ -240,36 +242,41 @@ func main() {
   log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
 ```
+
 <br>
 
-1. We get the username and password that the user sent. If they didn't send any, we reply with 
-status 400 (Bad Request).
+1. We get the username and password that the user sent. If they didn't send any, we reply with
+   status 400 (Bad Request).
 2. Next, we check if the user actually exists in our records and if their password matches what we have.
-If not, we reply with status 401 (Unauthorized)
+   If not, we reply with status 401 (Unauthorized)
 3. We proceed to construct the claims we will include in the token. We keep them simple by specifying only the expiry
-time of the token and the user's username.
-4. The next step is to create and sign the JWT token. We create the token by providing the claims and 
-the algorithm we want to use for signing it. Then we pass in our secret key and let `jwt-go` do its magic.
-5. Now that we have the token we need to pack it in a consumable way. We do the same as we did for 
-our beer list.
+   time of the token and the user's username.
+4. The next step is to create and sign the JWT token. We create the token by providing the claims and
+   the algorithm we want to use for signing it. Then we pass in our secret key and let `jwt-go` do its magic.
+5. Now that we have the token we need to pack it in a consumable way. We do the same as we did for
+   our beer list.
 
 You can try it out again with `curl`:
+
 ```sh
 curl localhost:8080/login -u john.doe:Pa55word
 ```
 
 Which should return something along the lines of:
+
 ```json
-{"access_token":"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzQ4ODYwMjEsInVzZXJuYW1lIjoiam9obi5kb2UifQ.2UTAODiz_zogbQOuoUWkdGWh_DikfGfzw10Z-B6znZbRCl-8uWfsFCHiMSlGqHXFW2E_nzdx4vq0QgRaqya2OQ"}
+{
+  "access_token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzQ4ODYwMjEsInVzZXJuYW1lIjoiam9obi5kb2UifQ.2UTAODiz_zogbQOuoUWkdGWh_DikfGfzw10Z-B6znZbRCl-8uWfsFCHiMSlGqHXFW2E_nzdx4vq0QgRaqya2OQ"
+}
 ```
 
-{{ h3(text="Validating JWT") }}
+{{ h3(text="Validating JWT
 
 We have a way of issuing tokens but our `/beer` endpoint is still open to everyone.
 We will require the user to send their token in the request so that we can verify they
 have access to view our list of beers. The convention for sending JWT tokens is that the token
 is sent as a `Bearer` token in an `Authorization` header. Sending a `Bearer` token just means that
-you need to prepend `Bearer ` to the token.
+you need to prepend `Bearer` to the token.
 
 ```go
 func ListBeers(w http.ResponseWriter, r *http.Request) {
@@ -291,23 +298,24 @@ func ListBeers(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-Validation has less steps than issuing a token. 
+Validation has less steps than issuing a token.
 
 1. Get the request header.
-2. Remove the `Bearer ` prefix
+2. Remove the `Bearer` prefix
 3. Pass is to the `jwt-go` package along with our secret key.
 
 Out we get a parsed token. Because we used some of the standard claims, `jwt-go` is able to check
 the expiry time of the token for us. If the parsing went OK and if the token hasn't expired yet,
 we return the list of beers.
 
-Note that we don't use all the claims we included in our token (namely the username). This is because 
+Note that we don't use all the claims we included in our token (namely the username). This is because
 we verify the token using our secret key. It is a secret key, so we know that it's only us who could have issued the token.
 And we already check the user during login, so everything is good.
 If, for example, the token has a long expiry time and our list of users may change during that time,
 then it might be worth it also checking if the username in the token is valid.
 
 You can give it a go yourself. Just make sure to replace `<token>` with a valid token you have from your `/login`:
+
 ```sh
 curl localhost:8080/beer -H 'Authorization:Bearer <token>'
 ```
@@ -315,13 +323,13 @@ curl localhost:8080/beer -H 'Authorization:Bearer <token>'
 We have successfully added authentication to our API. You can now easily access control your API and be
 certain that it is accessed only by the right users.
 
-{{ h3(text="Adding authentication on multiple endpoints") }}
+{{ h3(text="Adding authentication on multiple endpoints
 
 We have the code to check a user token. However, it is mixed with the code that lists beers.
-If you want to extend that to many endpoints, you will need to 
+If you want to extend that to many endpoints, you will need to
 either move it to a function that each handler calls or copy it in every handler. None of these are really convenient.
-We are going to implement a middleware to solve this. The middleware is just a wrapper handler that 
-verifies a token and then delegates to another handler if the token is valid. 
+We are going to implement a middleware to solve this. The middleware is just a wrapper handler that
+verifies a token and then delegates to another handler if the token is valid.
 
 ```go
 func Authenticated(handler http.HandlerFunc) http.HandlerFunc {
@@ -351,17 +359,17 @@ func ListBeers(w http.ResponseWriter, r *http.Request) {
 
 We write a function that takes a function and returns a function.
 `Authenticated` takes a handler (`handler`) and wraps it in another handler function.
-The wrapper first checks the token from the request and then calls the wrapped handler function (`handler`). 
+The wrapper first checks the token from the request and then calls the wrapped handler function (`handler`).
 `Authenticated` then returns the wrapper.
 
 You may notice that the function for listing beers is back to how it
-was in the very first example. Now it doesn't have check itself the user that is making the request. 
+was in the very first example. Now it doesn't have check itself the user that is making the request.
 The middleware ensures that. We also update the `main` to use the middleware:
 
 ```go
 func main() {
   // wire the ListBeers function to handle requests sent to /beers
-  http.HandleFunc("/beer", Authenticated(ListBeers)) 
+  http.HandleFunc("/beer", Authenticated(ListBeers))
   // ...
 }
 ```
@@ -371,7 +379,7 @@ Using this middleware you can wrap any handler function you have. You will not h
 
 You can give it another go with `curl` to make sure it works.
 
-{{ h2(text="Making sure it always works") }}
+{{ h2(text="Making sure it always works
 
 We built a secure API, open only to certain users. However, now the process of verifying that the API works
 isn't that trivial. You need to send a request, get a token, copy the token, send it in a header, then finally verify
@@ -384,30 +392,30 @@ To test the authenticated `/beer` endpoint our `apid.yaml` will contain the foll
 
 ```yaml
 transactions:
-  - id: "authenticated-list-beers"
+  - id: 'authenticated-list-beers'
     variables:
-      api_url: "http://localhost:8080"
+      api_url: 'http://localhost:8080'
     steps:
-      - id: "auth"
+      - id: 'auth'
         request:
-          method: "POST"
-          endpoint: "{{ var.api_url }}/login"
+          method: 'POST'
+          endpoint: '{{ var.api_url }}/login'
           headers:
             Authorization: "Basic {% echo -n 'john.doe:Pa55word' | base64 %}"
         export:
-          auth_token: "response.body.access_token"
+          auth_token: 'response.body.access_token'
 
-      - id: "list-beers"
+      - id: 'list-beers'
         request:
-          method: "GET"
-          endpoint: "{{ var.api_url }}/beer"
+          method: 'GET'
+          endpoint: '{{ var.api_url }}/beer'
           headers:
-            Authorization: "Bearer {{ auth.auth_token }}"
+            Authorization: 'Bearer {{ auth.auth_token }}'
         expect:
           code: 200
           body:
             exact: false
-            type: "json"
+            type: 'json'
             content: |
               [
                 {
@@ -441,6 +449,7 @@ structure of what we want: an array of items, each of which has a `"name"`, `"ty
 The values of these don't matter so we leave them as empty strings.
 
 You can now save this in a file named `apid.yaml` and run APId to see if it works:
+
 ```sh
 apid check
 ```
@@ -449,7 +458,7 @@ You can now add this to CI pipelines or schedule its runs to ensure your product
 
 For more details on the syntax of the APId YAML config you can have a glimpse of our [documentation](../../docs).
 
-{{ h2(text="Conclusion") }}
+{{ h2(text="Conclusion
 
 We learned a useful way of adding authentication to our APIs that is considered an industry standard.
 We did it in such a way that you can easily modify any existing APIs without touching the core logic

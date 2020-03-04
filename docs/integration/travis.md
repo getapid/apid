@@ -1,17 +1,9 @@
-+++
-title = "Travis"
-description = "How to integrate APId with Travis CI"
-template = "docs/article.html"
-weight = 2
-sort_by = "weight"
-+++
-
-{{ h2(text="Summary
+# Summary
 
 Integrating APId is simple because of the flexibility it offers - you can either use the official docker image, or if that doesn't suit your taste,
 you can use the CLI straight from your shell.
 
-{{ h4(text="Docker
+## Docker
 
 Due to the nature of Travis, using a docker image has no real benefits over using the CLI. That being said, you can still use it.
 <br><br>
@@ -26,7 +18,7 @@ script:
   - docker run -v /path/to/apid.yaml:/apid.yaml run getapid/apid:latest check -c /apid.yaml
 ```
 
-{{ h4(text="CLI
+## CLI
 
 Integrating the CLI with Travis is the nois just as simple as using the docker image. Download the latest version of the CLI, make it executable and run it.
 <br><br>

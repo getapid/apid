@@ -1,17 +1,9 @@
-+++
-title = "transaction.matrix"
-description = "Running the same transaction with different variables"
-template = "docs/article.html"
-sort_by = weight
-weight = 205
-+++
-
-{{ h2(text="Summary
+# Summary
 
 A matrix allows running the same transaction with different variables. Different combinations of the variables will be
 generated and the transaction will be ran with all of them. The order in which they are generated is not guaranteed.
 
-{{ h2(text="Examples
+# Examples
 
 The below will send four different requests in four different transactions.
 

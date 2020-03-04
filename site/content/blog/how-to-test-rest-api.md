@@ -5,7 +5,7 @@ template = "blog/article.html"
 slug = "how-to-test-rest-api"
 +++
 
-Testing software is, and always will be, the best way to keep bugs and regression out of your product. REST-ful APIs are no exception to this rule. 
+Testing software is, and always will be, the best way to keep bugs and regression out of your product. REST-ful APIs are no exception to this rule.
 
 Writing an API is only half the battle. You need to test it as well, otherwise you'll never be sure if it works or not. There are two main categories of testing - white box and black box testing.
 
@@ -13,11 +13,11 @@ White box testing is when you're breaking down the program in pieces and test ea
 
 On the other hand, black box testing treats the system as a whole and tests it as is. For example, end-to-end testing is considered black box testing.
 
-{{ h2(text="White box testing") }}
+{{ h2(text="White box testing
 
 One of the two main ways to validate your API functions as expected is testing the source code directly.
 
-{{ h2(text="Unit testing") }}
+{{ h2(text="Unit testing
 
 It has several different levels of testing. The first one is unit testing. This is where each individual encapsulated block of code, be it a function, or a class / component, is tested in isolation.
 
@@ -27,7 +27,7 @@ All popular languages out there have either a build in support for unit testing,
 
 For example [unit tests](https://golang.org/pkg/testing/) in GO are first class citizens, where as in Java you need to use a third party framework, like [JUnit](https://junit.org/junit5/).
 
-{{ h2(text="Integration testing") }}
+{{ h2(text="Integration testing
 
 One level above unit testing is integration testing. This type of test makes sure components in your system behave as expected when wired together.
 
@@ -37,7 +37,7 @@ Imagine having a component that stores types of beer in a database. An unit test
 
 Just like unit tests, integration tests can be written with the same frameworks and tools, making them, again, first class citizens.
 
-{{ h2(text="Black box testing") }}
+{{ h2(text="Black box testing
 
 End-to-end testing is taking what an integration test is and expanding it one step further.
 
@@ -53,7 +53,7 @@ The other way is to use a declatarive fraemwork for end-to-end testing like [AP
 
 The only thing you need to provide are the test cases and a version of your stack to run the tests versus. Simple and easy. Learn more about APId [here](https://www.getapid.com/)
 
-{{ h2(text="Conclusion") }}
+{{ h2(text="Conclusion
 
 RESTful API testing comprises of three different stages - unit, integration and end-to-end testing. Each of them covers a different set of functionality.
 

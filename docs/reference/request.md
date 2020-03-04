@@ -1,38 +1,30 @@
-+++
-title = "step.request"
-description = "The block specifying what request to make"
-template = "docs/article.html"
-sort_by = weight
-weight = 198
-+++
-
-{{ h2(text="Summary
+# Summary
 
 Request specifies how to make the request - which endpoint to go to, what body to use, etc.
 
-{{ h2(text="Fields
+# Fields
 
-{{ h3(text="method
+## method
 
 {{ field(type="string", required="yes", desc="The HTTP method of the request
 
-{{ h3(text="endpoint
+## endpoint
 
 {{ field(type="string", required="yes", desc="The complete URL of the request
 
-{{ h3(text="headers
+## headers
 
 {{ field(type="mapping", required="no", desc="Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header.
 
-{{ h3(text="body
+## body
 
 {{ field(type="string", required="no", desc="A string of the body of the request
 
-{{ h3(text="skip_ssl_verify
+## skip_ssl_verify
 
 {{ field(type="bool", required="no", default="false" desc="Whether or not to ignore certificate errors
 
-{{ h2(text="Examples
+# Examples
 
 ```yaml
 request:

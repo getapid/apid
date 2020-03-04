@@ -1,25 +1,17 @@
-+++
-title = "Overview"
-description = "The structure of the YAML configuration file"
-template = "docs/article.html"
-sort_by = weight
-weight = 10
-+++
-
-{{ h3(text="Transactions and steps
+# Transactions and steps
 
 An APId configuration file consists of [transactions](../transactions) which in turn consist of [steps](../steps). Steps
 are the basic elements of the configuration. They specify how to make a request and then how to validate
 its response. Transactions bundle steps together to help you represent meaningful stories.
 
-{{ h3(text="Variables
+# Variables
 
 APId allows you to have [variables](../variables) that will be inplaced throughout your steps. Any string value in
 the yaml config can contain templates. Variables can be declared for the transaction or step scope or be global.
 They can also come from the environment, which can be handy for things like secrets and passwords, or from a
 response from your API.
 
-{{ h3(text="Examples
+# Examples
 
 ```yaml
 version: 1

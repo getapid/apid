@@ -1,39 +1,31 @@
-+++
-title = "step"
-description = "A step is a call to a single endpoint"
-template = "docs/article.html"
-sort_by = weight
-weight = 190
-+++
-
-{{ h2(text="Summary
+# Summary
 
 A step is a call to a single endpoint with optional validation of the response.
 
-{{ h2(text="Fields
+# Fields
 
-{{ h3(text="id
+## id
 
 {{ field(type="string", required="yes", desc="A string to uniquely identify a step within a transaction.
 
-{{ h3(text="request
+## request
 
 {{ field(type="[`request`](../request)", required="yes", desc="The request to send
 
-{{ h3(text="response
+## response
 
 {{ field(type="[`response`](../response)", required="no", desc="Validation on the response
 
-{{ h3(text="export
+## export
 
 {{ field(type="mapping", required="no", desc="The variables to export; a mapping from variable names to JSON paths
 to the value in the response. You can export values from headers and JSON bodies. See the examples below.
 
-{{ h3(text="variables
+## variables
 
 {{ field(type="[`variables`](../variables)", required="no", desc="Variables scoped to this step
 
-{{ h2(text="Examples
+# Examples
 
 ```yaml
 steps:

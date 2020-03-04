@@ -1,42 +1,34 @@
-+++
-title = "step.expect"
-description = "The block specifying what response you are expecting"
-template = "docs/article.html"
-sort_by = weight
-weight = 192
-+++
-
-{{ h2(text="Summary
+# Summary
 
 Expect are the validations to be done on the response.
 
-{{ h2(text="Fields
+# Fields
 
-{{ h3(text="code
+## code
 
 {{ field(type="int", required="no", desc="The expected status code
 
-{{ h3(text="body
+## body
 
-{{ h4(text="body.type
+### body.type
 
-{{ field(type="string", required="no", default="plaintext", desc="This affect how some other fields are interpreted, such as `body.exact`.
+This affect how some other fields are interpreted, such as `body.exact`.
 Currently only JSON and plaintext are supported.
 
-{{ h4(text="body.content
+### body.content
 
-{{ field(type="string", required="no", desc="A string with the expected response body. See `body.exact` about more details
+A string with the expected response body. See `body.exact` about more details
 
-{{ h4(text="body.exact
+### body.exact
 
-{{ field(type="bool", required="no", default="true", desc="Whether or not to strictly validate the response body.
+Whether or not to strictly validate the response body.
 If `false` and `body.type=json`, just the fields are recursively validated, but not scalar (ints, strings, etc.);
 for arrays, the fields of each element of the response array are validated recursively against the first element in the `expect` array.
 If `false` and `body.type=plaintext`, the the response needs to contain the `body.content`, but doesn't have to fully match it.
 
-{{ h2(text="Examples
+# Examples
 
-{{ h3(text="Exact JSON
+## Exact JSON
 
 ```yaml
 expect:
@@ -89,7 +81,7 @@ In this case an API response below on the left will pass validation, but the one
 
 </div>
 
-{{ h3(text="Non-exact JSON
+## Non-exact JSON
 
 ```yaml
 expect:

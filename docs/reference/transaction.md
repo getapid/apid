@@ -1,31 +1,23 @@
-+++
-title = "transaction"
-description = "A sequence of steps"
-template = "docs/article.html"
-sort_by = weight
-weight = 200
-+++
-
-{{ h2(text="Summary
+# Summary
 
 A transaction is a list of [steps](../step) which are executed sequentially. If a step fails, the whole
 transaction fails.
 
-{{ h2(text="Fields
+# Fields
 
-{{ h3(text="id
+## id
 
 {{ field(type="string", required="yes", desc="A string to uniquely identify a transaction
 
-{{ h3(text="variables
+## variables
 
 {{ field(type="[`variables`](../variables)", required="no", desc="Variables scoped to this transaction
 
-{{ h3(text="steps
+## steps
 
 {{ field(type="[`[]step`](../step)", required="yes", desc="A list of steps
 
-{{ h2(text="Examples
+# Examples
 
 ```yaml
 id: 'transaction-one'

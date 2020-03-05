@@ -53,11 +53,10 @@ The default docker image of APId is using alpine as the base image, therefore, i
 
 ### Using variables
 
-You can use step and transaction variables from within commands. All the variables are exported for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd use \`
-
-`. Another example might be, which will be available as`
-
-\`. Note that dashes are replaced with underscores because most shells don't accept dashes inside variable names.
+You can use step and transaction [variables](./variables) from within commands. All the variables are exported
+for use in commands as `$VAR_CAPITALIZEDNAMEOFVARIABLE`, e.g if you want to use `"{{ step_one.auth_token }}"` in a command, you'd
+use `{% echo $STEP_ONE_AUTH_TOKEN %}`. Another example might be `{{ var.my-name }}`, which will be available as
+`{% VAR_MY_NAME %}`. Note that dashes are replaced with underscores because most shells don't accept dashes inside variable names.
 
 ```yaml
 steps:
@@ -69,11 +68,11 @@ steps:
 
 A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction fails.
 
-| Field | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| id | string | yes | A string to uniquely identify a transaction |
-| variables | [`variables`](reference.md#variables) | no | Variables scoped to this transaction |
-| steps | [`[]step`](reference.md#step) | yes | A list of steps to execute |
+| Field     | Type                                  | Required | Description                                 |
+| :-------- | :------------------------------------ | :------- | :------------------------------------------ |
+| id        | string                                | yes      | A string to uniquely identify a transaction |
+| variables | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction        |
+| steps     | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                  |
 
 ```yaml
 id: 'transaction-one'
@@ -90,13 +89,13 @@ steps:
 
 A step is a call to a single endpoint with optional validation of the response.
 
-| Field | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| id | string | yes | A string to uniquely identify a step within a transaction |
-| variables | [`variables`](reference.md#variables) | no | Variables scoped to this step |
-| request | [`request`](reference.md#request) | yes | The request to send |
-| expect | [`expect`](reference.md#expect) | no | How to validate the response |
-| export | [`export`](reference.md#export) | no | Data to export from this step as variables to be used in other steps |
+| Field     | Type                                  | Required | Description                                                          |
+| :-------- | :------------------------------------ | :------- | :------------------------------------------------------------------- |
+| id        | string                                | yes      | A string to uniquely identify a step within a transaction            |
+| variables | [`variables`](reference.md#variables) | no       | Variables scoped to this step                                        |
+| request   | [`request`](reference.md#request)     | yes      | The request to send                                                  |
+| expect    | [`expect`](reference.md#expect)       | no       | How to validate the response                                         |
+| export    | [`export`](reference.md#export)       | no       | Data to export from this step as variables to be used in other steps |
 
 ```yaml
 steps:
@@ -128,12 +127,12 @@ steps:
 
 Request specifies what request to make - which endpoint to go to, what body to use, etc.
 
-| Field | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| method | string | yes | The HTTP method of the request |
-| endpoint | string | yes | The URL of the request |
-| headers | mapping | no | Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header. |
-| body | string | no | A string of the body of the request |
+| Field    | Type    | Required | Description                                                                                                |
+| :------- | :------ | :------- | :--------------------------------------------------------------------------------------------------------- |
+| method   | string  | yes      | The HTTP method of the request                                                                             |
+| endpoint | string  | yes      | The URL of the request                                                                                     |
+| headers  | mapping | no       | Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header. |
+| body     | string  | no       | A string of the body of the request                                                                        |
 
 ```yaml
 request:
@@ -152,11 +151,11 @@ request:
 
 Expect will define what we are expecting as a valid response from the API.
 
-| Field | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| code | int | no | The status code of the response |
-| headers | mapping | no | What headers to expect |
-| body | [body](reference.md#body) | no | What body to expect |
+| Field   | Type                      | Required | Description                     |
+| :------ | :------------------------ | :------- | :------------------------------ |
+| code    | int                       | no       | The status code of the response |
+| headers | mapping                   | no       | What headers to expect          |
+| body    | [body](reference.md#body) | no       | What body to expect             |
 
 ```yaml
 expect:
@@ -173,19 +172,19 @@ When specifying the type of response, the `exact` value has the following behavi
 
 If the `type` is `json` and `exact` is:
 
-* `true`: will make sure the JSON content match recursively for every key and value.
-* `false`: will check if the keys present in the `body` are also present in the responses body and if their respective values match.
+- `true`: will make sure the JSON content match recursively for every key and value.
+- `false`: will check if the keys present in the `body` are also present in the responses body and if their respective values match.
 
 On the other hand, if `type` is `string` and `exact` is:
 
-* `true`: will perform an equals comparison.
-* `false`: will check if the provided `body` is a substring of the responses body.
+- `true`: will perform an equals comparison.
+- `false`: will check if the provided `body` is a substring of the responses body.
 
-| Field | Type | Required | Description |
-| :--- | :--- | :--- | :--- |
-| type | enum | no | The type of the reponse, either `json` or `string` |
-| content | string | no | What content of the body to expect |
-| exact | bool | no | Is this the entire body, or a part of it |
+| Field   | Type   | Required | Description                                        |
+| :------ | :----- | :------- | :------------------------------------------------- |
+| type    | enum   | no       | The type of the reponse, either `json` or `string` |
+| content | string | no       | What content of the body to expect                 |
+| exact   | bool   | no       | Is this the entire body, or a part of it           |
 
 ```yaml
 body:
@@ -196,4 +195,3 @@ body:
       "name": "John Doe"
     }
 ```
-

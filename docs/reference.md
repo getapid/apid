@@ -2,7 +2,7 @@
 
 The APId tests are configured using one or more `YAML` files. These `YAML` files define what checks and what steps each check has to perform.
 
-For more information on how to setup your environment, please follow our [installation guide](../installation).
+For more information on how to setup your environment, please follow our [installation guide](https://github.com/getapid/apid-cli/tree/f70eeed52c3849135585cf5ef043d0e293d677ec/installation/README.md).
 
 ## Introduction
 
@@ -37,7 +37,11 @@ variables:
 
 Commands are a familiar way to manipulate variables. They allow you to run shell commands and use their output. There are practically no limitations as to what you can do.
 
-The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses `{%` and `%}`. For example `{% echo $ENV_VARIABLE %}`
+The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses \`
+
+`. For example`
+
+\`
 
 ### Executables
 
@@ -67,13 +71,13 @@ steps:
 
 ## Transaction
 
-A transaction is a list of [steps](reference.md/#step) which are executed sequentially. If a step fails, the whole transaction fails.
+A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction fails.
 
-| Field     | Type                                   | Required | Description                                 |
-| --------- | -------------------------------------- | -------- | ------------------------------------------- |
-| id        | string                                 | yes      | A string to uniquely identify a transaction |
-| variables | [`variables`](reference.md/#variables) | no       | Variables scoped to this transaction        |
-| steps     | [`[]step`](reference.md/#step)         | yes      | A list of steps to execute                  |
+| Field | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| id | string | yes | A string to uniquely identify a transaction |
+| variables | [`variables`](reference.md#variables) | no | Variables scoped to this transaction |
+| steps | [`[]step`](reference.md#step) | yes | A list of steps to execute |
 
 ```yaml
 id: 'transaction-one'
@@ -90,13 +94,13 @@ steps:
 
 A step is a call to a single endpoint with optional validation of the response.
 
-| Field     | Type                                   | Required | Description                                                          |
-| --------- | -------------------------------------- | -------- | -------------------------------------------------------------------- |
-| id        | string                                 | yes      | A string to uniquely identify a step within a transaction            |
-| variables | [`variables`](reference.md/#variables) | no       | Variables scoped to this step                                        |
-| request   | [`request`](reference.md/#request)     | yes      | The request to send                                                  |
-| expect    | [`expect`](reference.md/#expect)       | no       | How to validate the response                                         |
-| export    | [`export`](reference.md/#export)       | no       | Data to export from this step as variables to be used in other steps |
+| Field | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| id | string | yes | A string to uniquely identify a step within a transaction |
+| variables | [`variables`](reference.md#variables) | no | Variables scoped to this step |
+| request | [`request`](reference.md#request) | yes | The request to send |
+| expect | [`expect`](reference.md#expect) | no | How to validate the response |
+| export | [`export`](reference.md#export) | no | Data to export from this step as variables to be used in other steps |
 
 ```yaml
 steps:
@@ -128,12 +132,12 @@ steps:
 
 Request specifies what request to make - which endpoint to go to, what body to use, etc.
 
-| Field    | Type    | Required | Description                                                                                                |
-| -------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------- |
-| method   | string  | yes      | The HTTP method of the request                                                                             |
-| endpoint | string  | yes      | The URL of the request                                                                                     |
-| headers  | mapping | no       | Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header. |
-| body     | string  | no       | A string of the body of the request                                                                        |
+| Field | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| method | string | yes | The HTTP method of the request |
+| endpoint | string | yes | The URL of the request |
+| headers | mapping | no | Headers to attach to the request. Keys may repeat. If keys repeat, all the values are added to the header. |
+| body | string | no | A string of the body of the request |
 
 ```yaml
 request:
@@ -152,11 +156,11 @@ request:
 
 Expect will define what we are expecting as a valid response from the API.
 
-| Field   | Type                       | Required | Description                     |
-| ------- | -------------------------- | -------- | ------------------------------- |
-| code    | int                        | no       | The status code of the response |
-| headers | mapping                    | no       | What headers to expect          |
-| body    | [body](reference.md/#body) | no       | What body to expect             |
+| Field | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| code | int | no | The status code of the response |
+| headers | mapping | no | What headers to expect |
+| body | [body](reference.md#body) | no | What body to expect |
 
 ```yaml
 expect:
@@ -173,19 +177,19 @@ When specifying the type of response, the `exact` value has the following behavi
 
 If the `type` is `json` and `exact` is:
 
-- `true`: will make sure the JSON content match recursively for every key and value.
-- `false`: will check if the keys present in the `body` are also present in the responses body and if their respective values match.
+* `true`: will make sure the JSON content match recursively for every key and value.
+* `false`: will check if the keys present in the `body` are also present in the responses body and if their respective values match.
 
 On the other hand, if `type` is `string` and `exact` is:
 
-- `true`: will perform an equals comparison.
-- `false`: will check if the provided `body` is a substring of the responses body.
+* `true`: will perform an equals comparison.
+* `false`: will check if the provided `body` is a substring of the responses body.
 
-| Field   | Type   | Required | Description                                        |
-| ------- | ------ | -------- | -------------------------------------------------- |
-| type    | enum   | no       | The type of the reponse, either `json` or `string` |
-| content | string | no       | What content of the body to expect                 |
-| exact   | bool   | no       | Is this the entire body, or a part of it           |
+| Field | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| type | enum | no | The type of the reponse, either `json` or `string` |
+| content | string | no | What content of the body to expect |
+| exact | bool | no | Is this the entire body, or a part of it |
 
 ```yaml
 body:
@@ -196,3 +200,4 @@ body:
       "name": "John Doe"
     }
 ```
+

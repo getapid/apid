@@ -4,7 +4,9 @@ Integrating APId is simple because of the flexibility it offers - you can either
 
 ## Docker
 
-Using the official docker image is really simple, the only thing you need to do is use it as the base image for that job.
+Using the official docker image is really simple, the only thing you need to do is use it as the base image for that job.   
+  
+
 
 ```groovy
 pipeline {
@@ -22,7 +24,9 @@ pipeline {
 
 ## CLI
 
-Integrating the CLI is just as simple as using the docker image. Download the latest version of the CLI, make it executable and run it.
+Integrating the CLI is just as simple as using the docker image. Download the latest version of the CLI, make it executable and run it.   
+  
+
 
 ```groovy
 pipeline {

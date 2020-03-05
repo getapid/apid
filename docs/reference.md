@@ -37,11 +37,7 @@ variables:
 
 Commands are a familiar way to manipulate variables. They allow you to run shell commands and use their output. There are practically no limitations as to what you can do.
 
-The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses \`
-
-`. For example`
-
-\`
+The syntax for commands is very similar to the syntax of variables, but instead of using `{{` and `}}` as as delimiters, it uses `{%` and `%}`. For example `{$ echo $ENV_VARIABLE $}`
 
 ### Executables
 

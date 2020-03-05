@@ -8,7 +8,9 @@ Currently, there is no official APId action for github workflows, but you can al
 
 ## CLI
 
-Integrating the CLI is quite straight forward - download the latest version of the CLI, make it executable and run it.
+Integrating the CLI is quite straight forward - download the latest version of the CLI, make it executable and run it.   
+  
+
 
 ```yaml
 ---

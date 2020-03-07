@@ -5,12 +5,12 @@ import (
 	"github.com/getapid/apid-cli/common/variables"
 )
 
-// Config holds the internal representation of the config
+// Config holds the internal representation of the config. It has yaml tags to allow to marshalling
 type Config struct {
-	Version      string
-	APIKey       string
-	Variables    variables.Variables
-	Transactions []transaction.Transaction
+	Version      string                    `yaml:"version"`
+	APIKey       string                    `yaml:"api_key"`
+	Variables    variables.Variables       `yaml:"variables"`
+	Transactions []transaction.Transaction `yaml:"transactions"`
 }
 
 // Config holds all the config data from the config yaml file

@@ -16,6 +16,6 @@ Resolves #(issue)
 
 - [ ] I have performed a self-review of my own code
 - [ ] Go code is formatted with `gofmt`
-- [ ] I have made corresponding changes to the docs in `site/content/docs` and in the `README`
+- [ ] I have made corresponding changes to the docs in `/docs` and in the `README`
 - [ ] I have added tests (unit and/or end-to-end) that prove my fix is effective or that my feature works
 - [ ] Any dependent changes have been merged and published (in downstream modules)

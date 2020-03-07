@@ -23,7 +23,7 @@ type Request struct {
 	Endpoint            string  `yaml:"endpoint" validate:"required"`
 	Headers             Headers `yaml:"headers"`
 	Body                string  `yaml:"body"`
-	SkipSSLVerification bool
+	SkipSSLVerification bool    `yaml:"skip_ssl"`
 }
 
 type ExpectedResponse struct {

@@ -29,10 +29,14 @@ func New(opts ...option) Variables {
 
 func (v *Variables) UnmarshalYAML(value *yaml.Node) error {
 	vars := make(map[string]interface{})
-	v.data = map[string]interface{}{
-		varNamespace: vars,
+	err := value.Decode(&vars)
+	if err != nil {
+		return err
 	}
-	return value.Decode(&vars)
+	v.data = map[string]interface{}{
+		varNamespace: tryToStringMaps(vars),
+	}
+	return nil
 }
 
 func (v Variables) MarshalYAML() (interface{}, error) {
@@ -104,9 +108,9 @@ func mergeMaps(this, other map[string]interface{}) map[string]interface{} {
 	for key, newVal := range other {
 		if existingVal, ok := this[key]; ok {
 			// if the existing value isn't mergable we skip it
-			if existingMap, ok := existingVal.(map[string]interface{}); ok {
-				// if the new value isn't mergable we skip it
-				if newMap, ok := newVal.(map[string]interface{}); ok {
+			if existingMap, ok := tryToStringMap(existingVal); ok {
+				// if the new value isn't mergable we overwrite the existing value
+				if newMap, ok := tryToStringMap(newVal); ok {
 					this[key] = mergeMaps(existingMap, newMap)
 					continue
 				}
@@ -116,6 +120,49 @@ func mergeMaps(this, other map[string]interface{}) map[string]interface{} {
 	}
 
 	return this
+}
+
+// tryToStringMaps recursively runs tryToStringMap on every value in the map and returns the result.
+// If tryToStringMap returned false, tryToStringMaps leaves the original value in place.
+func tryToStringMaps(val interface{}) interface{} {
+	strMap, ok := tryToStringMap(val)
+	if !ok {
+		return val
+	}
+
+	// now try recursively running every value of strMap through tryToStringMap
+	recStrMap := make(map[string]interface{}, len(strMap))
+	for k, v := range strMap {
+		recStrMap[k] = tryToStringMaps(v)
+	}
+	return recStrMap
+}
+
+// tryToStringMap returns val as map[string]interface{} and true if val is easily convertible to that.
+// It returns nil and false if it is not easily convertible.
+//
+// If val is already map[string]interface{}, val and true is directly returned.
+// If val is map[interface{}]interface{} and each key is actually a string,
+// then a map[string]interface{} will be returned. Otherwise nil and false will be returned.
+func tryToStringMap(val interface{}) (map[string]interface{}, bool) {
+	stringMap, ok := val.(map[string]interface{})
+	if ok {
+		return stringMap, true
+	}
+
+	interfaceMap, ok := val.(map[interface{}]interface{})
+	if !ok {
+		return nil, false
+	}
+	stringMap = make(map[string]interface{}, len(interfaceMap))
+	for k, v := range interfaceMap {
+		if strK, ok := k.(string); ok {
+			stringMap[strK] = v
+		} else {
+			return nil, false
+		}
+	}
+	return stringMap, true
 }
 
 func (v Variables) DeepCopy() Variables {

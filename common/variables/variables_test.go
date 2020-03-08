@@ -238,6 +238,48 @@ func (s *VarsSuite) TestMerge() {
 				},
 			},
 		},
+		{
+			// sometimes mappings come as map[interface{}]interface{}
+			v1: Variables{
+				data: map[string]interface{}{
+					varNamespace: map[string]interface{}{
+						"mapping": map[interface{}]interface{}{
+							"1": "val1",
+						},
+						// this is [string]interface{}, but will be merged with [interface{}]interface{}
+						"mapping2": map[string]interface{}{
+							"2": "val2",
+						},
+					},
+				},
+			},
+			v2: Variables{
+				data: map[string]interface{}{
+					varNamespace: map[string]interface{}{
+						"mapping": map[interface{}]interface{}{
+							"11": "val11",
+						},
+						"mapping2": map[interface{}]interface{}{
+							"22": "val22",
+						},
+					},
+				},
+			},
+			expVars: Variables{
+				data: map[string]interface{}{
+					varNamespace: map[string]interface{}{
+						"mapping": map[string]interface{}{
+							"1":  "val1",
+							"11": "val11",
+						},
+						"mapping2": map[string]interface{}{
+							"2":  "val2",
+							"22": "val22",
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for i, t := range testCases {

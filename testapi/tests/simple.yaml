@@ -5,7 +5,7 @@ transactions:
       - id: health-endpoint-test-get
         request:
           method: GET
-          endpoint: "{{ var.api_url }}/health?"
+          endpoint: "{{ var.api.url }}/health?"
         expect:
           code: 200
           body:
@@ -16,7 +16,7 @@ transactions:
       - id: echo-endpoint-test-post
         request:
           method: POST
-          endpoint: "{{ var.api_url }}/echo"
+          endpoint: "{{ var.api.url }}/echo"
           body: "some text h3re"
         expect:
           code: 200

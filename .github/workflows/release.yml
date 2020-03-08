@@ -26,10 +26,6 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v1
 
-    - name: Get Go dependencies
-      run: |
-        go get github.com/golang/mock/mockgen
-
     - name: Go Test
       run: |
         make test

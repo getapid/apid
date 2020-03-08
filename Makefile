@@ -23,7 +23,7 @@ install:
 mock:
 	go generate ./...
 
-test: mock
+test:
 	go test $(GOFLAGS) ./...
 
 e2e-test: build

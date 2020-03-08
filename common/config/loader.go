@@ -101,7 +101,9 @@ func isFile(path string) bool {
 func applySSLFlag(skipSSL bool, txs []transaction.Transaction) {
 	for _, tx := range txs {
 		for j := range tx.Steps {
-			tx.Steps[j].Request.SkipSSLVerification = skipSSL
+			if tx.Steps[j].Request.SkipSSLVerification != nil {
+				tx.Steps[j].Request.SkipSSLVerification = &skipSSL
+			}
 		}
 	}
 }

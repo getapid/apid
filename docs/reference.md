@@ -68,12 +68,12 @@ steps:
 
 A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction fails.
 
-| Field           | Type                                  | Required | Description                                                                    |
-| :--------       | :------------------------------------ | :------- | :------------------------------------------                                    |
-| id              | string                                | yes      | A string to uniquely identify a transaction                                    |
-| variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction                                           |
-| steps           | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                                                     |
-| skip_ssl_verify | bool                                  | no       | Skip SSL certificate verification on all steps, overwrites step-specific flags |
+| Field           | Type                                  | Required | Description                                                                        |
+| :--------       | :------------------------------------ | :------- | :------------------------------------------                                        |
+| id              | string                                | yes      | A string to uniquely identify a transaction                                        |
+| variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction                                               |
+| steps           | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                                                         |
+| skip_ssl_verify | bool                                  | no       | Skip SSL certificate verification on all steps, step-specific flags overwrite this |
 
 ```yaml
 id: 'transaction-one'

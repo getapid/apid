@@ -27,7 +27,10 @@ func (e *httpExecutor) do(request Request) (*http.Response, error) {
 		return nil, err
 	}
 
-	req.SkipVerify = request.SkipSSLVerification
+	req.SkipVerify = false
+	if request.SkipSSLVerification != nil {
+		req.SkipVerify = *request.SkipSSLVerification
+	}
 	for k, v := range request.Headers {
 		for _, subV := range v {
 			req.Header.Add(k, subV)

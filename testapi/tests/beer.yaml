@@ -1,7 +1,9 @@
 ---
 version: 1
 variables:
-  api_url: http://localhost:80
+  api:
+    url: http://localhost:80
+    abc: 123 # this makes yaml unmarshalling return map[interface{}]interface{}, so it's here just to trigger that
 transactions:
   - id: authenticated-transaction
     matrix:
@@ -12,7 +14,7 @@ transactions:
           auth: "am9obi5kb2U6UGE1NXdvcmQ="
         request:
           method: POST
-          endpoint: "{{ var.api_url }}/auth"
+          endpoint: "{{ var.api.url }}/auth"
           headers:
             Authorization: "Basic {{ var.auth }}"
         expect:
@@ -25,7 +27,7 @@ transactions:
       - id: get-beers
         request:
           method: GET
-          endpoint: "{{ var.api_url }}/beer"
+          endpoint: "{{ var.api.url }}/beer"
           headers:
             Authorization: "Bearer {{ auth.auth_token }}"
             Test: "{{ auth.test_header }}"
@@ -48,7 +50,7 @@ transactions:
       - id: get-beer-1
         request:
           method: GET
-          endpoint: "{{ var.api_url }}/beer/{{ var.beer_id }}"
+          endpoint: "{{ var.api.url }}/beer/{{ var.beer_id }}"
           headers:
             Authorization: "Bearer {{ auth.auth_token }}"
         expect:

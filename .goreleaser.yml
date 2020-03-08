@@ -2,7 +2,6 @@ project_name: apid
 
 before:
   hooks:
-    - go generate ./...
     - go mod tidy
 
 builds:

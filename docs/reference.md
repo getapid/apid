@@ -68,11 +68,12 @@ steps:
 
 A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction fails.
 
-| Field     | Type                                  | Required | Description                                 |
-| :-------- | :------------------------------------ | :------- | :------------------------------------------ |
-| id        | string                                | yes      | A string to uniquely identify a transaction |
-| variables | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction        |
-| steps     | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                  |
+| Field           | Type                                  | Required | Description                                                                    |
+| :--------       | :------------------------------------ | :------- | :------------------------------------------                                    |
+| id              | string                                | yes      | A string to uniquely identify a transaction                                    |
+| variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction                                           |
+| steps           | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                                                     |
+| skip_ssl_verify | bool                                  | no       | Skip SSL certificate verification on all steps, overwrites step-specific flags |
 
 ```yaml
 id: 'transaction-one'
@@ -89,13 +90,14 @@ steps:
 
 A step is a call to a single endpoint with optional validation of the response.
 
-| Field     | Type                                  | Required | Description                                                          |
-| :-------- | :------------------------------------ | :------- | :------------------------------------------------------------------- |
-| id        | string                                | yes      | A string to uniquely identify a step within a transaction            |
-| variables | [`variables`](reference.md#variables) | no       | Variables scoped to this step                                        |
-| request   | [`request`](reference.md#request)     | yes      | The request to send                                                  |
-| expect    | [`expect`](reference.md#expect)       | no       | How to validate the response                                         |
-| export    | [`export`](reference.md#export)       | no       | Data to export from this step as variables to be used in other steps |
+| Field           | Type                                  | Required | Description                                                          |
+| :--------       | :------------------------------------ | :------- | :------------------------------------------------------------------- |
+| id              | string                                | yes      | A string to uniquely identify a step within a transaction            |
+| variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this step                                        |
+| request         | [`request`](reference.md#request)     | yes      | The request to send                                                  |
+| expect          | [`expect`](reference.md#expect)       | no       | How to validate the response                                         |
+| export          | [`export`](reference.md#export)       | no       | Data to export from this step as variables to be used in other steps |
+| skip_ssl_verify | bool                                  | no       | Skip SSL certificate verification on this step                       |
 
 ```yaml
 steps:

@@ -68,11 +68,12 @@ steps:
 
 A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction and the other steps in the transaction are not executed.
 
-| Field           | Type                                  | Required | Description                                                                        |
-| :--------       | :------------------------------------ | :------- | :------------------------------------------                                        |
-| id              | string                                | yes      | A string to uniquely identify a transaction                                        |
-| variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction                                               |
-| steps           | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                                                         |
+| Field     | Type                                  | Required | Description                                    |
+| :-------- | :------------------------------------ | :------- | :------------------------------------------    |
+| id        | string                                | yes      | A string to uniquely identify a transaction    |
+| variables | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction           |
+| steps     | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                     |
+| matrix    | [`matrix`](reference.md#matrix)       | no       | Variable matrix to repeat the transaction with |
 
 ```yaml
 id: 'transaction-one'
@@ -84,6 +85,37 @@ steps:
       method: 'GET'
       endpoint: '{{ var.api_url }}/todos/1'
 ```
+
+### Matrix
+
+A matrix allows running the same transaction with different variables. Different combinations of the variables will be
+generated and the transaction will be ran with all of them. The order in which they are generated is not guaranteed.
+
+The below will send four different requests in four different transactions.
+
+```yaml
+id: transaction
+matrix:
+  api_url:
+    - "http://localhost:8080"
+    - "https://jsonplaceholder.typicode.com"
+  todo_id:
+    - 1
+    - 2
+steps:
+  - id: todos
+    request:
+      method: GET
+      endpoint: "{{ var.api_url }}/todos/{{ var.todo_id }}"
+```
+
+The different transactions and requests:
+
+* `todos-1: GET http://localhost:8080/todos/1`
+* `todos-2: GET http://localhost:8080/todos/2`
+* `todos-3: GET https://jsonplaceholder.typicode.com/todos/1`
+* `todos-4: GET https://jsonplaceholder.typicode.com/todos/2`
+
 
 ## Step
 

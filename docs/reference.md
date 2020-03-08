@@ -66,14 +66,13 @@ steps:
 
 ## Transaction
 
-A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction fails.
+A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction and the other steps in the transaction are not executed.
 
 | Field           | Type                                  | Required | Description                                                                        |
 | :--------       | :------------------------------------ | :------- | :------------------------------------------                                        |
 | id              | string                                | yes      | A string to uniquely identify a transaction                                        |
 | variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction                                               |
 | steps           | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                                                         |
-| skip_ssl_verify | bool                                  | no       | Skip SSL certificate verification on all steps, step-specific flags overwrite this |
 
 ```yaml
 id: 'transaction-one'
@@ -125,7 +124,7 @@ steps:
       auth_token: 'response.body.access_token'
 ```
 
-## Request
+### Request
 
 Request specifies what request to make - which endpoint to go to, what body to use, etc.
 
@@ -149,7 +148,7 @@ request:
       - "application/ld+json"
 ```
 
-## Expect
+### Expect
 
 Expect will define what we are expecting as a valid response from the API.
 
@@ -166,7 +165,7 @@ expect:
     Accept: 'application/json'
 ```
 
-## Body
+#### Body
 
 Body provides a bit more flexibility on what body to expect in this response.
 
@@ -197,3 +196,8 @@ body:
       "name": "John Doe"
     }
 ```
+
+## Skip SSL verification
+SSL verification can be skipped on all steps in a APId config (suite). Specify the `skip_ssl_verify: True` field
+at the root of the config and it will be applied to all steps. If a step has that field specified already,
+the step's field will take precedence.

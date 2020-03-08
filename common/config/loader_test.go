@@ -72,7 +72,23 @@ func (s *LoaderSuite) TestLoad() {
 	}
 }
 
-func (s *LoaderSuite) TestApplySSLFlag() {
+func (s *LoaderSuite) TestApplySSLFlag_StepUnset() {
+	tx := transaction.Transaction{
+		Steps: []step.Step{
+			{
+				Request: step.Request{
+					SkipSSLVerification: nil,
+				},
+			},
+		},
+	}
+
+	applySSLFlag(true, []transaction.Transaction{tx})
+
+	s.True(*tx.Steps[0].Request.SkipSSLVerification)
+}
+
+func (s *LoaderSuite) TestApplySSLFlag_StepSet() {
 	tx := transaction.Transaction{
 		Steps: []step.Step{
 			{
@@ -85,7 +101,7 @@ func (s *LoaderSuite) TestApplySSLFlag() {
 
 	applySSLFlag(true, []transaction.Transaction{tx})
 
-	s.True(*tx.Steps[0].Request.SkipSSLVerification)
+	s.False(*tx.Steps[0].Request.SkipSSLVerification)
 }
 
 // newConfigPair returns a config that can be marshalled and written to disk

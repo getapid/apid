@@ -73,6 +73,7 @@ func flattenVars(namespace string, vars interface{}) []string {
 	switch val := vars.(type) {
 	case map[string]interface{}:
 		for key, value := range val {
+			key = strings.Replace(key, "-", "_", -1)
 			result = append(result, flattenVars(strings.ToUpper(namespace+"_"+key), value)...)
 		}
 		return result

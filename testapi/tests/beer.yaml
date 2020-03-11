@@ -11,12 +11,12 @@ transactions:
     steps:
       - id: auth
         variables:
-          auth: "am9obi5kb2U6UGE1NXdvcmQ="
+          credentials: "am9obi5kb2U6UGE1NXdvcmQ="
         request:
           method: POST
           endpoint: "{{ var.api.url }}/auth"
           headers:
-            Authorization: "Basic {{ var.auth }}"
+            Authorization: "Basic {% echo $VAR_CREDENTIALS %}"
         expect:
           code: 200
           exact: false

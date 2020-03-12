@@ -41,13 +41,8 @@ make
 make e2e
 ```
 
-### 4. Running the site locally
-
-```bash
-cd site
-npm install
-zola serve
-```
+### 4. Update the docs
+The docs are located in the `docs` folder. The docs site automatically pulls the latest master version of the docs.
 
 ## Contributing
 To contribute to APId, please see [CONTRIBUTING](CONTRIBUTING.md).

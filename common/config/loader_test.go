@@ -1,6 +1,8 @@
 package config
 
 import (
+	"bytes"
+	"io"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -61,6 +63,48 @@ func (s *LoaderSuite) TestLoad() {
 
 	for i, t := range testCases {
 		actualCfg, err := Load(t.path)
+
+		if t.expErr {
+			s.Error(err)
+		} else {
+			s.NoError(err)
+		}
+
+		s.Equalf(t.expConfig, actualCfg, "test case %d/%d", i+1, len(testCases))
+	}
+}
+
+func (s *LoaderSuite) TestLoadReader() {
+	yamlCfg, internalCfg := newConfigPair()
+	stringCfg, _ := yaml.Marshal(yamlCfg)
+
+	validFile := bytes.NewBuffer(stringCfg)
+	emptyFile := bytes.NewReader(nil)
+	invalidYaml := bytes.NewReader([]byte("123"))
+
+	testCases := []struct {
+		reader    io.Reader
+		expConfig Config
+		expErr    bool
+	}{
+		{
+			reader:    validFile,
+			expConfig: internalCfg,
+			expErr:    false,
+		},
+		{
+			reader:    emptyFile,
+			expConfig: Config{},
+			expErr:    false,
+		},
+		{
+			reader: invalidYaml,
+			expErr: true,
+		},
+	}
+
+	for i, t := range testCases {
+		actualCfg, err := LoadReader(t.reader)
 
 		if t.expErr {
 			s.Error(err)

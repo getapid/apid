@@ -64,12 +64,21 @@ steps:
     endpoint: '{{ var.api_url }}/avengers/{% curl https://dynamic-avengers-api.io/random-avenger-id %}'
 ```
 
+## Configuration files
+
+The configuration files are the single thing that defines your tests. You can have more than one config file, though in this case you need to provide the directory with config files to APId - `apid check -c /dir/to/configs/`. When providing multiple config files you can reference root variables defined in other files, however you can't reference transactions from other files.
+
+| Field        | Type                                        | Required | Description                       |
+| :----------- | :------------------------------------------ | :------- | :-------------------------------- |
+| variables    | [`variables`](reference.md#variables)       | no       | Globally scoped variables         |
+| transactions | [`[]transaction`](reference.md#transaction) | yes      | A list of transactions to execute |
+
 ## Transaction
 
 A transaction is a list of [steps](reference.md#step) which are executed sequentially. If a step fails, the whole transaction and the other steps in the transaction are not executed.
 
 | Field     | Type                                  | Required | Description                                    |
-| :-------- | :------------------------------------ | :------- | :------------------------------------------    |
+| :-------- | :------------------------------------ | :------- | :--------------------------------------------- |
 | id        | string                                | yes      | A string to uniquely identify a transaction    |
 | variables | [`variables`](reference.md#variables) | no       | Variables scoped to this transaction           |
 | steps     | [`[]step`](reference.md#step)         | yes      | A list of steps to execute                     |
@@ -97,8 +106,8 @@ The below will send four different requests in four different transactions.
 id: transaction
 matrix:
   api_url:
-    - "http://localhost:8080"
-    - "https://jsonplaceholder.typicode.com"
+    - 'http://localhost:8080'
+    - 'https://jsonplaceholder.typicode.com'
   todo_id:
     - 1
     - 2
@@ -106,23 +115,22 @@ steps:
   - id: todos
     request:
       method: GET
-      endpoint: "{{ var.api_url }}/todos/{{ var.todo_id }}"
+      endpoint: '{{ var.api_url }}/todos/{{ var.todo_id }}'
 ```
 
 The different transactions and requests:
 
-* `todos-1: GET http://localhost:8080/todos/1`
-* `todos-2: GET http://localhost:8080/todos/2`
-* `todos-3: GET https://jsonplaceholder.typicode.com/todos/1`
-* `todos-4: GET https://jsonplaceholder.typicode.com/todos/2`
-
+- `todos-1: GET http://localhost:8080/todos/1`
+- `todos-2: GET http://localhost:8080/todos/2`
+- `todos-3: GET https://jsonplaceholder.typicode.com/todos/1`
+- `todos-4: GET https://jsonplaceholder.typicode.com/todos/2`
 
 ## Step
 
 A step is a call to a single endpoint with optional validation of the response.
 
 | Field           | Type                                  | Required | Description                                                          |
-| :--------       | :------------------------------------ | :------- | :------------------------------------------------------------------- |
+| :-------------- | :------------------------------------ | :------- | :------------------------------------------------------------------- |
 | id              | string                                | yes      | A string to uniquely identify a step within a transaction            |
 | variables       | [`variables`](reference.md#variables) | no       | Variables scoped to this step                                        |
 | request         | [`request`](reference.md#request)     | yes      | The request to send                                                  |
@@ -230,6 +238,7 @@ body:
 ```
 
 ## Skip SSL verification
+
 SSL verification can be skipped on all steps in a APId config (suite). Specify the `skip_ssl_verify: True` field
 at the root of the config and it will be applied to all steps. If a step has that field specified already,
 the step's field will take precedence.

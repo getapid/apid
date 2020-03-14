@@ -49,6 +49,9 @@ type TimedClient struct {
 type Tracer interface {
 	Tracer() *httptrace.ClientTrace
 	Timings() Timings
+	// Done needs to be called when the request is finished.
+	// Without calling done the ContentTransfer in the Timings will be invalid.
+	Done()
 }
 
 // DefaultClient is the default HTTP client
@@ -63,7 +66,8 @@ type DefaultTracer struct {
 	tlsStart,
 	tlsDone,
 	firstResponseByte,
-	wroteRequest time.Time
+	wroteRequest,
+	finishedRequest time.Time
 }
 
 // NewTimedClient creates a default timed client
@@ -97,8 +101,12 @@ func (t *DefaultTracer) Timings() Timings {
 		TCPConnection:    t.connectDone.Sub(t.connectStart),
 		TLSHandshake:     t.tlsDone.Sub(t.tlsStart),
 		ServerProcessing: t.firstResponseByte.Sub(t.wroteRequest),
-		ContentTransfer:  t.connectDone.Sub(t.firstResponseByte),
+		ContentTransfer:  t.finishedRequest.Sub(t.firstResponseByte),
 	}
+}
+
+func (t *DefaultTracer) Done() {
+	t.finishedRequest = time.Now()
 }
 
 // Do executes a http request
@@ -111,11 +119,14 @@ func (c TimedClient) Do(ctx context.Context, req *Request) (*Response, error) {
 		client = c.insecureClient
 	}
 	res.Response, err = client.Do(req.Request)
-	res.Timings = c.tracer.Timings()
 	if err != nil {
 		return res, err
 	}
+	c.tracer.Done()
+	res.Timings = c.tracer.Timings()
+
 	readBody, err := ioutil.ReadAll(res.Body)
+	_ = res.Body.Close() // prevents memory leaks
 	if err != nil {
 		return res, err
 	}

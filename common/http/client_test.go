@@ -51,6 +51,8 @@ func (t *DummyTracer) Timings() Timings {
 	}
 }
 
+func (t *DummyTracer) Done() {}
+
 func TestTimedClient_Do(t *testing.T) {
 	type fields struct {
 		code   int

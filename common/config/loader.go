@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,6 +10,10 @@ import (
 	"github.com/getapid/apid-cli/common/transaction"
 	"gopkg.in/yaml.v3"
 )
+
+func LoadReader(r io.Reader) (Config, error) {
+	return loadReader(r)
+}
 
 func Load(path string) (Config, error) {
 	return tryLoad(path)
@@ -53,15 +57,22 @@ func loadDir(path string) (Config, error) {
 }
 
 func loadFile(path string) (Config, error) {
-	cfg := config{}
-
-	contents, err := ioutil.ReadFile(path)
+	suiteFile, err := os.Open(path)
+	defer suiteFile.Close()
 	if err != nil {
 		return Config{}, err
 	}
 
-	err = yaml.Unmarshal(contents, &cfg)
+	return loadReader(suiteFile)
+}
+
+func loadReader(r io.Reader) (Config, error) {
+	cfg := &config{}
+	err := yaml.NewDecoder(r).Decode(cfg)
 	if err != nil {
+		if err == io.EOF {
+			return Config{}, nil
+		}
 		return Config{}, err
 	}
 
@@ -72,7 +83,7 @@ func loadFile(path string) (Config, error) {
 		APIKey:       cfg.APIKey,
 		Variables:    cfg.Variables,
 		Transactions: cfg.Transactions,
-	}, err
+	}, nil
 }
 
 func mergeConfigs(configs []Config) (Config, error) {

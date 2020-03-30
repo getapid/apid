@@ -1,0 +1,26 @@
+# Cloud Reference
+
+There are some fields in the config (suite) that only make sense when used for APId Cloud. They do not affect the
+local execution for a config. However, some of them are required for uploading a suite to the cloud.
+
+## Schedule
+
+`schedule` is a root-level field that specifies how often to run the suite in the cloud. 
+
+| Field    | Type   | Required          | Description                                                                   |
+| :------  | :----- | :-------          | :-------------------------------------------------                            |
+| schedule | string | no; yes for cloud | A [valid cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression) |
+ 
+We support `?` `/` `*` `,` `-` as well as the standard macros  `@yearly` `@annually` `@monthly` `@weekly` `@daily` `@midnight` `@hourly` `@every <duration>` (`<duration>` is a sequence of numbers with time units: "ns", "us", "ms", "s", "m", "h") |
+
+All times will be interpreted in GMT+0.
+
+```yaml
+schedule: "@every 1h20m"
+```
+
+```yaml
+schedule: "0 0 * * *"
+```
+
+You may use [crontab.guru](https://crontab.guru/) for more examples.

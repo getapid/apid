@@ -223,7 +223,7 @@ On the other hand, if `type` is `string` and `exact` is:
 
 | Field   | Type   | Required | Description                                        |
 | :------ | :----- | :------- | :------------------------------------------------- |
-| type    | enum   | no       | The type of the reponse, either `json` or `string` |
+| type    | enum   | no       | The type of the response, either `json` or `string` |
 | content | string | no       | What content of the body to expect                 |
 | exact   | bool   | no       | Is this the entire body, or a part of it           |
 

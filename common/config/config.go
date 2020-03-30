@@ -9,9 +9,9 @@ import (
 type Config struct {
 	Version      string                    `yaml:"version"`
 	APIKey       string                    `yaml:"api_key"`
-	Schedule     string                    `yaml:"schedule"`
+	Schedule     string                    `yaml:"schedule" validate:"cron"`
 	Variables    variables.Variables       `yaml:"variables"`
-	Transactions []transaction.Transaction `yaml:"transactions"`
+	Transactions []transaction.Transaction `yaml:"transactions" validate:"unique=ID"`
 }
 
 // Config holds all the config data from the config yaml file
@@ -20,6 +20,6 @@ type config struct {
 	APIKey              string                    `yaml:"apikey"`
 	Schedule            string                    `yaml:"schedule"`
 	Variables           variables.Variables       `yaml:"variables"`
-	Transactions        []transaction.Transaction `yaml:"transactions" validate:"unique=ID"`
+	Transactions        []transaction.Transaction `yaml:"transactions"`
 	SkipSSLVerification bool                      `yaml:"skip_ssl_verify"`
 }

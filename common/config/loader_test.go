@@ -154,6 +154,7 @@ func newConfigPair() (config, Config) {
 	external := config{
 		APIKey:              "",
 		SkipSSLVerification: true,
+		Schedule:            "? * * * *",
 		Variables: newVars(map[string]interface{}{
 			"key": "some value",
 		}),

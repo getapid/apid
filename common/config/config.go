@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Version      string                    `yaml:"version"`
 	APIKey       string                    `yaml:"api_key"`
+	Schedule     string                    `yaml:"schedule"`
 	Variables    variables.Variables       `yaml:"variables"`
 	Transactions []transaction.Transaction `yaml:"transactions"`
 }
@@ -17,6 +18,7 @@ type Config struct {
 type config struct {
 	Version             string                    `yaml:"version"`
 	APIKey              string                    `yaml:"apikey"`
+	Schedule            string                    `yaml:"schedule"`
 	Variables           variables.Variables       `yaml:"variables"`
 	Transactions        []transaction.Transaction `yaml:"transactions" validate:"unique=ID"`
 	SkipSSLVerification bool                      `yaml:"skip_ssl_verify"`

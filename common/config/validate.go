@@ -25,6 +25,8 @@ func getValidatorFromTag(tag string, fieldType reflect.Type) Validator {
 		return VersionValidator{}
 	case t == "expectBody":
 		return ExpectBodyValidator{}
+	case t == "cron":
+		return CronValidator{}
 	}
 
 	return DefaultValidator{}

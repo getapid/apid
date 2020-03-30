@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/getapid/apid-cli/common/step"
+	"github.com/robfig/cron"
 	"go.uber.org/multierr"
 )
 
@@ -13,7 +14,7 @@ type DefaultValidator struct {
 }
 
 // Validate method performs validation and returns result and optional error.
-func (v DefaultValidator) Validate(val interface{}) (bool, error) {
+func (v DefaultValidator) Validate(interface{}) (bool, error) {
 	return true, nil
 }
 
@@ -125,4 +126,18 @@ func (v ExpectBodyValidator) Validate(val interface{}) (b bool, err error) {
 	}
 
 	return true, nil
+}
+
+type CronValidator struct{}
+
+func (c CronValidator) Validate(val interface{}) (bool, error) {
+	if cronStr, ok := val.(string); ok {
+		if len(cronStr) == 0 {
+			return true, nil
+		}
+
+		_, err := cron.ParseStandard(cronStr)
+		return err == nil, err
+	}
+	return false, fmt.Errorf("not a string")
 }

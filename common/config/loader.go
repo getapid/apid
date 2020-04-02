@@ -58,10 +58,10 @@ func loadDir(path string) (Config, error) {
 
 func loadFile(path string) (Config, error) {
 	suiteFile, err := os.Open(path)
-	defer suiteFile.Close()
 	if err != nil {
 		return Config{}, err
 	}
+	defer suiteFile.Close()
 
 	return loadReader(suiteFile)
 }
@@ -82,6 +82,8 @@ func loadReader(r io.Reader) (Config, error) {
 		Version:      cfg.Version,
 		APIKey:       cfg.APIKey,
 		Variables:    cfg.Variables,
+		Schedule:     cfg.Schedule,
+		Locations:    cfg.Locations,
 		Transactions: cfg.Transactions,
 	}, nil
 }
@@ -93,6 +95,12 @@ func mergeConfigs(configs []Config) (Config, error) {
 	for _, other := range configs {
 		result.Variables = result.Variables.Merge(other.Variables)
 		result.Transactions = append(result.Transactions, other.Transactions...)
+		if other.Schedule != "" {
+			result.Schedule = other.Schedule
+		}
+		if len(other.Locations) != 0 {
+			result.Locations = other.Locations
+		}
 	}
 	return result, err
 }

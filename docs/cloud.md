@@ -24,3 +24,21 @@ schedule: "0 0 * * *"
 ```
 
 You may use [crontab.guru](https://crontab.guru/) for more examples.
+
+## Locations
+
+`locations` is a root-level fields that specifies from where to run the tests in APId Cloud. 
+
+| Field    | Type     | Required          | Description                                              |
+| :------  | :-----   | :-------          | :-------------------------------------------------       |
+| schedule | []string | no; yes for cloud | A list of locations. Valid elements are to be announced. |
+
+```yaml
+locations: ['us-east', 'europe-london']
+```
+
+```yaml
+locations: 
+  - 'us-east'
+  - 'europe-london'
+```

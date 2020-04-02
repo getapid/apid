@@ -77,6 +77,61 @@ func (s *ValidatorsSuite) TestValidate_ExpectBodyValidator() {
 	}
 }
 
+func (s *ValidatorsSuite) TestValidate_CronValidator() {
+	tests := []struct {
+		name     string
+		val      interface{}
+		expValid bool
+	}{
+		{
+			name:     "ok",
+			val:      "* * * * *",
+			expValid: true,
+		},
+		{
+			name:     "ok macro",
+			val:      "@hourly",
+			expValid: true,
+		},
+		{
+			name:     "ok empty",
+			val:      "",
+			expValid: true,
+		},
+		{
+			name:     "misspelled macro",
+			val:      "hourly",
+			expValid: false,
+		},
+		{
+			name:     "standard missing one element",
+			val:      "* * * *",
+			expValid: false,
+		},
+		{
+			name:     "one extra element",
+			val:      "* * * * * *",
+			expValid: false,
+		},
+		{
+			name:     "not string",
+			val:      5,
+			expValid: false,
+		},
+	}
+
+	for _, t := range tests {
+		valid, err := CronValidator{}.Validate(t.val)
+		if t.expValid {
+			s.NoError(err)
+			s.True(valid)
+		} else {
+			s.Error(err)
+			s.False(valid)
+		}
+	}
+}
+
 func TestValidatorsSuite(t *testing.T) {
 	suite.Run(t, new(ValidatorsSuite))
 }

@@ -115,6 +115,7 @@ func (c TimedClient) Do(ctx context.Context, req *Request) (*Response, error) {
 	var res = &Response{}
 	var err error
 	req.Request = req.WithContext(httptrace.WithClientTrace(ctx, c.tracer.Tracer()))
+	req.Close = true
 	client := c.client
 	if req.SkipVerify {
 		client = c.insecureClient

@@ -2,7 +2,6 @@ package step
 
 import (
 	"io"
-	stdhttp "net/http"
 	"testing"
 
 	"github.com/getapid/apid-cli/common/http"
@@ -36,10 +35,7 @@ func (s *ValidatorSuite) TestValidate() {
 					Code: pint(200),
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body:       &stringReadCloser{},
-						StatusCode: 200,
-					},
+					StatusCode: 200,
 				},
 			},
 			expResult: correctResult,
@@ -51,10 +47,7 @@ func (s *ValidatorSuite) TestValidate() {
 					Code: pint(201),
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body:       &stringReadCloser{},
-						StatusCode: 200,
-					},
+					StatusCode: 200,
 				},
 			},
 			expResult: incorrectStatusResult,
@@ -68,11 +61,8 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-						Header: map[string][]string{
-							"HEADER1": {"value1"},
-						},
+					Header: map[string][]string{
+						"HEADER1": {"value1"},
 					},
 				},
 			},
@@ -87,11 +77,8 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-						Header: map[string][]string{
-							"HEADER1": {"value2"},
-						},
+					Header: map[string][]string{
+						"HEADER1": {"value2"},
 					},
 				},
 			},
@@ -108,10 +95,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`{"field1":"exact value"}`),
+					Body: []byte(`{"field1":"exact value"}`),
 				},
 			},
 			expResult: correctResult,
@@ -127,10 +111,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`{"field1":1}`),
+					Body: []byte(`{"field1":1}`),
 				},
 			},
 			expResult: correctResult,
@@ -146,10 +127,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`hi, what's up mate'`),
+					Body: []byte(`hi, what's up mate'`),
 				},
 			},
 			expResult: correctResult,
@@ -165,10 +143,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`{"field1":"value matters"}`),
+					Body: []byte(`{"field1":"value matters"}`),
 				},
 			},
 			expResult: incorrectBodyResult,
@@ -184,10 +159,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`{"field1":{"b":1}}`),
+					Body: []byte(`{"field1":{"b":1}}`),
 				},
 			},
 			expResult: incorrectBodyResult,
@@ -203,10 +175,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`[{"field1":{"a":1}}]`),
+					Body: []byte(`[{"field1":{"a":1}}]`),
 				},
 			},
 			expResult: correctResult,
@@ -222,10 +191,7 @@ func (s *ValidatorSuite) TestValidate() {
 					},
 				},
 				actual: &http.Response{
-					Response: &stdhttp.Response{
-						Body: &stringReadCloser{},
-					},
-					ReadBody: []byte(`[{"field1":{"a":1}},{"field1":{"b":1}}]`),
+					Body: []byte(`[{"field1":{"a":1}},{"field1":{"b":1}}]`),
 				},
 			},
 			expResult: incorrectBodyResult,

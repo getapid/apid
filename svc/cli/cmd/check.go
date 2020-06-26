@@ -37,7 +37,7 @@ took to action each request`,
 func init() {
 	rootCmd.AddCommand(checkCmd)
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
-	checkCmd.Flags().BoolVarP(&showTimings, "timings", "", false, "output the durations of request steps")
+	checkCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of request steps")
 }
 
 func checkRun(cmd *cobra.Command, args []string) error {

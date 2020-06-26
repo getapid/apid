@@ -14,7 +14,7 @@ type Runner interface {
 }
 
 type runner struct {
-	executor     executor
+	executor     Executor
 	validator    validator
 	interpolator interpolator
 	extractor    extractor
@@ -41,7 +41,7 @@ func (r *Result) AddErr(key string, err error) {
 
 // NewRunner instantiates a new HTTPRunner
 func NewRunner(
-	executor executor,
+	executor Executor,
 	validator validator,
 	interpolator interpolator,
 	extractor extractor) Runner {
@@ -58,7 +58,7 @@ func (c *runner) Run(step Step, vars variables.Variables) (Result, error) {
 		result.AddErr("prepare", err)
 		return result, err
 	}
-	response, err := c.executor.do(result.Step.Request)
+	response, err := c.executor.Do(result.Step.Request)
 	if err != nil {
 		result.AddErr("execute", err)
 		return result, err

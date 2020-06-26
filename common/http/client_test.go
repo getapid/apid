@@ -112,8 +112,8 @@ func TestTimedClient_Do(t *testing.T) {
 			if got.StatusCode != tt.want.code {
 				t.Errorf("TimedClient.Do() = %v, want %v", got.StatusCode, tt.want.code)
 			}
-			if !bytes.Equal(got.ReadBody, tt.want.body) {
-				t.Errorf("TimedClient.Do() = %v, want %v", got.ReadBody, tt.want.body)
+			if !bytes.Equal(got.Body, tt.want.body) {
+				t.Errorf("TimedClient.Do() = %v, want %v", got.Body, tt.want.body)
 			}
 			if got.Timings.ContentTransfer != d {
 				t.Errorf("TimedClient.Do() = %v, want %v", got.Timings.ContentTransfer, d)

@@ -52,7 +52,7 @@ func (e *httpExecutor) Do(request Request) (*http.Response, error) {
 	log.L.Debugw("received response",
 		"endpoint", req.URL,
 		"method", req.Method,
-		"body", string(resp.ReadBody),
+		"body", string(resp.Body),
 		"headers", resp.Header,
 	)
 

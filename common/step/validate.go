@@ -34,7 +34,6 @@ func NewHTTPValidator() validator {
 }
 
 func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (result ValidationResult) {
-	defer actual.Body.Close()
 	errMsgs := make(map[string]string)
 	appendErr := func(errors map[string]string, key string, err error) {
 		if err != nil {
@@ -44,7 +43,7 @@ func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (re
 
 	appendErr(errMsgs, "code", v.validateCode(exp.Code, actual.StatusCode))
 	appendErr(errMsgs, "headers", v.validateHeaders(exp.Headers, actual.Header))
-	appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.ReadBody))
+	appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.Body))
 
 	result.Errors = errMsgs
 	return

@@ -28,9 +28,10 @@ type Timings struct {
 
 // Response a http response with added timing information
 type Response struct {
-	*http.Response
-	Timings  Timings
-	ReadBody []byte
+	StatusCode int
+	Header     map[string][]string
+	Body       []byte
+	Timings    Timings
 }
 
 // Client is the interface of a http client
@@ -118,19 +119,22 @@ func (c TimedClient) Do(ctx context.Context, req *Request) (*Response, error) {
 	if req.SkipVerify {
 		client = c.insecureClient
 	}
-	res.Response, err = client.Do(req.Request)
+	response, err := client.Do(req.Request)
 	if err != nil {
 		return res, err
 	}
 	c.tracer.Done()
-	res.Timings = c.tracer.Timings()
 
-	readBody, err := ioutil.ReadAll(res.Body)
-	_ = res.Body.Close() // prevents memory leaks
+	readBody, err := ioutil.ReadAll(response.Body)
+	_ = response.Body.Close() // prevents memory leaks
 	if err != nil {
 		return res, err
 	}
-	res.ReadBody = readBody
+
+	res.StatusCode = response.StatusCode
+	res.Header = response.Header
+	res.Timings = c.tracer.Timings()
+	res.Body = readBody
 	return res, nil
 }
 

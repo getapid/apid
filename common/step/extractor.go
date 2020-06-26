@@ -31,7 +31,7 @@ func NewBodyExtractor() extractor {
 func (e *bodyExtractor) extract(response *http.Response, export Export) Exported {
 	exported := make(Exported, len(export))
 	var jsonBody interface{}
-	err := json.Unmarshal(response.ReadBody, &jsonBody)
+	err := json.Unmarshal(response.Body, &jsonBody)
 	if err != nil {
 		return exported
 	}

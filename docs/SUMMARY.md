@@ -12,5 +12,6 @@
   - [Jenkins](integration/jenkins.md)
 - [CLI usage](cli/README.md)
   - [check](cli/check.md)
+  - [remote](cli/remote.md)
 - [Cloud](cloud/README.md)
 - [Reference](reference.md)

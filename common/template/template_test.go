@@ -57,7 +57,7 @@ func TestGet(t *testing.T) {
 		{
 			"simple array variable",
 			args{
-				"{{ array[0] }}",
+				"{{ array.0 }}",
 				data,
 			},
 			"value",
@@ -66,7 +66,7 @@ func TestGet(t *testing.T) {
 		{
 			"nested variable",
 			args{
-				"{{ nested.array[0] }}",
+				"{{ nested.array.0 }}",
 				data,
 			},
 			"four",

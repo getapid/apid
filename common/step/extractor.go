@@ -6,7 +6,7 @@ import (
 
 	"github.com/getapid/apid-cli/common/http"
 	"github.com/getapid/apid-cli/common/log"
-	"github.com/iv-p/mapaccess"
+	"github.com/tidwall/gjson"
 )
 
 type extractor interface {
@@ -35,18 +35,14 @@ func (e *bodyExtractor) extract(response *http.Response, export Export) Exported
 	if err != nil {
 		return exported
 	}
-	var value interface{}
 	for exportAs, keyToExport := range export {
 		keyToExport = strings.TrimPrefix(keyToExport, "response.")
 
 		switch {
 		case strings.HasPrefix(keyToExport, "body."):
 			keyToExport = strings.TrimPrefix(keyToExport, "body.")
-			value, err = mapaccess.Get(jsonBody, keyToExport)
-			if err != nil {
-				log.L.Warnf("could not find key %v : %v", keyToExport, err)
-				continue
-			}
+			val := gjson.Get(string(response.Body), keyToExport)
+			exported[exportAs] = val.String()
 		case strings.HasPrefix(keyToExport, "headers."):
 			keyToExport = strings.TrimPrefix(keyToExport, "headers.")
 			foundHeaders, ok := response.Header[keyToExport]
@@ -58,11 +54,10 @@ func (e *bodyExtractor) extract(response *http.Response, export Export) Exported
 				log.L.Warnf("found multiple header values for key %v", keyToExport)
 				continue
 			}
-			value = foundHeaders[0]
+			exported[exportAs] = foundHeaders[0]
 		default:
 			continue
 		}
-		exported[exportAs] = value
 	}
 	return exported
 }

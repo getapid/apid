@@ -50,13 +50,16 @@ func (e *remoteHTTPExecutor) Do(request Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
+
+	if res.StatusCode == native.StatusTooManyRequests {
+		log.L.Fatal("resource quota exceeded")
+	}
 
 	respBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
-
-	res.Body.Close()
 	result := &http.Response{}
 	err = yaml.Unmarshal(respBody, result)
 	if err != nil {

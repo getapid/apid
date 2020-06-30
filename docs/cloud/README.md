@@ -22,3 +22,20 @@ In order to use the power of the cloud you will need a personal access key. To g
 Once you have your key you will need to [install the APId CLI](../installation/cli) (if you haven't already) or use our [official docker image](../installation/docker).
 
 A reference on how use the CLI after installation for remote execution can be found [here](../cli/remote).
+
+## Regions
+
+APId cloud runs in multiple reagions worldwide. Here is a list of the current ones:
+
+| Region Name  | Location       |
+| :----------- | :------------- |
+| ca-central   | Canada         |
+| us-east      | North Virginia |
+| us-west      | California     |
+| ap-south     | Hong Kong      |
+| ap-northeast | Japan          |
+| ap-southeast | Australia      |
+| eu-west      | Ireland        |
+| eu-north     | Sweden         |
+| eu-central   | Germany        |
+| sa-east      | Brazil         |

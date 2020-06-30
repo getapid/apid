@@ -20,7 +20,7 @@ var endpoints = map[string]string{
 	"ap-southeast": "apse",
 
 	"eu-west": "euw",
-	"eu-south": "eus",
+	"eu-central": "euc",
 	"eu-north": "eun",
 
 	"sa-east": "sae",

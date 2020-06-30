@@ -10,20 +10,20 @@ type EndpointProvider interface {
 }
 
 var endpoints = map[string]string{
-	"ca-central": "cac", // done ca-central-1
+	"ca-central": "cac",
 
-	"us-east": "use", // done us-east-1
-	"us-west": "usw", // done us-west-1
+	"us-east": "use",
+	"us-west": "usw",
 
-	"ap-sount": "aps", // done ap-sount-1
-	"ap-northeast": "apne", // done ap-northeast-1
-	"ap-southeast": "apse", // done ap-southeast-2
+	"ap-sount": "aps",
+	"ap-northeast": "apne",
+	"ap-southeast": "apse",
 
-	"eu-west": "euw", // done eu-west-1
-	"eu-south": "eus", // pricing eu-south-1
-	"eu-north": "eun", // done eu-north-1
+	"eu-west": "euw",
+	"eu-south": "eus",
+	"eu-north": "eun",
 
-	"sa-east": "sae", // done sa-east-1
+	"sa-east": "sae",
 }
 
 type apidEndpointProvider struct {}

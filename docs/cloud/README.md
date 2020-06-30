@@ -19,9 +19,9 @@ In order to use the power of the cloud you will need a personal access key. To g
 - Head over to https://www.getapid.com and sign up
 - Go to the dashboard and create a new access key
 
-Once you have your key you will need to [install the APId CLI](../installation/cli) (if you haven't already) or use our [official docker image](../installation/docker).
+Once you have your key you will need to [install the APId CLI](../installation/cli.md) (if you haven't already) or use our [official docker image](../installation/docker.md).
 
-A reference on how use the CLI after installation for remote execution can be found [here](../cli/remote).
+A reference on how use the CLI after installation for remote execution can be found [here](../cli/remote.md).
 
 ## Regions
 

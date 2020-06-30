@@ -42,6 +42,10 @@ func (e *bodyExtractor) extract(response *http.Response, export Export) Exported
 		case strings.HasPrefix(keyToExport, "body."):
 			keyToExport = strings.TrimPrefix(keyToExport, "body.")
 			val := gjson.Get(string(response.Body), keyToExport)
+			if !val.Exists() {
+				log.L.Warnf("could not find key %v : %v", keyToExport, err)
+				continue
+			}
 			exported[exportAs] = val.String()
 		case strings.HasPrefix(keyToExport, "headers."):
 			keyToExport = strings.TrimPrefix(keyToExport, "headers.")

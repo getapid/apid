@@ -36,7 +36,11 @@ func Render(template string, data variables.Variables) (string, error) {
 				log.L.Error("could not serialize variables")
 				continue
 			}
-			val := gjson.Get(string(d), token.val)
+			val := gjson.GetBytes(d, token.val)
+			if !val.Exists() {
+				multiErr = multierr.Append(multiErr, fmt.Errorf("%v: %v", token.val, err))
+				continue
+			}
 			renderer.WriteString(val.String())
 		case tokenCommand:
 			res, err := cmd.Exec(token.val, data)

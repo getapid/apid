@@ -1,14 +1,15 @@
 package template
 
 import (
+	"encoding/json"
 	"fmt"
-	"reflect"
 	"strings"
 
 	"github.com/getapid/apid-cli/common/command"
+	"github.com/getapid/apid-cli/common/log"
+	"github.com/tidwall/gjson"
 
 	"github.com/getapid/apid-cli/common/variables"
-	"github.com/iv-p/mapaccess"
 	"go.uber.org/multierr"
 )
 
@@ -30,21 +31,13 @@ func Render(template string, data variables.Variables) (string, error) {
 				multiErr = multierr.Append(multiErr, fmt.Errorf("write string: %v : %v", template, err))
 			}
 		case tokenIdentifier:
-			val, err := mapaccess.Get(data.Raw(), token.val)
+			d, err := json.Marshal(data.Raw())
 			if err != nil {
-				multiErr = multierr.Append(multiErr, fmt.Errorf("%v: %v", token.val, err))
+				log.L.Error("could not serialize variables")
 				continue
 			}
-			switch c := val.(type) {
-			case string:
-				renderer.WriteString(c)
-			case float64:
-				renderer.WriteString(fmt.Sprintf("%g", c))
-			case int:
-				renderer.WriteString(fmt.Sprintf("%d", c))
-			default:
-				multiErr = multierr.Append(multiErr, fmt.Errorf("unknown value type %v: %v", reflect.TypeOf(val), token.val))
-			}
+			val := gjson.Get(string(d), token.val)
+			renderer.WriteString(val.String())
 		case tokenCommand:
 			res, err := cmd.Exec(token.val, data)
 			if err != nil {

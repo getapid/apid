@@ -32,7 +32,7 @@ APId cloud runs in multiple reagions worldwide. Here is a list of the current on
 | ca-central   | Canada         |
 | us-east      | North Virginia |
 | us-west      | California     |
-| ap-south     | Hong Kong      |
+| ap-south     | India          |
 | ap-northeast | Japan          |
 | ap-southeast | Australia      |
 | eu-west      | Ireland        |

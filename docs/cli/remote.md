@@ -6,14 +6,14 @@ The remote command uses exactly the same configs as `check`, but executes reques
 
 Remote takes all the transactions that you have specified in the yaml. The steps in each transaction are executed sequentially. If a step fails, then the whole transaction is aborted and the rest of the steps are ignored. Each step is executed on a remote server, in a location specified via the command line flags. If a transaction fails, this will be reported in the console and the next transaction will be started.
 
-## Options
+## Flags
 
-| Option    | Short | Required | Default     | Description                                                                                   |
-| :-------- | :---- | :------- | :---------- | :-------------------------------------------------------------------------------------------- |
-| --key     | -k    | yes      |             | [Your API key](../cloud/README.md)                                                            |
-| --region  | -r    | no       | us-east     | The location to run the tests from, a list or regions can be found [here](../cloud/README.md) |
-| --config  | -c    | no       | ./apid.yaml | The config file. If a folder is provided will recursively load all `*.yaml` files             |
-| --timings | -t    | no       | false       | Display the request timings, like DNS lookup, TCP connect, TLS handshake, etc                 |
+| Flag      | Short | Required | Default     | Description                                                                                                                   |
+| :-------- | :---- | :------- | :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| --key     | -k    | yes      |             | [Your API key](../cloud/README.md), this can also be injected via the `APID_KEY` environment variable. Flag takes precedence. |
+| --region  | -r    | no       | us-east     | The location to run the tests from, a list or regions can be found [here](../cloud/README.md)                                 |
+| --config  | -c    | no       | ./apid.yaml | The config file. If a folder is provided will recursively load all `*.yaml` files                                             |
+| --timings | -t    | no       | false       | Display the request timings, like DNS lookup, TCP connect, TLS handshake, etc                                                 |
 
 # Examples
 

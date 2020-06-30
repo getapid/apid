@@ -4,7 +4,6 @@ import (
 	"fmt"
 )
 
-
 type EndpointProvider interface {
 	GetForRegion(region string) (string, error)
 }
@@ -15,18 +14,18 @@ var endpoints = map[string]string{
 	"us-east": "use",
 	"us-west": "usw",
 
-	"ap-sount": "aps",
+	"ap-sount":     "aps",
 	"ap-northeast": "apne",
 	"ap-southeast": "apse",
 
-	"eu-west": "euw",
+	"eu-west":    "euw",
 	"eu-central": "euc",
-	"eu-north": "eun",
+	"eu-north":   "eun",
 
 	"sa-east": "sae",
 }
 
-type apidEndpointProvider struct {}
+type apidEndpointProvider struct{}
 
 func NewAPIDEndpointProvider() EndpointProvider {
 	return &apidEndpointProvider{}
@@ -40,4 +39,3 @@ func (p apidEndpointProvider) GetForRegion(region string) (string, error) {
 
 	return fmt.Sprintf("https://%s.api.getapid.com/executor", token), nil
 }
-

@@ -7,12 +7,17 @@ import (
 	native "net/http"
 
 	"github.com/getapid/apid-cli/common/config"
+	"github.com/getapid/apid-cli/common/log"
 	"github.com/getapid/apid-cli/common/result"
 	"github.com/getapid/apid-cli/common/step"
 	"github.com/getapid/apid-cli/common/transaction"
 	"github.com/getapid/apid-cli/common/variables"
 	cmdResult "github.com/getapid/apid-cli/svc/cli/result"
 	"github.com/spf13/cobra"
+)
+
+const (
+	apiKeyEnvKey = "APID_KEY"
 )
 
 var (
@@ -41,7 +46,7 @@ func init() {
 	rootCmd.AddCommand(remoteCmd)
 	remoteCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 	remoteCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of requests")
-	remoteCmd.Flags().StringVarP(&apiKey, "key", "k", "", "apid access key")
+	remoteCmd.Flags().StringVarP(&apiKey, "key", "k", os.Getenv(apiKeyEnvKey), "apid access key")
 	remoteCmd.Flags().StringVarP(&region, "region", "r", "us-east", "location to run the tests from")
 }
 
@@ -60,7 +65,11 @@ func remoteRun(cmd *cobra.Command, args []string) error {
 	writer := result.NewMultiWriter(consoleWriter)
 
 	stepInterpolator := step.NewTemplateInterpolator()
-	stepExecutor := step.NewRemoteHTTPExecutor(native.DefaultClient, apiKey, region)
+	stepExecutor, err := step.NewRemoteHTTPExecutor(native.DefaultClient, apiKey, region)
+	if err != nil {
+		log.L.Error(err)
+		os.Exit(1)
+	}
 	stepValidator := step.NewHTTPValidator()
 	stepExtractor := step.NewBodyExtractor()
 	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator, stepExtractor)

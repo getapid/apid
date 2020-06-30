@@ -1,13 +1,12 @@
 package step
 
 import (
-	"github.com/getapid/apid-cli/common/remote/endpoint"
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	native "net/http"
-	"os"
 
-	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/apid-cli/common/remote/endpoint"
 
 	"github.com/getapid/apid-cli/common/http"
 	"gopkg.in/yaml.v2"
@@ -20,18 +19,17 @@ type remoteHTTPExecutor struct {
 }
 
 // NewRemoteHTTPExecutor instantiates a new http executor
-func NewRemoteHTTPExecutor(client *native.Client, apiKey string, region string) Executor {
+func NewRemoteHTTPExecutor(client *native.Client, apiKey string, region string) (Executor, error) {
 	endpointProvider := endpoint.NewAPIDEndpointProvider()
 	endpoint, err := endpointProvider.GetForRegion(region)
 	if err != nil {
-		log.L.Error(err)
-		os.Exit(1)
+		return nil, err
 	}
 	return &remoteHTTPExecutor{
 		c:        client,
 		endpoint: endpoint,
 		key:      apiKey,
-	}
+	}, nil
 }
 
 func (e *remoteHTTPExecutor) Do(request Request) (*http.Response, error) {
@@ -53,7 +51,9 @@ func (e *remoteHTTPExecutor) Do(request Request) (*http.Response, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode == native.StatusTooManyRequests {
-		log.L.Fatal("resource quota exceeded")
+		return nil, fmt.Errorf("resource quota exceeded")
+	} else if res.StatusCode == native.StatusUnauthorized {
+		return nil, fmt.Errorf("invalid api key")
 	}
 
 	respBody, err := ioutil.ReadAll(res.Body)

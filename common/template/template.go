@@ -38,7 +38,7 @@ func Render(template string, data variables.Variables) (string, error) {
 			}
 			val := gjson.GetBytes(d, token.val)
 			if !val.Exists() {
-				multiErr = multierr.Append(multiErr, fmt.Errorf("%v: %v", token.val, err))
+				multiErr = multierr.Append(multiErr, fmt.Errorf("%v: key not found", token.val))
 				continue
 			}
 			renderer.WriteString(val.String())

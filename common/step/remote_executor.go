@@ -1,6 +1,7 @@
 package step
 
 import (
+	"github.com/getapid/apid-cli/common/remote/endpoint"
 	"bytes"
 	"io/ioutil"
 	native "net/http"
@@ -12,10 +13,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var endpoints = map[string]string{
-	"us-east": "https://api.getapid.com/step/executor",
-}
-
 type remoteHTTPExecutor struct {
 	key      string
 	endpoint string
@@ -24,9 +21,10 @@ type remoteHTTPExecutor struct {
 
 // NewRemoteHTTPExecutor instantiates a new http executor
 func NewRemoteHTTPExecutor(client *native.Client, apiKey string, region string) Executor {
-	endpoint, ok := endpoints[region]
-	if !ok {
-		log.L.Errorf("invalid region selected - %s", region)
+	endpointProvider := endpoint.NewAPIDEndpointProvider()
+	endpoint, err := endpointProvider.GetForRegion(region)
+	if err != nil {
+		log.L.Error(err)
 		os.Exit(1)
 	}
 	return &remoteHTTPExecutor{

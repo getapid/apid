@@ -30,8 +30,9 @@ took to action each request. Runs all steps in each transaction on a
 public cloud infrastructure.`,
 	Example: `
 	apid remote	--key <apid access key>
-	apid remote --config my-api.yaml --key <apid access key>
-	apid remote -c ./e2e-tests/ -k <apid access key>`,
+	apid remote --config my-api.yaml --key <apid access key> --region us-east
+	apid remote -c ./e2e-tests/ -k <apid access key>
+	apid remote -c ./e2e-tests/ -k <apid access key> -r us-east`,
 	Args: cobra.NoArgs,
 	RunE: remoteRun,
 }
@@ -39,9 +40,9 @@ public cloud infrastructure.`,
 func init() {
 	rootCmd.AddCommand(remoteCmd)
 	remoteCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
-	remoteCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of request steps")
+	remoteCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of requests")
 	remoteCmd.Flags().StringVarP(&apiKey, "key", "k", "", "apid access key")
-	remoteCmd.Flags().StringVarP(&region, "region", "r", "us-east", "location to run the steps from")
+	remoteCmd.Flags().StringVarP(&region, "region", "r", "us-east", "location to run the tests from")
 }
 
 func remoteRun(cmd *cobra.Command, args []string) error {

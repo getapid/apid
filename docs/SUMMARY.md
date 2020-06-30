@@ -10,7 +10,7 @@
   - [TravisCI](integration/travis.md)
   - [Drone](integration/drone.md)
   - [Jenkins](integration/jenkins.md)
-- [CLI usage](cli/README.md)
+- [CLI](cli/README.md)
   - [check](cli/check.md)
   - [remote](cli/remote.md)
 - [Cloud](cloud/README.md)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	http2 "net/http"
+	"strings"
 
 	"github.com/tidwall/gjson"
 
@@ -106,7 +107,11 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 	err := json.Unmarshal([]byte(exp.Is), &expected)
 	if err != nil {
 		expected = exp.Is
-		// return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, exp.Is)
+	}
+
+	message := "expected value for body"
+	if exp.Selector != nil {
+		message = fmt.Sprintf("expected value for `%s` field", *exp.Selector)
 	}
 
 	var received interface{}
@@ -119,14 +124,11 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 	} else {
 		err = json.Unmarshal(actual, &received)
 		if err != nil {
-			// treat it as plaintext
-			received = string(actual)
+			if !plainTextEqual(exp.Is, string(actual), *exp.Subset) {
+				return fmt.Errorf("%s doesn't match actual:\nwant:\n%s\nreceived:\n%s", message, prettyPrint(exp.Is), prettyPrint(actual))
+			}
+			return nil
 		}
-	}
-
-	message := "expected value for body"
-	if exp.Selector != nil {
-		message = fmt.Sprintf("expected value for `%s` field", *exp.Selector)
 	}
 
 	if !mapStructsEqual(expected, received, *exp.KeysOnly, *exp.Subset) {
@@ -138,6 +140,13 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 func prettyPrint(i interface{}) string {
 	s, _ := json.MarshalIndent(i, "", "  ")
 	return string(s)
+}
+
+func plainTextEqual(exp, actual string, subset bool) bool {
+	if !subset {
+		return exp == actual
+	}
+	return strings.Index(actual, exp) != -1
 }
 
 // mapStructsEqual checks if the actual map has all the fields and their corresponding values that exp has.

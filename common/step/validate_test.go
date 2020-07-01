@@ -18,7 +18,7 @@ func (s *ValidatorSuite) TestValidate() {
 		actual *http.Response
 	}
 
-	// incorrectBodyResult := ValidationResult{Errors: map[string]string{"body": ""}}
+	incorrectBodyResult := ValidationResult{Errors: map[string]string{"body": ""}}
 	incorrectStatusResult := ValidationResult{Errors: map[string]string{"code": ""}}
 	incorrectHeadersResult := ValidationResult{Errors: map[string]string{"headers": ""}}
 	correctResult := ValidationResult{}
@@ -84,125 +84,241 @@ func (s *ValidatorSuite) TestValidate() {
 			},
 			expResult: incorrectHeadersResult,
 		},
-		// {
-		// 	name: "body json exact correct",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is:    `{"field1":"exact value"}`,
-		// 					Exact: pbool(true),
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`{"field1":"exact value"}`),
-		// 		},
-		// 	},
-		// 	expResult: correctResult,
-		// },
-		// {
-		// 	name: "body json not exact incorrect",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is:    `{"field1":"value doesn't matter"}`,
-		// 					Exact: pbool(false),
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`{"field1":1}`),
-		// 		},
-		// 	},
-		// 	expResult: incorrectBodyResult,
-		// },
-		// {
-		// 	name: "body not json not exact correct",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is: `hi, what's up`,
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`hi, what's up mate'`),
-		// 		},
-		// 	},
-		// 	expResult: incorrectBodyResult,
-		// },
-		// {
-		// 	name: "body json exact incorrect",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
+		{
+			name: "body json exact correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `{"field1":"exact value"}`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`{"field1":"exact value"}`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body json exact incorrect",
+			args: args{
+				exp: ExpectedResponse{
 
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is:    `{"field1":"value actually matters"}`,
-		// 					Exact: pbool(true),
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`{"field1":"value matters"}`),
-		// 		},
-		// 	},
-		// 	expResult: incorrectBodyResult,
-		// },
-		// {
-		// 	name: "body json not exact incorrect",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is:    `{"field1":{"a":1}}`,
-		// 					Exact: pbool(false),
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`{"field1":{"b":1}}`),
-		// 		},
-		// 	},
-		// 	expResult: incorrectBodyResult,
-		// },
-		// {
-		// 	name: "body json array not exact correct",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is:    `[{"field1":{"a":1}}]`,
-		// 					Exact: pbool(false),
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`[{"field1":{"a":1}}]`),
-		// 		},
-		// 	},
-		// 	expResult: correctResult,
-		// },
-		// {
-		// 	name: "body json array not exact incorrect",
-		// 	args: args{
-		// 		exp: ExpectedResponse{
-		// 			Body: []*ExpectBody{
-		// 				&ExpectBody{
-		// 					Is:    `[{"field1":{"a":1}}]`,
-		// 					Exact: pbool(false),
-		// 				},
-		// 			},
-		// 		},
-		// 		actual: &http.Response{
-		// 			Body: []byte(`[{"field1":{"a":1}},{"field1":{"b":1}}]`),
-		// 		},
-		// 	},
-		// 	expResult: incorrectBodyResult,
-		// },
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `{"field1":"value actually matters"}`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`{"field1":"value matters"}`),
+				},
+			},
+			expResult: incorrectBodyResult,
+		},
+		{
+			name: "body not json subset incorrect",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `hi, what's up`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`hi, what's up mate'`),
+				},
+			},
+			expResult: incorrectBodyResult,
+		},
+		{
+			name: "body not json subset correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `hi, what's up`,
+							Subset:   pbool(true),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`hi, what's up mate'`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body json subset correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `{"field1":"value doesn't matter"}`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(true),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`{"field1":1}`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body json subset incorrect",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `{"field1":"value doesn't matter"}`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(true),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`{"field2":1}`),
+				},
+			},
+			expResult: incorrectBodyResult,
+		},
+		{
+			name: "body nested json subset incorrect",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `{"field1":{"a":1}}`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(true),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`{"field1":{"b":1}}`),
+				},
+			},
+			expResult: incorrectBodyResult,
+		},
+		{
+			name: "body nested json subset correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `{"field1":{"a":1}}`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(true),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`{"field1":{"a":1}}`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body json array subset incorrect",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `[{"field1":{"a":1}}]`,
+							Subset:   pbool(false),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`[{"field1":{"a":1}},{"field1":{"b":1}}]`),
+				},
+			},
+			expResult: incorrectBodyResult,
+		},
+		{
+			name: "body json array subset correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `[{"field1":{"a":1}}]`,
+							Subset:   pbool(true),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`[{"field1":{"a":1}},{"field1":{"b":1}}]`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body text array subset correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `["Tom"]`,
+							Subset:   pbool(true),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`["Tom", "Pom", "Nom"]`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body text json subset  correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `["Tom"]`,
+							Subset:   pbool(true),
+							KeysOnly: pbool(false),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`["Tom", "Pom", "Nom"]`),
+				},
+			},
+			expResult: correctResult,
+		},
+		{
+			name: "body json array subset keys only correct",
+			args: args{
+				exp: ExpectedResponse{
+					Body: []*ExpectBody{
+						&ExpectBody{
+							Is:       `[{"field1":{"a":1}}]`,
+							Subset:   pbool(true),
+							KeysOnly: pbool(true),
+						},
+					},
+				},
+				actual: &http.Response{
+					Body: []byte(`[{"field1":{"a":23}},{"field1":{"b":1}}]`),
+				},
+			},
+			expResult: correctResult,
+		},
 	}
 
 	validator := httpValidator{}

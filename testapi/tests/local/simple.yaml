@@ -9,9 +9,8 @@ transactions:
         expect:
           code: 200
           body:
-            type: "plaintext"
-            content: "OK"
-            exact: true
+            - is: OK
+              exact: true
 
       - id: echo-endpoint-test-post
         request:
@@ -21,6 +20,5 @@ transactions:
         expect:
           code: 200
           body:
-            type: "plaintext"
-            content: "some text h3re"
-            exact: true
+            - is: "some text h3re"
+              exact: true

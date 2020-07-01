@@ -23,57 +23,92 @@ func (s *ValidatorsSuite) TestValidate_ExpectBodyValidator() {
 			expValid: true,
 		},
 		{
-			name: "valid",
-			val: &step.ExpectBody{
-				Type:    pstring("json"),
-				Exact:   pbool(true),
-				Content: "",
+			name:     "invalid - no clauses",
+			val:      []*step.ExpectBody{},
+			expValid: true,
+		},
+		{
+			name: "valid - only is",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					Is: "test",
+				},
 			},
 			expValid: true,
 		},
 		{
-			name:     "defaults",
-			val:      &step.ExpectBody{},
-			expValid: true,
-		},
-		{
-			name: "valid - plaintext and non exact",
-			val: &step.ExpectBody{
-				Type:  pstring("plaintext"),
-				Exact: pbool(true),
-			},
-			expValid: true,
-		},
-		{
-			name: "valid - plaintext and non exact",
-			val: &step.ExpectBody{
-				Exact: pbool(false),
-			},
-			expValid: true,
-		},
-		{
-			name: "invalid type",
-			val: &step.ExpectBody{
-				Type: pstring("wqieufwiu"),
+			name: "invalid - empty is clause",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					Is: "",
+				},
 			},
 			expValid: false,
+		},
+		{
+			name: "invalid - empty clause",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{},
+			},
+			expValid: false,
+		},
+		{
+			name: "valid - subset true",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					Subset: pbool(true),
+					Is:     "test",
+				},
+			},
+			expValid: true,
+		},
+		{
+			name: "valid - subset false",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					Subset: pbool(false),
+					Is:     "test",
+				},
+			},
+			expValid: true,
+		},
+		{
+			name: "valid - keys only false",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					KeysOnly: pbool(false),
+					Is:       "test",
+				},
+			},
+			expValid: true,
+		},
+		{
+			name: "valid - keys only true",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					KeysOnly: pbool(true),
+					Is:       "test",
+				},
+			},
+			expValid: true,
+		},
+		{
+			name: "valid - keys only and subset true",
+			val: []*step.ExpectBody{
+				&step.ExpectBody{
+					KeysOnly: pbool(true),
+					Subset:   pbool(true),
+					Is:       "test",
+				},
+			},
+			expValid: true,
 		},
 	}
 
 	validator := ExpectBodyValidator{}
 	for _, t := range testCases {
-		actualIsValid, actualErr := validator.Validate(t.val)
-
+		actualIsValid, _ := validator.Validate(t.val)
 		s.Equalf(t.expValid, actualIsValid, "test case %q", t.name)
-		if t.expValid {
-			s.NoErrorf(actualErr, "test case %q", t.name)
-			if t.val != nil { // check default were set
-				s.NotNilf(t.val.(*step.ExpectBody).Type, "test case %q", t.name)
-				s.NotNilf(t.val.(*step.ExpectBody).Exact, "test case %q", t.name)
-			}
-		} else {
-			s.Errorf(actualErr, "test case %q", t.name)
-		}
 	}
 }
 

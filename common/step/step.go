@@ -27,9 +27,9 @@ type Request struct {
 }
 
 type ExpectedResponse struct {
-	Code    *int        `yaml:"code"`
-	Headers *Headers    `yaml:"headers"`
-	Body    *ExpectBody `yaml:"body" validate:"expectBody"`
+	Code    *int          `yaml:"code"`
+	Headers *Headers      `yaml:"headers"`
+	Body    []*ExpectBody `yaml:"body" validate:"expectBody"`
 }
 
 type Headers map[string][]string
@@ -84,9 +84,10 @@ func (r *Headers) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type ExpectBody struct {
-	Type    *string `yaml:"type"`
-	Content string  `yaml:"content"`
-	Exact   *bool   `yaml:"exact"`
+	Selector *string `yaml:"selector"`
+	KeysOnly *bool   `yaml:"keys_only"`
+	Subset   *bool   `yaml:"subset"`
+	Is       string  `yaml:"is"`
 }
 
 type Export map[string]string

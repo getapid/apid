@@ -44,9 +44,8 @@ transactions:
       code: 201
       headers: {HEADER: [2]}
       body:
-        type: json
-        content: content
-        exact: true
+        - is: content
+          subset: true
     export: 
       token: 'response.body.token'
   matrix:
@@ -105,10 +104,11 @@ skip_ssl_verify: True
 						Response: step.ExpectedResponse{
 							Code:    pint(201),
 							Headers: &step.Headers{"HEADER": {"2"}},
-							Body: &step.ExpectBody{
-								Type:    pstring("json"),
-								Content: "content",
-								Exact:   pbool(true),
+							Body: []*step.ExpectBody{
+								&step.ExpectBody{
+									Is:     "content",
+									Subset: pbool(true),
+								},
 							},
 						},
 						Export: step.Export{"token": "response.body.token"},
@@ -184,6 +184,11 @@ func (s *LoaderSuite) configsEqual(actualCfg, expCfg Config) {
 	expTransactions := mapTransactions(expCfg.Transactions)
 	for _, tx := range actualCfg.Transactions {
 		expTx := expTransactions[tx.ID]
+		for si := range expTx.Steps {
+			s.ElementsMatch(expTx.Steps[si].Response.Body, tx.Steps[si].Response.Body)
+			expTx.Steps[si].Response.Body = nil
+			tx.Steps[si].Response.Body = nil
+		}
 		s.Equal(expTx.Steps, tx.Steps)
 		tx.Steps = nil
 		expTx.Steps = nil
@@ -361,10 +366,11 @@ func newConfigPair() (config, Config) {
 						Response: step.ExpectedResponse{
 							Code:    pint(1),
 							Headers: &step.Headers{},
-							Body: &step.ExpectBody{
-								Type:    pstring("typ"),
-								Content: "content",
-								Exact:   pbool(true),
+							Body: []*step.ExpectBody{
+								&step.ExpectBody{
+									Is:     "content",
+									Subset: pbool(true),
+								},
 							},
 						},
 						Export: step.Export{},

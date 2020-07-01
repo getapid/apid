@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	http2 "net/http"
-	"reflect"
-	"strings"
+
+	"github.com/tidwall/gjson"
 
 	"github.com/getapid/apid-cli/common/http"
 	"go.uber.org/multierr"
@@ -43,7 +43,9 @@ func (v httpValidator) validate(exp ExpectedResponse, actual *http.Response) (re
 
 	appendErr(errMsgs, "code", v.validateCode(exp.Code, actual.StatusCode))
 	appendErr(errMsgs, "headers", v.validateHeaders(exp.Headers, actual.Header))
-	appendErr(errMsgs, "body", v.validateBody(exp.Body, actual.Body))
+	for _, body := range exp.Body {
+		appendErr(errMsgs, "body", v.validateBody(body, actual.Body))
+	}
 
 	result.Errors = errMsgs
 	return
@@ -100,62 +102,48 @@ func (httpValidator) validateBody(exp *ExpectBody, actual []byte) error {
 		return nil
 	}
 
-	// validation should have set those to non-nil
-	typ := *exp.Type
-	exact := *exp.Exact
-
-	var unmarshall func([]byte, interface{}) error
-	var nonExactEquals func(interface{}, interface{}) bool
-
-	switch typ {
-	case "json":
-		unmarshall = json.Unmarshal
-		nonExactEquals = mapStructsEqual
-	case "plaintext":
-		unmarshall = func(b []byte, v interface{}) error {
-			reflect.ValueOf(v).Elem().Set(reflect.ValueOf(string(b)))
-			return nil
-		}
-		nonExactEquals = func(i1 interface{}, i2 interface{}) bool {
-			i1String, ok1 := i1.(string)
-			i2String, ok2 := i2.(string)
-			if !ok1 || !ok2 {
-				return false
-			}
-			return strings.Contains(i2String, i1String)
-		}
-	default: // again, should have been covered by validation
-		panic(fmt.Errorf("no support for type %q", typ))
-	}
-
 	var expected interface{}
-	err := unmarshall([]byte(exp.Content), &expected)
+	err := json.Unmarshal([]byte(exp.Is), &expected)
 	if err != nil {
-		return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, exp.Content)
+		expected = exp.Is
+		// return fmt.Errorf("couldn't convert expected body into type: %w, body = %s", err, exp.Is)
 	}
 
 	var received interface{}
-	err = unmarshall(actual, &received)
-	if err != nil {
-		return fmt.Errorf("coulnd't convert response to type %q, response: %s", typ, actual)
+	if exp.Selector != nil {
+		val := gjson.GetBytes(actual, *exp.Selector)
+		if !val.Exists() {
+			return fmt.Errorf("invalid selector: %s", *exp.Selector)
+		}
+		received = val.Value()
+	} else {
+		err = json.Unmarshal(actual, &received)
+		if err != nil {
+			// treat it as plaintext
+			received = string(actual)
+		}
 	}
 
-	if exact {
-		if !reflect.DeepEqual(expected, received) {
-			return fmt.Errorf("expected body doesn't match actual:\nwant =\n\t%s\nreceived =\n\t%s", exp.Content, actual)
-		}
-	} else {
-		if !nonExactEquals(expected, received) {
-			return fmt.Errorf("expected body's fields don't match actual:\nwant =\n\t%s\nreceived =\n\t%s", exp.Content, actual)
-		}
+	message := "expected value for body"
+	if exp.Selector != nil {
+		message = fmt.Sprintf("expected value for `%s` field", *exp.Selector)
+	}
+
+	if !mapStructsEqual(expected, received, *exp.KeysOnly, *exp.Subset) {
+		return fmt.Errorf("%s doesn't match actual:\nwant:\n%s\nreceived:\n%s", message, prettyPrint(expected), prettyPrint(received))
 	}
 	return nil
 }
 
-// mapStructsEqual checks if the actual map has all the fields that exp has. If the value for a field in exp is also
-// a map, then mapStructsEqual will check recursively there as well (returning false if the type in actual
-// is not another map)
-func mapStructsEqual(exp, actual interface{}) bool {
+func prettyPrint(i interface{}) string {
+	s, _ := json.MarshalIndent(i, "", "  ")
+	return string(s)
+}
+
+// mapStructsEqual checks if the actual map has all the fields and their corresponding values that exp has.
+// If the value for a field in exp is also a map, then mapStructsEqual will check recursively there as well
+// (returning false if the type in actual is not another map)
+func mapStructsEqual(exp, actual interface{}, keysOnly, subset bool) bool {
 	switch exp.(type) {
 	case map[string]interface{}:
 		expMap := exp.(map[string]interface{})
@@ -163,11 +151,19 @@ func mapStructsEqual(exp, actual interface{}) bool {
 		if !ok {
 			return false
 		}
+		if !subset {
+			// check if all the keys in the actual map are in the expected map
+			for k := range actualMap {
+				if _, ok := expMap[k]; !ok {
+					return false
+				}
+			}
+		}
 		for k, expNested := range expMap {
 			if actualNested, ok := actualMap[k]; !ok {
 				return false
 			} else {
-				if !mapStructsEqual(expNested, actualNested) {
+				if !mapStructsEqual(expNested, actualNested, keysOnly, subset) {
 					return false
 				}
 			}
@@ -175,14 +171,32 @@ func mapStructsEqual(exp, actual interface{}) bool {
 	case []interface{}:
 		expSlice := exp.([]interface{})
 		actualSlice, ok := actual.([]interface{})
+		if !ok {
+			return false
+		}
+
+		if !subset && len(expSlice) != len(actualSlice) {
+			return false
+		}
+
 		if len(expSlice) == 0 || !ok {
 			return ok
 		}
 
-		for _, val := range actualSlice {
-			if !mapStructsEqual(expSlice[0], val) {
+		for _, expVal := range expSlice {
+			found := false
+			for _, actualVal := range actualSlice {
+				if mapStructsEqual(expVal, actualVal, keysOnly, subset) {
+					found = true
+				}
+			}
+			if !found {
 				return false
 			}
+		}
+	default:
+		if !keysOnly {
+			return exp == actual
 		}
 	}
 	return true

@@ -7,7 +7,7 @@ variables:
 transactions:
   - id: authenticated-transaction
     matrix:
-      beer_id: [1, 2]
+      beer_id: [1]
     steps:
       - id: auth
         variables:
@@ -32,20 +32,17 @@ transactions:
             Authorization: "Bearer {{ auth.auth_token }}"
             Test: "{{ auth.test_header }}"
         expect:
-          code: 200
-          exact: false
-          type: json
-          content: |
-            {
-              "beers": [
+          body:
+            - selector: beers.0
+              keys_only: true
+              subset: true
+              is: |
                 {
-                  "id": 0,
-                  "name": "",
-                  "type": "",
-                  "price": 0
+                  "id": 1
                 }
-              ]
-            }
+
+            - selector: beers.#
+              is: 3
 
       - id: get-beer-1
         request:
@@ -56,14 +53,14 @@ transactions:
         expect:
           code: 200
           body:
-            exact: false
-            type: json
-            content: |
-              {
-                "beer": {
-                  "id": 0,
-                  "name": "",
-                  "type": "",
-                  "price": 0
+            - subset: true
+              keys_only: true
+              is: |
+                {
+                  "beer": {
+                    "id": 0,
+                    "name": "",
+                    "type": "",
+                    "price": 0
+                  }
                 }
-              }

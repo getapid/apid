@@ -32,9 +32,11 @@ func (i *templateInterpolator) interpolate(step Step, vars variables.Variables) 
 		return PreparedStep(step), err
 	}
 	if step.Response.Body != nil {
-		if step.Response.Body.Content, err = template.Render(step.Response.Body.Content, vars); err != nil {
-			err = fmt.Errorf("interpolating step response body: %v", err)
-			return PreparedStep(step), err
+		for idx := range step.Response.Body {
+			if step.Response.Body[idx].Is, err = template.Render(step.Response.Body[idx].Is, vars); err != nil {
+				err = fmt.Errorf("interpolating step response body: %v", err)
+				return PreparedStep(step), err
+			}
 		}
 	}
 

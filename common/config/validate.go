@@ -36,6 +36,7 @@ func getValidatorFromTag(tag string, fieldType reflect.Type) Validator {
 func validateStruct(s interface{}, accErr error) error {
 	// ValueOf returns a Value representing the run-time data
 	v := reflect.ValueOf(s)
+
 	for i := 0; i < v.NumField(); i++ {
 		typeField := v.Type().Field(i)
 		typeOfTypeField := typeField.Type
@@ -64,12 +65,15 @@ func validateStruct(s interface{}, accErr error) error {
 			}
 		}
 
-		if typeOfTypeField.Kind() == reflect.Struct {
+		switch typeOfTypeField.Kind() {
+		case reflect.Struct:
 			accErr = validateStruct(field, accErr)
-		} else if typeOfTypeField.Kind() == reflect.Slice {
+		case reflect.Slice:
 			f := v.Field(i)
 			for i := 0; i < f.Len(); i++ {
-				accErr = validateStruct(f.Index(i).Interface(), accErr)
+				if f.Index(i).Kind() == reflect.Struct {
+					accErr = validateStruct(f.Index(i).Interface(), accErr)
+				}
 			}
 		}
 	}

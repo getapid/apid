@@ -91,38 +91,25 @@ func (v ExpectBodyValidator) Validate(val interface{}) (b bool, err error) {
 	if val == nil || (reflect.ValueOf(val).Kind() == reflect.Ptr && reflect.ValueOf(val).IsNil()) {
 		return true, nil
 	}
-	expBody, ok := val.(*step.ExpectBody)
+	expBody, ok := val.([]*step.ExpectBody)
 	if !ok {
-		return false, fmt.Errorf("must be *step.ExpectBody")
+		return false, fmt.Errorf("must be []*step.ExpectBody")
 	}
 
-	const (
-		typeJson  = "json"
-		typePlain = "plaintext"
-	)
+	for i, clause := range expBody {
+		keysOnlyDefault := false
+		if clause.KeysOnly == nil {
+			(*expBody[i]).KeysOnly = &keysOnlyDefault
+		}
 
-	typ := typePlain
-	if expBody.Type != nil {
-		typ = *expBody.Type
-	} else {
-		(*expBody).Type = &typ
-	}
+		subsetDefault := false
+		if clause.Subset == nil {
+			(*expBody[i]).Subset = &subsetDefault
+		}
 
-	exact := true
-	if expBody.Exact != nil {
-		exact = *expBody.Exact
-	} else {
-		(*expBody).Exact = &exact
-	}
-
-	switch typ {
-	case typeJson, typePlain:
-	default:
-		return false, fmt.Errorf("unsupported content type %q", typ)
-	}
-
-	if exact && (typ != "json" && typ != "plaintext") {
-		return false, fmt.Errorf(`cannot check exact body with type %q, only %q and %q supported`, typ, typePlain, typeJson)
+		if len(clause.Is) == 0 {
+			return false, fmt.Errorf("missing `is` clause")
+		}
 	}
 
 	return true, nil

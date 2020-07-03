@@ -216,6 +216,67 @@ Body provides a bit more flexibility on what body to expect in this response.
 | subset   | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests).                                                                                       |
 | keysOnly | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests). |
 
+```yaml
+expect:
+  body:
+    - is: |
+        {
+          "name": {"first": "Tom", "last": "Anderson"},
+          "age":37,
+          "children": ["Sara","Alex","Jack"],
+          "fav.movie": "Deer Hunter",
+          "friends": [
+            {"first": "Dale", "last": "Murphy", "age": 44, "nets": ["ig", "fb", "tw"]},
+            {"first": "Roger", "last": "Craig", "age": 68, "nets": ["fb", "tw"]},
+            {"first": "Jane", "last": "Murphy", "age": 47, "nets": ["ig", "tw"]}
+          ]
+        }
+    - selector: name
+      is: |
+        {
+          "first": "Tom", 
+          "last": "Anderson"
+        }
+
+    - selector: name
+      keysOnly: true
+      is: |
+        {
+          "first": "Something, but not Tom", 
+          "last": "not Anderson"
+        }
+
+    - selector: name
+      subset: true
+      keysOnly: true
+      is: |
+        {
+          "first": "Something, but not Tom"
+        }
+
+    - selector: name
+      subset: true
+      is: |
+        {
+          "first": "Tom"
+        }
+
+    - selector: friends.#.first
+      is: |
+        [
+          "Dale",
+          "Jane",
+          "Roger"
+        ]
+
+    - selector: friends.#.first
+      subset: true
+      is: |
+        [
+          "Rojer"
+        ]
+```
+
 ## Skip SSL verification
 
 SSL verification can be skipped on all steps in a APId config (suite). Specify the `skip_ssl_verify: True` field

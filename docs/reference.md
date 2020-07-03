@@ -221,12 +221,12 @@ On the other hand, if `type` is `string` and `exact` is:
 - `true`: will perform an equals comparison.
 - `false`: will check if the provided `body` is a substring of the responses body.
 
-| Field    | Type   | Required | default | Description                                                                                                                                                                                 |
-| :------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| is       | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                    |
-| selector | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)         |
-| subset   | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](../../testapi/tests).                                                                                       |
-| keysOnly | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](../../testapi/tests). |
+| Field    | Type   | Required | default | Description                                                                                                                                                                                                                           |
+| :------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| is       | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                                                              |
+| selector | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)                                                   |
+| subset   | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests).                                                                                       |
+| keysOnly | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests). |
 
 ## Skip SSL verification
 

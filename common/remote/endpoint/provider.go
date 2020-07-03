@@ -14,7 +14,7 @@ var endpoints = map[string]string{
 	"us-east": "use",
 	"us-west": "usw",
 
-	"ap-sount":     "aps",
+	"ap-south":     "aps",
 	"ap-northeast": "apne",
 	"ap-southeast": "apse",
 

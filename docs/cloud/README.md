@@ -39,3 +39,25 @@ APId cloud runs in multiple reagions worldwide. Here is a list of the current on
 | eu-north     | Sweden         |
 | eu-central   | Germany        |
 | sa-east      | Brazil         |
+
+## Timeouts
+
+The execution timeout is set to 30 seconds. If your API does not respond within that time an error is returned.
+
+## Billing
+
+We've tried making the billing model as simple as possible. Each account has a quota of units they can use each month for running their tests on the cloud infrastructure.
+
+Each unit corresponds to 100ms of execution time of a step - thus the response time of the API for each step.
+
+You are not billed for any interpolation or step preparation (which is done on the machine you're running the CLI on).
+
+### Examples
+
+| API response time | Units billed |
+| :---------------- | :----------- |
+| 23                | 1            |
+| 99                | 1            |
+| 100               | 1            |
+| 105               | 2            |
+| 1999              | 20           |

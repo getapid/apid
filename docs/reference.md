@@ -28,8 +28,8 @@ These will contain anything environment variable that the APId CLI has inherited
 
 ```yaml
 variables:
-  title: 'A long time ago'
-  subtitle: 'in a {{ var.place }} far far away {{ env.DATABASE_USER }} accidentally dropped all tables'
+  title: "A long time ago"
+  subtitle: "in a {{ var.place }} far far away {{ env.DATABASE_USER }} accidentally dropped all tables"
   year: 2187
 ```
 
@@ -61,7 +61,7 @@ use `{% echo $STEP_ONE_AUTH_TOKEN %}`. Another example might be `{{ var.my-name 
 ```yaml
 steps:
   request:
-    endpoint: '{{ var.api_url }}/avengers/{% curl https://dynamic-avengers-api.io/random-avenger-id %}'
+    endpoint: "{{ var.api_url }}/avengers/{% curl https://dynamic-avengers-api.io/random-avenger-id %}"
 ```
 
 ## Configuration files
@@ -85,14 +85,14 @@ A transaction is a list of [steps](reference.md#step) which are executed sequent
 | matrix    | [`matrix`](reference.md#matrix)       | no       | Variable matrix to repeat the transaction with |
 
 ```yaml
-id: 'transaction-one'
+id: "transaction-one"
 variables:
-  api_url: 'https://jsonplaceholder.typicode.com'
+  api_url: "https://jsonplaceholder.typicode.com"
 steps:
-  - id: 'todos-1'
+  - id: "todos-1"
     request:
-      method: 'GET'
-      endpoint: '{{ var.api_url }}/todos/1'
+      method: "GET"
+      endpoint: "{{ var.api_url }}/todos/1"
 ```
 
 ### Matrix
@@ -106,8 +106,8 @@ The below will send four different requests in four different transactions.
 id: transaction
 matrix:
   api_url:
-    - 'http://localhost:8080'
-    - 'https://jsonplaceholder.typicode.com'
+    - "http://localhost:8080"
+    - "https://jsonplaceholder.typicode.com"
   todo_id:
     - 1
     - 2
@@ -115,7 +115,7 @@ steps:
   - id: todos
     request:
       method: GET
-      endpoint: '{{ var.api_url }}/todos/{{ var.todo_id }}'
+      endpoint: "{{ var.api_url }}/todos/{{ var.todo_id }}"
 ```
 
 The different transactions and requests:
@@ -140,16 +140,16 @@ A step is a call to a single endpoint with optional validation of the response.
 
 ```yaml
 steps:
-  - id: 'get user with id 1'
+  - id: "get user with id 1"
     variables:
-      api_url: 'http://localhost:80'
+      api_url: "http://localhost:80"
     request:
-      method: 'GET'
-      endpoint: '{{ var.api_url }}/users/1'
+      method: "GET"
+      endpoint: "{{ var.api_url }}/users/1"
     expect:
       code: 200
       body:
-        type: 'json'
+        type: "json"
         content: |
           {
             "first_name": "Bobby",
@@ -160,8 +160,8 @@ steps:
             }
           }
     export:
-      auth_header: 'response.headers.X-APIDAUTH'
-      auth_token: 'response.body.access_token'
+      auth_header: "response.headers.X-APIDAUTH"
+      auth_token: "response.body.access_token"
 ```
 
 ### Request
@@ -192,17 +192,17 @@ request:
 
 Expect will define what we are expecting as a valid response from the API.
 
-| Field   | Type                      | Required | Description                     |
-| :------ | :------------------------ | :------- | :------------------------------ |
-| code    | int                       | no       | The status code of the response |
-| headers | mapping                   | no       | What headers to expect          |
-| body    | [body](reference.md#body) | no       | What body to expect             |
+| Field   | Type                        | Required | Description                     |
+| :------ | :-------------------------- | :------- | :------------------------------ |
+| code    | int                         | no       | The status code of the response |
+| headers | mapping                     | no       | What headers to expect          |
+| body    | [[]body](reference.md#body) | no       | What body to expect             |
 
 ```yaml
 expect:
   code: 200
   headers:
-    Accept: 'application/json'
+    Accept: "application/json"
 ```
 
 #### Body
@@ -221,21 +221,12 @@ On the other hand, if `type` is `string` and `exact` is:
 - `true`: will perform an equals comparison.
 - `false`: will check if the provided `body` is a substring of the responses body.
 
-| Field   | Type   | Required | Description                                        |
-| :------ | :----- | :------- | :------------------------------------------------- |
-| type    | enum   | no       | The type of the response, either `json` or `string` |
-| content | string | no       | What content of the body to expect                 |
-| exact   | bool   | no       | Is this the entire body, or a part of it           |
-
-```yaml
-body:
-  type: 'json'
-  exact: true
-  content: |
-    {
-      "name": "John Doe"
-    }
-```
+| Field    | Type   | Required | default | Description                                                                                                                                                                                 |
+| :------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| is       | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                    |
+| selector | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)         |
+| subset   | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](../../testapi/tests).                                                                                       |
+| keysOnly | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](../../testapi/tests). |
 
 ## Skip SSL verification
 

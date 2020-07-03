@@ -209,18 +209,6 @@ expect:
 
 Body provides a bit more flexibility on what body to expect in this response.
 
-When specifying the type of response, the `exact` value has the following behaviour:
-
-If the `type` is `json` and `exact` is:
-
-- `true`: will make sure the JSON content match recursively for every key and value.
-- `false`: will check if the keys present in the `body` are also present in the responses body and if their respective values match.
-
-On the other hand, if `type` is `string` and `exact` is:
-
-- `true`: will perform an equals comparison.
-- `false`: will check if the provided `body` is a substring of the responses body.
-
 | Field    | Type   | Required | default | Description                                                                                                                                                                                                                           |
 | :------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | is       | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                                                              |

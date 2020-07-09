@@ -19,9 +19,9 @@ func Test_apidEndpointProvider_GetForRegion(t *testing.T) {
 			"legit",
 			provider,
 			args{
-				"us-east",
+				"washington",
 			},
-			"https://use.api.getapid.com/executor",
+			"https://was.api.getapid.com/executor",
 			false,
 		},
 		{

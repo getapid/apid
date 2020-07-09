@@ -25,20 +25,20 @@ A reference on how use the CLI after installation for remote execution can be fo
 
 ## Regions
 
-APId cloud runs in multiple reagions worldwide. Here is a list of the current ones:
+APId cloud runs in multiple regions worldwide. Below is a list of the current ones. The default region is set to Washington.
 
-| Region Name  | Location       |
-| :----------- | :------------- |
-| ca-central   | Canada         |
-| us-east      | North Virginia |
-| us-west      | California     |
-| ap-south     | India          |
-| ap-northeast | Japan          |
-| ap-southeast | Australia      |
-| eu-west      | Ireland        |
-| eu-north     | Sweden         |
-| eu-central   | Germany        |
-| sa-east      | Brazil         |
+| Region Name  | Location      |
+| :----------- | :------------ |
+| montreal     | Montreal      |
+| washington   | Washington    |
+| sanfrancisco | San Francisco |
+| mumbai       | Mumbai        |
+| tokyo        | Tokyo         |
+| sydney       | Sydney        |
+| dublin       | Dublin        |
+| stockholm    | Stockholm     |
+| frankfurt    | Frankfurt     |
+| saopaulo     | Sao Paulo     |
 
 ## Timeouts
 

@@ -47,7 +47,7 @@ func init() {
 	remoteCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 	remoteCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of requests")
 	remoteCmd.Flags().StringVarP(&apiKey, "key", "k", os.Getenv(apiKeyEnvKey), "apid access key")
-	remoteCmd.Flags().StringVarP(&region, "region", "r", "us-east", "location to run the tests from")
+	remoteCmd.Flags().StringVarP(&region, "region", "r", "washington", "location to run the tests from")
 }
 
 func remoteRun(cmd *cobra.Command, args []string) error {

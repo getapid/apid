@@ -9,20 +9,20 @@ type EndpointProvider interface {
 }
 
 var endpoints = map[string]string{
-	"ca-central": "cac",
+	"montreal": "ymq",
 
-	"us-east": "use",
-	"us-west": "usw",
+	"washington":   "was",
+	"sanfrancisco": "sfo",
 
-	"ap-south":     "aps",
-	"ap-northeast": "apne",
-	"ap-southeast": "apse",
+	"mumbai": "bom",
+	"tokyo":  "tyo",
+	"sydney": "syd",
 
-	"eu-west":    "euw",
-	"eu-central": "euc",
-	"eu-north":   "eun",
+	"stockholm": "sto",
+	"frankfurt": "fra",
+	"dublin":    "dub",
 
-	"sa-east": "sae",
+	"saopaulo": "sao",
 }
 
 type apidEndpointProvider struct{}

@@ -15,14 +15,6 @@ jobs:
         go-version: 1.13
       id: go
 
-    - name: Set GOPATH
-      # temporary fix
-      # see https://github.com/actions/setup-go/issues/14
-      run: |
-        echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
-        echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
-      shell: bash
-
     - name: Check out code
       uses: actions/checkout@v1
 

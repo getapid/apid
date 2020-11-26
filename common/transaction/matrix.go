@@ -1,17 +1,27 @@
 package transaction
 
 import (
+	"encoding/json"
+
 	"github.com/getapid/apid-cli/common/variables"
 )
 
 // Matrix is holding slices of values for a number of (step/transaction) variables.
 // It generates combinations of these values. It is not thread-safe.
 type Matrix struct {
-	inited          bool
-	order           []string
-	currentVariants map[string]int
+	inited          bool                     `json:"-"`
+	order           []string                 `json:"-"`
+	currentVariants map[string]int           `json:"-"`
+	M               map[string][]interface{} `yaml:",inline"`
+}
 
-	M map[string][]interface{} `yaml:",inline"`
+func (m *Matrix) UnmarshalJSON(b []byte) error {
+	m.M = make(map[string][]interface{})
+	return json.Unmarshal(b, &m.M)
+}
+
+func (m Matrix) MarshalJSON() ([]byte, error) {
+	return json.Marshal(m.M)
 }
 
 func (m *Matrix) HasNext() bool {

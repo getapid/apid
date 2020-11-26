@@ -14,10 +14,10 @@ type Runner interface {
 
 // Transaction is the definition of a transaction
 type Transaction struct {
-	ID        string              `yaml:"id" validate:"required"`
-	Variables variables.Variables `yaml:"variables"`
-	Steps     []step.Step         `yaml:"steps" validate:"required,unique=ID"`
-	Matrix    *Matrix             `yaml:"matrix"`
+	ID        string              `yaml:"id" json:"id" validate:"required"`
+	Variables variables.Variables `yaml:"variables" json:"variables"`
+	Steps     []step.Step         `yaml:"steps" json:"steps" validate:"required,unique=ID"`
+	Matrix    *Matrix             `yaml:"matrix" json:"matrix"`
 }
 
 type TransactionRunner struct {

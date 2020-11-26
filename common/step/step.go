@@ -9,27 +9,27 @@ import (
 
 // Step is the data for a single endpoint
 type Step struct {
-	ID        string              `yaml:"id" validate:"required"`
-	Variables variables.Variables `yaml:"variables"`
-	Request   Request             `yaml:"request" validate:"required"`
-	Response  ExpectedResponse    `yaml:"expect"`
-	Export    Export              `yaml:"export"`
+	ID        string              `yaml:"id" json:"id" validate:"required"`
+	Variables variables.Variables `yaml:"variables" json:"variables"`
+	Request   Request             `yaml:"request" json:"request" validate:"required"`
+	Response  ExpectedResponse    `yaml:"expect" json:"expect"`
+	Export    Export              `yaml:"export" json:"export"`
 }
 
 // Request is a single step request data
 type Request struct {
 	// Type if the method of the request
-	Type                string  `yaml:"method" validate:"required"`
-	Endpoint            string  `yaml:"endpoint" validate:"required"`
-	Headers             Headers `yaml:"headers"`
-	Body                string  `yaml:"body"`
-	SkipSSLVerification *bool   `yaml:"skip_ssl_verify"`
+	Type                string  `yaml:"method" json:"method" validate:"required"`
+	Endpoint            string  `yaml:"endpoint" json:"endpoint" validate:"required"`
+	Headers             Headers `yaml:"headers" json:"headers"`
+	Body                string  `yaml:"body" json:"body"`
+	SkipSSLVerification *bool   `yaml:"skip_ssl_verify" json:"skip_ssl_verify"`
 }
 
 type ExpectedResponse struct {
-	Code    *int          `yaml:"code"`
-	Headers *Headers      `yaml:"headers"`
-	Body    []*ExpectBody `yaml:"body" validate:"expectBody"`
+	Code    *int          `yaml:"code" json:"code"`
+	Headers *Headers      `yaml:"headers" json:"headers"`
+	Body    []*ExpectBody `yaml:"body" json:"body" validate:"expectBody"`
 }
 
 type Headers map[string][]string
@@ -84,10 +84,10 @@ func (r *Headers) UnmarshalYAML(value *yaml.Node) error {
 }
 
 type ExpectBody struct {
-	Selector *string `yaml:"selector"`
-	KeysOnly *bool   `yaml:"keys_only"`
-	Subset   *bool   `yaml:"subset"`
-	Is       string  `yaml:"is"`
+	Selector *string `yaml:"selector" json:"selector"`
+	KeysOnly *bool   `yaml:"keys_only" json:"keys_only"`
+	Subset   *bool   `yaml:"subset" json:"subset"`
+	Is       string  `yaml:"is" json:"is"`
 }
 
 type Export map[string]string

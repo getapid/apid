@@ -1,6 +1,7 @@
 package variables
 
 import (
+	"encoding/json"
 	"os"
 	"reflect"
 	"strings"
@@ -41,6 +42,21 @@ func (v *Variables) UnmarshalYAML(value *yaml.Node) error {
 
 func (v Variables) MarshalYAML() (interface{}, error) {
 	return v.data[varNamespace], nil
+}
+
+func (v *Variables) UnmarshalJSON(b []byte) error {
+	data := make(map[string]interface{})
+	err := json.Unmarshal(b, &data)
+	if err != nil {
+		return err
+	}
+	v.data = make(map[string]interface{})
+	v.data[varNamespace] = data
+	return nil
+}
+
+func (v Variables) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.data[varNamespace])
 }
 
 func newEmptyVars() Variables {

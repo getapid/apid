@@ -1,10 +1,10 @@
-# Remote
+# Check
 
-The remote command uses exactly the same configs as `check`, but executes requests from the APId cloud. This allows you to test your API from around the world. Remote will run all the transactions defined in `apid.yaml` in the current directory or optionally take a path to the config via the `-c` or `--config` flag. To get familiar with the syntax of a config file, see [Reference](../reference/README.md)
+The cloud check command uses exactly the same configs as `check`, but executes requests from the APId cloud. This allows you to test your API from around the world. Remote will run all the transactions defined in `apid.yaml` in the current directory or optionally take a path to the config via the `-c` or `--config` flag. To get familiar with the syntax of a config file, see [Reference](../reference/README.md)
 
 # Details
 
-Remote takes all the transactions that you have specified in the yaml. The steps in each transaction are executed sequentially. If a step fails, then the whole transaction is aborted and the rest of the steps are ignored. Each step is executed on a remote server, in a location specified via the command line flags. If a transaction fails, this will be reported in the console and the next transaction will be started.
+Check takes all the transactions that you have specified in the yaml. The steps in each transaction are executed sequentially. If a step fails, then the whole transaction is aborted and the rest of the steps are ignored. Each step is executed on a remote server, in a location specified via the command line flags. If a transaction fails, this will be reported in the console and the next transaction will be started.
 
 ## Flags
 
@@ -18,7 +18,7 @@ Remote takes all the transactions that you have specified in the yaml. The steps
 # Examples
 
 ```bash
-apid remote --key <access-key>
-apid remote --config ./tests/e2e/apid.yaml --key <access-key>
-apid remote --config ./tests/e2e/apid.yaml --key <access-key> --region washington
+apid cloud check --key <access-key>
+apid cloud check --config ./tests/e2e/apid.yaml --key <access-key>
+apid cloud check --config ./tests/e2e/apid.yaml --key <access-key> --region washington
 ```

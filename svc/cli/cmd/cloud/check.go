@@ -1,4 +1,4 @@
-package cmd
+package cloud
 
 import (
 	"fmt"
@@ -16,41 +16,36 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	apiKeyEnvKey = "APID_KEY"
-)
-
 var (
-	apiKey = ""
-	region = ""
+	region      = ""
+	showTimings = false
 )
 
-var remoteCmd = &cobra.Command{
-	Use:   "remote",
+var checkCmd = &cobra.Command{
+	Use:   "check",
 	Short: "Executes a config on apid remote infrastructure",
 	Long: `Loads either a config file, or if a directory is provided it 
 recursively loads all .yaml files and executes them. It will run all the 
 transactions in you config, verify the responses, and record the time it 
 took to action each request. Runs all steps in each transaction on a 
-public cloud infrastructure.`,
+public cloud infrastructure. See https://docs.getapid.com for more inforamtion`,
 	Example: `
-	apid remote	--key <apid access key>
-	apid remote --config my-api.yaml --key <apid access key> --region us-east
-	apid remote -c ./e2e-tests/ -k <apid access key>
-	apid remote -c ./e2e-tests/ -k <apid access key> -r us-east`,
+	apid cloud check --key <apid access key>
+	apid cloud check --config my-api.yaml --key <apid access key> --region dublin
+	apid cloud check -c ./e2e-tests/ -k <apid access key>
+	apid cloud check -c ./e2e-tests/ -k <apid access key> -r dublin`,
 	Args: cobra.NoArgs,
-	RunE: remoteRun,
+	RunE: remoteCheck,
 }
 
 func init() {
-	rootCmd.AddCommand(remoteCmd)
-	remoteCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
-	remoteCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of requests")
-	remoteCmd.Flags().StringVarP(&apiKey, "key", "k", os.Getenv(apiKeyEnvKey), "apid access key")
-	remoteCmd.Flags().StringVarP(&region, "region", "r", "washington", "location to run the tests from")
+	RootCommand.AddCommand(checkCmd)
+	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
+	checkCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of requests")
+	checkCmd.Flags().StringVarP(&region, "region", "r", "washington", "location to run the tests from")
 }
 
-func remoteRun(cmd *cobra.Command, args []string) error {
+func remoteCheck(cmd *cobra.Command, args []string) error {
 	c, err := config.Load(configFilepath)
 	if err != nil {
 		return fmt.Errorf("could not load config file: %v", err)

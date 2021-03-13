@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/apid-cli/svc/cli/cmd/cloud"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
@@ -13,7 +14,7 @@ var logVerbosity int
 
 var rootCmd = &cobra.Command{
 	Use:  "apid",
-	Long: "Apid is a command to help you test and verify the performance of you APIs",
+	Long: "Apid is a command to help you test and verify the performance and reliability of you APIs",
 	PersistentPreRun: func(*cobra.Command, []string) {
 		log.Init(int(zap.WarnLevel) - logVerbosity + 1)
 	},
@@ -25,6 +26,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	// default log level for zap is computed in the persistent pre run for the root command
 	rootCmd.PersistentFlags().IntVarP(&logVerbosity, "verbosity", "v", 1, "log verbosity (default: Warn)")
+	rootCmd.AddCommand(cloud.RootCommand)
 }
 
 func Execute() {

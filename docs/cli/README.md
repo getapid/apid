@@ -4,3 +4,4 @@ In this section we will discuss the different CLI commands available for all use
 
 - [check](check.md)
 - [remote](remote.md)
+- [cloud](cloud/README.md)

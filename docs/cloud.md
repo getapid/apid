@@ -10,10 +10,10 @@ configs (suites) from a directory and multiple files contain `schedule`, it's no
 schedule will be used; it's not a problem if they are the same.
 
 | Field    | Type   | Required          | Description                                                                   |
-| :------  | :----- | :-------          | :-------------------------------------------------                            |
+| :------- | :----- | :---------------- | :---------------------------------------------------------------------------- |
 | schedule | string | no; yes for cloud | A [valid cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression) |
- 
-We support `?` `/` `*` `,` `-` as well as the standard macros  `@yearly` `@annually` `@monthly` `@weekly` `@daily` `@midnight` `@hourly` `@every <duration>` (`<duration>` is a sequence of numbers with time units: "ns", "us", "ms", "s", "m", "h") |
+
+We support `?` `/` `*` `,` `-` as well as the standard macros `@yearly` `@annually` `@monthly` `@weekly` `@daily` `@midnight` `@hourly` `@every <duration>` (`<duration>` is a sequence of numbers with time units: "ns", "us", "ms", "s", "m", "h") |
 
 All times will be interpreted in GMT+0.
 
@@ -34,15 +34,30 @@ configs (suites) from a directory and multiple files contain `locations`, it's n
 set of locations will be used. It's not a problem if they are the same.
 
 | Field    | Type     | Required          | Description                                              |
-| :------  | :-----   | :-------          | :-------------------------------------------------       |
+| :------- | :------- | :---------------- | :------------------------------------------------------- |
 | schedule | []string | no; yes for cloud | A list of locations. Valid elements are to be announced. |
 
 ```yaml
-locations: ['us-east', 'europe-london']
+locations: ["dublin", "montreal", "saopaulo"]
 ```
 
 ```yaml
-locations: 
-  - 'us-east'
-  - 'europe-london'
+locations:
+  - "dublin"
+  - "montreal"
+  - "sanfrancisco"
+```
+
+## Examples
+
+```yaml
+schedule: "0 0 * * *"
+
+locations:
+  - "dublin"
+  - "montreal"
+  - "sanfrancisco"
+
+transactions:
+  - ...
 ```

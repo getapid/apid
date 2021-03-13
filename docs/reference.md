@@ -8,6 +8,10 @@ For more information on how to setup your environment, please follow our [instal
 
 An APId configuration file consists of variables and transactions which in turn consist of steps. Variables are pieces of data that can be referenced in multiple transactions. Steps are the basic elements of the configuration. They specify how to make a request and then how to validate its response. Transactions bundle steps together to help you represent meaningful stories.
 
+## Cloud specific configuration
+
+Please refer to [cloud reference](cloud.md).
+
 ## Variables
 
 APId has variables that can be inplaced throughout your steps and transactions. Variables can be declared for the transaction or step scope or be global. They can also come from the environment, which can be handy for things like secrets and passwords, or from a response from your API.
@@ -209,11 +213,11 @@ expect:
 
 Body provides a bit more flexibility on what body to expect in this response.
 
-| Field    | Type   | Required | default | Description                                                                                                                                                                                                                           |
-| :------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| is       | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                                                              |
-| selector | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)                                                   |
-| subset   | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests).                                                                                       |
+| Field     | Type   | Required | default | Description                                                                                                                                                                                                                           |
+| :-------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| is        | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                                                              |
+| selector  | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)                                                   |
+| subset    | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests).                                                                                       |
 | keys_only | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests). |
 
 ```yaml

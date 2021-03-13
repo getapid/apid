@@ -2,30 +2,21 @@
 
 Besides being able to run your tests from your local machine, APId also has the functionality to run from around the world. This functionality is powered by the APId cloud offering.
 
-## How it works
+## Scheduled execution
 
-The cloud offering works pretty much the same way. You need to define your transactions, as you would with the CLI, and then using the APId CLI issue a `remote` command. This works as follows:
+This is the most powerful mode of APId cloud. It allows you to define a set of checks, upload them and let us run them on a predefined schedule and from predefined locations for you! You'll get a notification as soon as when we detect something went wrong with your API!
 
-- The CLI reads the transactions from the specified directory or file, as per ususal
-- It will execute each transaction, sending the necessary `STEP` information to the cloud for remote execution
-- It will wait for each `STEP` result to come back and continue with the other steps and transactions
+- [more information](cloud.md)
 
-One major benefit of this workflow is that all the interpolation is done locally (on the machine running the CLI), thus you have control over the environment it runs in. This means you can invoke any custom executables.
+## On demand remote execution
 
-## Usage
+The remote execution offering works pretty much the same way. You need to define your transactions, as you would with the CLI, and then using the APId CLI issue a `remote` command.
 
-In order to use the power of the cloud you will need a personal access key. To generate one, you will have to:
-
-- Head over to https://www.getapid.com and sign up
-- Go to the dashboard and create a new access key
-
-Once you have your key you will need to [install the APId CLI](../installation/cli.md) (if you haven't already) or use our [official docker image](../installation/docker.md).
-
-A reference on how use the CLI after installation for remote execution can be found [here](../cli/remote.md).
+- [more information](remote.md)
 
 ## Regions
 
-APId cloud runs in multiple regions worldwide. Below is a list of the current ones. The default region is set to Washington.
+APId cloud runs in multiple regions worldwide. Below is a list of the current ones.
 
 | Region Name  | Location      |
 | :----------- | :------------ |
@@ -40,17 +31,15 @@ APId cloud runs in multiple regions worldwide. Below is a list of the current on
 | frankfurt    | Frankfurt     |
 | saopaulo     | Sao Paulo     |
 
-## Timeouts
-
-The execution timeout is set to 30 seconds. If your API does not respond within that time an error is returned.
-
 ## Billing
 
-We've tried making the billing model as simple as possible. Each account has a quota of units they can use each month for running their tests on the cloud infrastructure.
+We've tried making the billing model as simple as possible. Each account has a free tier quota of units they can use each month for running their tests on the cloud infrastructure, after which there is a flat fee for each unit used.
 
-Each unit corresponds to 100ms of execution time of a step - thus the response time of the API for each step.
+Each unit corresponds to 100ms of execution time.
 
-You are not billed for any interpolation or step preparation (which is done on the machine you're running the CLI on).
+In case of on demand remote execution, you will be billed separately for every step.
+
+When using scheduled execution you're billed for the whole duration of the suite execution.
 
 ### Examples
 

@@ -20,6 +20,16 @@ type Transaction struct {
 	Matrix    *Matrix             `yaml:"matrix" json:"matrix"`
 }
 
+type job struct {
+	transaction Transaction
+	vars        variables.Variables
+}
+
+type res struct {
+	result  result.TransactionResult
+	success bool
+}
+
 type TransactionRunner struct {
 	stepRunner step.Runner
 	writer     result.Writer
@@ -33,33 +43,55 @@ func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
 }
 
 func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Variables) bool {
-	allOk := true
-	defer r.writer.Close()
+	jobs := make(chan job, 5)
+	results := make(chan res, 5)
 
+	workers := 5
+	if workers > len(transactions) {
+		workers = len(transactions)
+	}
+	for w := 0; w < workers; w++ {
+		go r.worker(jobs, results)
+	}
+
+	numJobs := 0
 	for _, transaction := range transactions {
 		tVars := vars.DeepCopy().Merge(transaction.Variables)
-
 		if transaction.Matrix == nil {
-			res, ok := r.runSingleTransaction(transaction, tVars)
-			r.writer.Write(res)
-			allOk = allOk && ok
+			jobs <- job{transaction: transaction, vars: tVars}
+			numJobs++
 		} else {
 			transactionId := transaction.ID
-			run := 1
+			run := 0
 			for transaction.Matrix.HasNext() {
 				transaction.ID = fmt.Sprintf("%s-%d", transactionId, run)
 				matrixSet := transaction.Matrix.NextSet()
 				matrixTVars := tVars.DeepCopy().Merge(matrixSet)
-
-				res, ok := r.runSingleTransaction(transaction, matrixTVars)
-				r.writer.Write(res)
-				allOk = allOk && ok
+				jobs <- job{transaction: transaction, vars: matrixTVars}
 				run++
+				numJobs++
 			}
 		}
 	}
+	close(jobs)
 
-	return allOk
+	success := true
+	for a := 0; a < numJobs; a++ {
+		res := <-results
+		r.writer.Write(res.result)
+		success = success && res.success
+	}
+	close(results)
+	r.writer.Close()
+
+	return success
+}
+
+func (r *TransactionRunner) worker(jobs <-chan job, results chan<- res) {
+	for j := range jobs {
+		result, ok := r.runSingleTransaction(j.transaction, j.vars)
+		results <- res{result, ok}
+	}
 }
 
 func (r *TransactionRunner) runSingleTransaction(transaction Transaction, vars variables.Variables) (result.TransactionResult, bool) {

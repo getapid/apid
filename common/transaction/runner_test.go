@@ -267,7 +267,6 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 				}
 			}
 		}
-		gomock.InOrder(mockedCalls...)
 
 		writer := mock.NewMockWriter(mockCtrl)
 		mockedCalls = []*gomock.Call{}
@@ -279,7 +278,6 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 		}
 
 		mockedCalls = append(mockedCalls, writer.EXPECT().Close())
-		gomock.InOrder(mockedCalls...)
 
 		r := &TransactionRunner{
 			stepRunner: stepRunner,

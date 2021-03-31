@@ -43,23 +43,13 @@ func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
 }
 
 func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Variables) bool {
-	jobs := make(chan job, 5)
-	results := make(chan res, 5)
+	defer r.writer.Close()
 
-	workers := 5
-	if workers > len(transactions) {
-		workers = len(transactions)
-	}
-	for w := 0; w < workers; w++ {
-		go r.worker(jobs, results)
-	}
-
-	numJobs := 0
+	var jobs []job
 	for _, transaction := range transactions {
 		tVars := vars.DeepCopy().Merge(transaction.Variables)
 		if transaction.Matrix == nil {
-			jobs <- job{transaction: transaction, vars: tVars}
-			numJobs++
+			jobs = append(jobs, job{transaction: transaction, vars: tVars})
 		} else {
 			transactionId := transaction.ID
 			run := 0
@@ -67,22 +57,36 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 				transaction.ID = fmt.Sprintf("%s-%d", transactionId, run)
 				matrixSet := transaction.Matrix.NextSet()
 				matrixTVars := tVars.DeepCopy().Merge(matrixSet)
-				jobs <- job{transaction: transaction, vars: matrixTVars}
+				jobs = append(jobs, job{transaction: transaction, vars: matrixTVars})
 				run++
-				numJobs++
 			}
 		}
 	}
-	close(jobs)
+	jobsChan := make(chan job)
+	resultsChan := make(chan res)
+
+	workers := 5
+	if workers > len(jobs) {
+		workers = len(jobs)
+	}
+	for w := 0; w < workers; w++ {
+		go r.worker(jobsChan, resultsChan)
+	}
+
+	go func() {
+		for _, job := range jobs {
+			jobsChan <- job
+		}
+		close(jobsChan)
+	}()
 
 	success := true
-	for a := 0; a < numJobs; a++ {
-		res := <-results
+	for a := 0; a < len(jobs); a++ {
+		res := <-resultsChan
 		r.writer.Write(res.result)
 		success = success && res.success
 	}
-	close(results)
-	r.writer.Close()
+	close(resultsChan)
 
 	return success
 }

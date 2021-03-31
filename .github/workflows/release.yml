@@ -8,30 +8,29 @@ jobs:
     name: Release cli
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.16
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+        id: go
 
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
-      id: go
+      - name: Check out code
+        uses: actions/checkout@v1
 
-    - name: Check out code
-      uses: actions/checkout@v1
+      - name: Go Test
+        run: |
+          make test
 
-    - name: Go Test
-      run: |
-        make test
+      - name: End to end tests
+        run: |
+          make build-e2e e2e
 
-    - name: End to end tests
-      run: |
-        make build-e2e e2e
-
-    - name: Release CLI executables
-      env:
-        GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
-        DOCKER_HUB_USERNAME: getapid
-        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      run: |
-        curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-        docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
-        PATH=$PATH:./bin/ make release
+      - name: Release CLI executables
+        env:
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+          DOCKER_HUB_USERNAME: getapid
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        run: |
+          curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+          docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+          PATH=$PATH:./bin/ make release

@@ -5,25 +5,25 @@ before:
     - go mod tidy
 
 builds:
-- main: svc/cli/main.go
-  env:
-    - CGO_ENABLED=0
-  binary: apid
-  ldflags:
-    - '-w'
-    - '-s'
-    - '-X github.com/getapid/apid-cli/svc/cli/cmd.version={{ .Version }}'
-  goos:
-    - linux
-    - openbsd
-    - solaris
-    - freebsd
-    - darwin
-    - windows
-  goarch: [386, amd64, arm]
+  - main: svc/cli/main.go
+    env:
+      - CGO_ENABLED=0
+    binary: apid
+    ldflags:
+      - "-w"
+      - "-s"
+      - "-X github.com/getapid/apid-cli/svc/cli/cmd.version={{ .Version }}"
+    goos:
+      - linux
+      - openbsd
+      - solaris
+      - freebsd
+      - darwin
+      - windows
+    goarch: [386, amd64, arm, arm64]
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 snapshot:
   name_template: "{{ .ShortCommit }}"
@@ -41,7 +41,7 @@ archives:
 dockers:
   - goos: linux
     goarch: amd64
-    binaries:
+    ids:
       - apid
 
     image_templates:

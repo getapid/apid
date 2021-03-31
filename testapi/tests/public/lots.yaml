@@ -144,38 +144,38 @@ transactions:
         expect:
           code: 200
 
-  # - id: simple-request16
-  #   steps:
-  #     - id: get
-  #       request:
-  #         method: "GET"
-  #         endpoint: "{{ var.url }}/get"
-  #       expect:
-  #         code: 200
+  - id: simple-request16
+    steps:
+      - id: get
+        request:
+          method: "GET"
+          endpoint: "{{ var.url }}/get"
+        expect:
+          code: 200
 
-  # - id: simple-request17
-  #   steps:
-  #     - id: get
-  #       request:
-  #         method: "GET"
-  #         endpoint: "{{ var.url }}/get"
-  #       expect:
-  #         code: 200
+  - id: simple-request17
+    steps:
+      - id: get
+        request:
+          method: "GET"
+          endpoint: "{{ var.url }}/get"
+        expect:
+          code: 200
 
-  # - id: simple-request18
-  #   steps:
-  #     - id: get
-  #       request:
-  #         method: "GET"
-  #         endpoint: "{{ var.url }}/get"
-  #       expect:
-  #         code: 200
+  - id: simple-request18
+    steps:
+      - id: get
+        request:
+          method: "GET"
+          endpoint: "{{ var.url }}/get"
+        expect:
+          code: 200
 
-  # - id: simple-request19
-  #   steps:
-  #     - id: get
-  #       request:
-  #         method: "GET"
-  #         endpoint: "{{ var.url }}/get"
-  #       expect:
-  #         code: 200
+  - id: simple-request19
+    steps:
+      - id: get
+        request:
+          method: "GET"
+          endpoint: "{{ var.url }}/get"
+        expect:
+          code: 200

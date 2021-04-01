@@ -17,8 +17,9 @@ import (
 )
 
 var (
-	region      = ""
-	showTimings = false
+	region      string
+	showTimings bool
+	parallelism int
 )
 
 var checkCmd = &cobra.Command{
@@ -42,6 +43,7 @@ func init() {
 	RootCommand.AddCommand(checkCmd)
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 	checkCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of requests")
+	checkCmd.Flags().IntVarP(&parallelism, "parallelism", "p", 10, "number of concurrent transaction executions")
 	checkCmd.Flags().StringVarP(&region, "region", "r", "washington", "location to run the tests from")
 }
 
@@ -69,7 +71,7 @@ func remoteCheck(cmd *cobra.Command, args []string) error {
 	stepExtractor := step.NewBodyExtractor()
 	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator, stepExtractor)
 
-	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
+	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer, parallelism)
 
 	vars := c.Variables.Merge(variables.New(variables.WithEnv()))
 	ok := transactionRunner.Run(c.Transactions, vars)

@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/getapid/apid-cli/common/result"
 	"github.com/getapid/apid-cli/common/step"
@@ -31,14 +32,20 @@ type res struct {
 }
 
 type TransactionRunner struct {
-	stepRunner step.Runner
-	writer     result.Writer
+	stepRunner  step.Runner
+	writer      result.Writer
+	parallelism int
 }
 
-func NewTransactionRunner(stepRunner step.Runner, writer result.Writer) Runner {
+func NewTransactionRunner(stepRunner step.Runner, writer result.Writer, parallelism int) Runner {
+	if parallelism < 1 {
+		fmt.Printf("parallelism level is negative or zero ( %d ), exiting.\n", parallelism)
+		os.Exit(1)
+	}
 	return &TransactionRunner{
-		stepRunner: stepRunner,
-		writer:     writer,
+		stepRunner:  stepRunner,
+		writer:      writer,
+		parallelism: parallelism,
 	}
 }
 
@@ -65,7 +72,7 @@ func (r *TransactionRunner) Run(transactions []Transaction, vars variables.Varia
 	jobsChan := make(chan job)
 	resultsChan := make(chan res)
 
-	workers := 5
+	workers := r.parallelism
 	if workers > len(jobs) {
 		workers = len(jobs)
 	}

@@ -280,8 +280,9 @@ func (s *RunnerSuite) TestTransactionRunner_Run() {
 		mockedCalls = append(mockedCalls, writer.EXPECT().Close())
 
 		r := &TransactionRunner{
-			stepRunner: stepRunner,
-			writer:     writer,
+			stepRunner:  stepRunner,
+			writer:      writer,
+			parallelism: 10,
 		}
 		ok := r.Run(tt.args.transactions, tt.args.vars)
 		s.Equal(tt.ok, ok, tt.name)
@@ -325,8 +326,9 @@ func (s *RunnerSuite) TestTransactionRunner_RunWithMatrix() {
 	mockWriter.EXPECT().Close()
 
 	r := &TransactionRunner{
-		stepRunner: mockStepRunner,
-		writer:     mockWriter,
+		stepRunner:  mockStepRunner,
+		writer:      mockWriter,
+		parallelism: 10,
 	}
 	ok := r.Run([]Transaction{transaction}, rootVars)
 	s.True(ok)

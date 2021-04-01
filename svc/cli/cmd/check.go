@@ -17,6 +17,7 @@ import (
 var (
 	configFilepath string
 	showTimings    bool
+	parallelism    int
 )
 
 var checkCmd = &cobra.Command{
@@ -38,6 +39,7 @@ func init() {
 	rootCmd.AddCommand(checkCmd)
 	checkCmd.Flags().StringVarP(&configFilepath, "config", "c", "./apid.yaml", "file with config to run")
 	checkCmd.Flags().BoolVarP(&showTimings, "timings", "t", false, "output the durations of request steps")
+	checkCmd.Flags().IntVarP(&parallelism, "parallelism", "p", 10, "number of concurrent transaction executions")
 }
 
 func checkRun(cmd *cobra.Command, args []string) error {
@@ -62,7 +64,7 @@ func checkRun(cmd *cobra.Command, args []string) error {
 	stepExtractor := step.NewBodyExtractor()
 	stepChecker := step.NewRunner(stepExecutor, stepValidator, stepInterpolator, stepExtractor)
 
-	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer)
+	transactionRunner := transaction.NewTransactionRunner(stepChecker, writer, parallelism)
 
 	vars := c.Variables.Merge(variables.New(variables.WithEnv()))
 	ok := transactionRunner.Run(c.Transactions, vars)

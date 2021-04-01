@@ -8,12 +8,13 @@ Check takes all the transactions that you have specified in the yaml. The steps 
 
 ## Flags
 
-| Flag      | Short | Required | Default     | Description                                                                                                                   |
-| :-------- | :---- | :------- | :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| --key     | -k    | yes      |             | [Your API key](../cloud/README.md), this can also be injected via the `APID_KEY` environment variable. Flag takes precedence. |
-| --region  | -r    | no       | washington  | The location to run the tests from, a list or regions can be found [here](../cloud/README.md)                                 |
-| --config  | -c    | no       | ./apid.yaml | The config file. If a folder is provided will recursively load all `*.yaml` files                                             |
-| --timings | -t    | no       | false       | Display the request timings, like DNS lookup, TCP connect, TLS handshake, etc                                                 |
+| Flag          | Short | Required | Default     | Description                                                                                                                   |
+| :------------ | :---- | :------- | :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| --key         | -k    | yes      |             | [Your API key](../cloud/README.md), this can also be injected via the `APID_KEY` environment variable. Flag takes precedence. |
+| --region      | -r    | no       | washington  | The location to run the tests from, a list or regions can be found [here](../cloud/README.md)                                 |
+| --config      | -c    | no       | ./apid.yaml | The config file. If a folder is provided will recursively load all `*.yaml` files                                             |
+| --timings     | -t    | no       | false       | Display the request timings, like DNS lookup, TCP connect, TLS handshake, etc                                                 |
+| --parallelism | -p    | no       | 10          | Number of transactions to be run in parallel                                                                                  |
 
 # Examples
 

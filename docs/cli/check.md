@@ -8,10 +8,11 @@ Check takes all the transactions that you have specified in the yaml. The steps 
 
 ## Flags
 
-| Flag      | Short | Required | Default     | Description                                                                       |
-| :-------- | :---- | :------- | :---------- | :-------------------------------------------------------------------------------- |
-| --config  | -c    | no       | ./apid.yaml | The config file. If a folder is provided will recursively load all `*.yaml` files |
-| --timings | -t    | no       | false       | Display the request timings, like DNS lookup, TCP connect, TLS handshake, etc     |
+| Flag          | Short | Required | Default     | Description                                                                       |
+| :------------ | :---- | :------- | :---------- | :-------------------------------------------------------------------------------- |
+| --config      | -c    | no       | ./apid.yaml | The config file. If a folder is provided will recursively load all `*.yaml` files |
+| --timings     | -t    | no       | false       | Display the request timings, like DNS lookup, TCP connect, TLS handshake, etc     |
+| --parallelism | -p    | no       | 10          | Number of transactions to be run in parallel                                      |
 
 # Examples
 

@@ -1,5 +1,7 @@
 # ☁️ APId - end-to-end API testing framework
 
+[![Release cli](https://github.com/getapid/apid-cli/actions/workflows/release.yml/badge.svg)](https://github.com/getapid/apid-cli/actions/workflows/release.yml)
+
 ## 🔭 Overview
 
 APId is a framework that helps you write declarative, end-to-end tests for your API. The tests are written in YAML using simple, yet powerful syntax. Model tests around user flows - APId lets you verify sequential API calls as one flow.

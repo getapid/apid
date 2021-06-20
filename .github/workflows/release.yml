@@ -1,4 +1,4 @@
-name: Release cli
+name: CI
 on:
   push:
     tags:

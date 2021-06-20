@@ -1,6 +1,7 @@
 # ☁️ APId - end-to-end API testing framework
 
 [![Release cli](https://github.com/getapid/apid-cli/actions/workflows/release.yml/badge.svg)](https://github.com/getapid/apid-cli/actions/workflows/release.yml)
+[![Coverage Status](https://coveralls.io/repos/github/getapid/cli/badge.svg?branch=main)](https://coveralls.io/github/getapid/cli?branch=main)
 
 ## 🔭 Overview
 

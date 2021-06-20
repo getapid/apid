@@ -2,10 +2,6 @@
 
 [![Release cli](https://github.com/getapid/apid-cli/actions/workflows/release.yml/badge.svg)](https://github.com/getapid/apid-cli/actions/workflows/release.yml)
 [![Coverage Status](https://coveralls.io/repos/github/getapid/cli/badge.svg?branch=main)](https://coveralls.io/github/getapid/cli?branch=main)
-[![Go Report Card](https://goreportcard.com/badge/github.com/getapid/cli)](https://goreportcard.com/report/github.com/getapid/cli)
-[![Discord](https://img.shields.io/discord/625358042665451540.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/vpEv3HJ)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
 
 ## 🔭 Overview
 

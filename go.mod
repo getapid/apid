@@ -13,7 +13,7 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
-	github.com/tidwall/gjson v1.7.4
+	github.com/tidwall/gjson v1.8.0
 	github.com/ugorji/go v1.2.5 // indirect
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0

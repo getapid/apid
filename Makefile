@@ -4,6 +4,7 @@ GOFLAGS:=-ldflags "-X github.com/getapid/cli/svc/cli/cmd.version=$(VERSION)"
 
 all: test
 
+
 test-api-%:
 	$(MAKE) -C testapi $*
 

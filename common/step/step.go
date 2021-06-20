@@ -3,7 +3,7 @@ package step
 import (
 	"fmt"
 
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/variables"
 	"gopkg.in/yaml.v3"
 )
 

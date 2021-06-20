@@ -1,4 +1,4 @@
-module github.com/getapid/apid-cli
+module github.com/getapid/cli
 
 go 1.16
 

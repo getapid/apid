@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/getapid/apid-cli/common/step"
+	"github.com/getapid/cli/common/step"
 	"github.com/robfig/cron"
 	"go.uber.org/multierr"
 )

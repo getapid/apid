@@ -8,10 +8,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	httpi "github.com/getapid/apid-cli/common/http"
-	"github.com/getapid/apid-cli/common/log"
-	"github.com/getapid/apid-cli/common/step"
-	"github.com/getapid/apid-cli/common/variables"
+	httpi "github.com/getapid/cli/common/http"
+	"github.com/getapid/cli/common/log"
+	"github.com/getapid/cli/common/step"
+	"github.com/getapid/cli/common/variables"
 	"github.com/stretchr/testify/assert"
 )
 

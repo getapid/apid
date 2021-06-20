@@ -3,7 +3,7 @@ package transaction
 import (
 	"testing"
 
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/variables"
 	"github.com/stretchr/testify/assert"
 )
 

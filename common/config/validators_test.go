@@ -3,7 +3,7 @@ package config
 import (
 	"testing"
 
-	"github.com/getapid/apid-cli/common/step"
+	"github.com/getapid/cli/common/step"
 	"github.com/stretchr/testify/suite"
 )
 

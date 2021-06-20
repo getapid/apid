@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/getapid/apid-cli/common/transaction"
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/transaction"
+	"github.com/getapid/cli/common/variables"
 )
 
 // Config holds the internal representation of the config. It has yaml tags to allow to marshalling

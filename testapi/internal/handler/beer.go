@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/cli/common/log"
 	"github.com/gin-gonic/gin"
 )
 

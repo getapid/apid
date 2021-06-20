@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/cli/common/log"
 
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/variables"
 )
 
 var (

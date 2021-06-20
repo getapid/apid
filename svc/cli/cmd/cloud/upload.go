@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/getapid/apid-cli/common/config"
+	"github.com/getapid/cli/common/config"
 	"github.com/spf13/cobra"
 )
 

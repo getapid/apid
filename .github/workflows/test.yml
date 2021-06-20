@@ -18,6 +18,16 @@ jobs:
         run: |
           make test
 
+      - name: Install goveralls
+        env:
+          GO111MODULE: off
+        run: go get github.com/mattn/goveralls
+
+      - name: Send coverage
+        env:
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+        run: goveralls -coverprofile=covprofile -service=github
+
       - name: End to end tests
         run: |
           make build-e2e e2e

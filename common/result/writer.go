@@ -1,9 +1,9 @@
 package result
 
-//go:generate mockgen -destination=../mock/writer_mock.go -package=mock github.com/getapid/apid-cli/common/result Writer
+//go:generate mockgen -destination=../mock/writer_mock.go -package=mock github.com/getapid/cli/common/result Writer
 
 import (
-	"github.com/getapid/apid-cli/common/step"
+	"github.com/getapid/cli/common/step"
 )
 
 type TransactionResult struct {

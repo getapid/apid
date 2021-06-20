@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/getapid/apid-cli/common/command"
-	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/cli/common/command"
+	"github.com/getapid/cli/common/log"
 	"github.com/tidwall/gjson"
 
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/variables"
 	"go.uber.org/multierr"
 )
 

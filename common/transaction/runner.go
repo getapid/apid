@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/getapid/apid-cli/common/result"
-	"github.com/getapid/apid-cli/common/step"
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/result"
+	"github.com/getapid/cli/common/step"
+	"github.com/getapid/cli/common/variables"
 )
 
 type Runner interface {

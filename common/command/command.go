@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/getapid/apid-cli/common/log"
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/log"
+	"github.com/getapid/cli/common/variables"
 )
 
 type Executor interface {

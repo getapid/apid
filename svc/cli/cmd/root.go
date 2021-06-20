@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/getapid/apid-cli/common/log"
-	"github.com/getapid/apid-cli/svc/cli/cmd/cloud"
+	"github.com/getapid/cli/common/log"
+	"github.com/getapid/cli/svc/cli/cmd/cloud"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )

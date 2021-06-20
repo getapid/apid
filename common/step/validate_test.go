@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/getapid/apid-cli/common/http"
+	"github.com/getapid/cli/common/http"
 	"github.com/stretchr/testify/suite"
 )
 

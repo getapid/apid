@@ -1,6 +1,6 @@
 BIN:=bin/apid
 OSARCHLIST:=`cat svc/cli/osarchlist`
-GOFLAGS:=-ldflags "-X github.com/getapid/apid-cli/svc/cli/cmd.version=$(VERSION)"
+GOFLAGS:=-ldflags "-X github.com/getapid/cli/svc/cli/cmd.version=$(VERSION)"
 
 all: test
 
@@ -24,7 +24,7 @@ mock:
 	go generate ./...
 
 test:
-	go test $(GOFLAGS) ./...
+	go test $(GOFLAGS) -race -covermode atomic -coverprofile=covprofile ./...
 
 e2e-test: build
 	$(BIN) check -c testapi/tests/

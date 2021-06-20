@@ -3,8 +3,8 @@ package step
 import (
 	"fmt"
 
-	"github.com/getapid/apid-cli/common/template"
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/template"
+	"github.com/getapid/cli/common/variables"
 )
 
 type interpolator interface {

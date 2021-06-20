@@ -12,7 +12,7 @@ builds:
     ldflags:
       - "-w"
       - "-s"
-      - "-X github.com/getapid/apid-cli/svc/cli/cmd.version={{ .Version }}"
+      - "-X github.com/getapid/cli/svc/cli/cmd.version={{ .Version }}"
     goos:
       - linux
       - openbsd

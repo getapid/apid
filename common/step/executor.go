@@ -4,8 +4,8 @@ import (
 	"context"
 	"strings"
 
-	"github.com/getapid/apid-cli/common/http"
-	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/cli/common/http"
+	"github.com/getapid/cli/common/log"
 )
 
 type Executor interface {

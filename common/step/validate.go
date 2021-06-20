@@ -8,7 +8,7 @@ import (
 
 	"github.com/tidwall/gjson"
 
-	"github.com/getapid/apid-cli/common/http"
+	"github.com/getapid/cli/common/http"
 	"go.uber.org/multierr"
 )
 

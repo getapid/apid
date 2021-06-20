@@ -3,7 +3,7 @@ package transaction
 import (
 	"encoding/json"
 
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/variables"
 )
 
 // Matrix is holding slices of values for a number of (step/transaction) variables.

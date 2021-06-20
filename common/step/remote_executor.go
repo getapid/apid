@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	native "net/http"
 
-	"github.com/getapid/apid-cli/common/remote/endpoint"
+	"github.com/getapid/cli/common/remote/endpoint"
 
-	"github.com/getapid/apid-cli/common/http"
+	"github.com/getapid/cli/common/http"
 	"gopkg.in/yaml.v2"
 )
 

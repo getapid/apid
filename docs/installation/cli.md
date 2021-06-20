@@ -1,6 +1,6 @@
 # CLI
 
-Head over to our [download page](https://github.com/getapid/apid-cli/releases).
+Head over to our [download page](https://github.com/getapid/cli/releases).
 
 This should get you a binary that can run as is. Just make sure to add execute permissions:
 
@@ -8,4 +8,3 @@ This should get you a binary that can run as is. Just make sure to add execute p
 chmod u+x apid
 ./apid version
 ```
-

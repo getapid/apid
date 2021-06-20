@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/getapid/apid-cli/common/log"
-	"github.com/getapid/apid-cli/testapi/internal/handler"
+	"github.com/getapid/cli/common/log"
+	"github.com/getapid/cli/testapi/internal/handler"
 	"github.com/gin-gonic/gin"
 )
 

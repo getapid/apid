@@ -2,7 +2,7 @@
 
 The APId tests are configured using one or more `YAML` files. These `YAML` files define what checks and what steps each check has to perform.
 
-For more information on how to setup your environment, please follow our [installation guide](https://github.com/getapid/apid-cli/tree/f70eeed52c3849135585cf5ef043d0e293d677ec/installation/README.md).
+For more information on how to setup your environment, please follow our [installation guide](https://github.com/getapid/cli/tree/f70eeed52c3849135585cf5ef043d0e293d677ec/installation/README.md).
 
 ## Introduction
 
@@ -213,12 +213,12 @@ expect:
 
 Body provides a bit more flexibility on what body to expect in this response.
 
-| Field     | Type   | Required | default | Description                                                                                                                                                                                                                           |
-| :-------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| is        | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                                                              |
-| selector  | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)                                                   |
-| subset    | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests).                                                                                       |
-| keys_only | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](https://github.com/getapid/apid-cli/tree/master/testapi/tests). |
+| Field     | Type   | Required | default | Description                                                                                                                                                                                                                      |
+| :-------- | :----- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| is        | string | yes      |         | What content of the body (or selector content) to expect                                                                                                                                                                         |
+| selector  | string | no       | -       | A selector to get part of the body. The underlying implementation is using `gjson`, reference of syntax can be found [here](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)                                              |
+| subset    | bool   | no       | no      | If the `is` block is a subset of the body (or selector content). See [examples](https://github.com/getapid/cli/tree/master/testapi/tests).                                                                                       |
+| keys_only | bool   | no       | no      | If values should be disregarded when checking for equality. All types of values except objects are ignored. Objects will still be recursively checked. See [examples](https://github.com/getapid/cli/tree/master/testapi/tests). |
 
 ```yaml
 expect:

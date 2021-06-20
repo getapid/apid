@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/getapid/apid-cli/common/step"
-	"github.com/getapid/apid-cli/common/transaction"
-	"github.com/getapid/apid-cli/common/variables"
+	"github.com/getapid/cli/common/step"
+	"github.com/getapid/cli/common/transaction"
+	"github.com/getapid/cli/common/variables"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v2"
 )

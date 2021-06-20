@@ -1,6 +1,6 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via an [issue](https://github.com/getapid/apid-cli/issues) with the community before making a change. Use the templates for feature requests and bug reports if applicable.
+When contributing to this repository, please first discuss the change you wish to make via an [issue](https://github.com/getapid/cli/issues) with the community before making a change. Use the templates for feature requests and bug reports if applicable.
 
 Note we have a code of conduct, please follow it in all your interactions with the project.
 
@@ -12,7 +12,7 @@ You can find instructions on how to compile and test the project in the [README]
 
 1. Fork the repo under your account or organization and do the change there. Once done, submit a PR from your forked repo to this one.
 
-1. Complete the checklist in the Github [PR template](.github/pull_request_template.md). 
+1. Complete the checklist in the Github [PR template](.github/pull_request_template.md).
 
 1. You will need one sign off from any of the maintainers. They are responsible for merging the PR.
 

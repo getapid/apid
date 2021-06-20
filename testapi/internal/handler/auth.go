@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/getapid/apid-cli/common/log"
+	"github.com/getapid/cli/common/log"
 	"github.com/gin-gonic/gin"
 )
 

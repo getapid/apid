@@ -6,8 +6,8 @@ import (
 	"text/template"
 
 	"github.com/fatih/color"
-	"github.com/getapid/apid-cli/common/log"
-	"github.com/getapid/apid-cli/common/result"
+	"github.com/getapid/cli/common/log"
+	"github.com/getapid/cli/common/result"
 )
 
 const templateExecuteMessage = "something went wrong displaying results; try again or report a bug at faq.getapid.com"

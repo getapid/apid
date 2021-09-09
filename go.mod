@@ -16,7 +16,7 @@ require (
 	github.com/tidwall/gjson v1.11.0
 	github.com/ugorji/go v1.2.6 // indirect
 	go.uber.org/multierr v1.7.0
-	go.uber.org/zap v1.17.0
+	go.uber.org/zap v1.19.1
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b

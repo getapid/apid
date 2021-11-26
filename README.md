@@ -2,7 +2,7 @@
 
 [![Release cli](https://github.com/getapid/apid-cli/actions/workflows/release.yml/badge.svg)](https://github.com/getapid/apid-cli/actions/workflows/release.yml)
 [![Coverage Status](https://coveralls.io/repos/github/getapid/cli/badge.svg?branch=main)](https://coveralls.io/github/getapid/cli?branch=main)
-[![GitHub release](https://badgen.net/github/release/getapid/cli)](https://github.com/getapid/cli/releases)
+[![GitHub release](https://badgen.net/github/release/getapid/cli)](https://github.com/getapid/apid/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/getapid/apid)](https://hub.docker.com/r/getapid/apid)
 
 ## 🔭 Overview

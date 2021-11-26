@@ -5,10 +5,10 @@ jobs:
     name: unit-test
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.16
+      - name: Set up Go 1.17
         uses: actions/setup-go@v1
         with:
-          go-version: 1.16
+          go-version: 1.17
         id: go
 
       - name: Check out code
@@ -16,17 +16,4 @@ jobs:
 
       - name: Go Test
         run: |
-          make test
-
-      - name: Install goveralls
-        env:
-          GO111MODULE: off
-        run: go get github.com/mattn/goveralls
-
-      - uses: shogo82148/actions-goveralls@v1
-        with:
-          path-to-profile: covprofile
-
-      - name: End to end tests
-        run: |
-          make build-e2e e2e
+          make test/ci

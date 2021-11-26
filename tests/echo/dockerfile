@@ -1,0 +1,10 @@
+FROM golang:alpine
+WORKDIR /app
+
+COPY echo.go .
+
+RUN go build -o /echo echo.go 
+
+EXPOSE 8080
+
+CMD [ "/echo" ]

@@ -1,31 +1,26 @@
 BIN:=bin/apid
 OSARCHLIST:=`cat svc/cli/osarchlist`
-GOFLAGS:=-ldflags "-X github.com/getapid/cli/svc/cli/cmd.version=$(VERSION)"
+GOFLAGS:=-ldflags "-X github.com/getapid/apid/svc/cli/cmd.version=$(VERSION)"
 
 all: test
 
-
-test-api-%:
-	$(MAKE) -C testapi $*
-
-e2e: test-api-start e2e-test test-api-stop
-
-build-e2e: test-api-build
-
 build:
-	go build $(GOFLAGS) -o $(BIN) svc/cli/main.go
+	go build $(GOFLAGS) -o $(BIN) main.go
 
 release:
 	goreleaser release
 
-install:
-	go mod download
+test: test/positive test/negative
 
-mock:
-	go generate ./...
+test/ci: 
+	./scripts/test.sh $(BIN)
 
-test:
-	go test $(GOFLAGS) -race -covermode atomic -coverprofile=covprofile ./...
+test/positive: build
+	@docker-compose -f tests/echo/docker-compose.yaml up -d &>/dev/null
+	$(BIN) check -s "tests/**/*_pass.jsonnet" --silent
+	@docker-compose -f tests/echo/docker-compose.yaml down  &>/dev/null
 
-e2e-test: build
-	$(BIN) check -c testapi/tests/
+test/negative: build
+	@docker-compose -f tests/echo/docker-compose.yaml up -d  &>/dev/null
+	$(BIN) check -s "tests/**/*_fail.jsonnet" --silent
+	@docker-compose -f tests/echo/docker-compose.yaml down  &>/dev/null

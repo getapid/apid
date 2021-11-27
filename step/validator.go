@@ -5,14 +5,14 @@ import (
 	"github.com/getapid/apid/spec"
 )
 
-type Validator struct{}
+type Matcher struct{}
 
-// NewValidator instantiates a new Validator
-func NewValidator() Validator {
-	return Validator{}
+// NewMatcher instantiates a new Matcher
+func NewMatcher() Matcher {
+	return Matcher{}
 }
 
-func (v Validator) validate(exp spec.Expect, actual *http.Response) (ok bool, passed []string, failed []string) {
+func (v Matcher) validate(exp spec.Expect, actual *http.Response) (ok bool, passed []string, failed []string) {
 	if exp.Code != nil {
 		pass, fail := exp.Code.Validate(int64(actual.StatusCode))
 		failed = append(failed, fail...)
@@ -36,8 +36,8 @@ func (v Validator) validate(exp spec.Expect, actual *http.Response) (ok bool, pa
 	}
 
 	if len(exp.JSON) > 0 {
-		for _, validator := range exp.JSON {
-			pass, fail := validator.Validate(actual.Body)
+		for _, matcher := range exp.JSON {
+			pass, fail := matcher.Validate(actual.Body)
 			failed = append(failed, fail...)
 			passed = append(passed, pass...)
 		}

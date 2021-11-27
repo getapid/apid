@@ -1,17 +1,17 @@
-package validator
+package matcher
 
 import (
 	"strings"
 )
 
-type StringValidator string
+type StringMatcher string
 
-func (v *StringValidator) Set(str string) {
-	val := StringValidator(str)
+func (v *StringMatcher) Set(str string) {
+	val := StringMatcher(str)
 	v = &val
 }
 
-func (v StringValidator) Validate(str string) bool {
+func (v StringMatcher) Validate(str string) bool {
 	if len(v) == 0 {
 		return false
 	}

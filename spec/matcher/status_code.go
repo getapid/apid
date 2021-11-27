@@ -1,17 +1,17 @@
-package validator
+package matcher
 
 import (
 	"fmt"
 )
 
-type StatusCodeValidator int64
+type StatusCodeMatcher int64
 
-func (v *StatusCodeValidator) Set(i int64) {
-	val := StatusCodeValidator(i)
+func (v *StatusCodeMatcher) Set(i int64) {
+	val := StatusCodeMatcher(i)
 	v = &val
 }
 
-func (v StatusCodeValidator) Validate(value int64) ([]string, []string) {
+func (v StatusCodeMatcher) Validate(value int64) ([]string, []string) {
 	if int64(v) != value {
 		return nil, []string{fmt.Sprintf("expected status code to be %d, got %d", v, value)}
 	}

@@ -52,9 +52,9 @@ func check(cmd *cobra.Command, args []string) error {
 	httpClient := http.NewClient()
 	stepHttpClient := step.NewHTTPClient(httpClient)
 	stepInterpolator := step.NewInterpolator()
-	stepValidator := step.NewValidator()
+	stepMatcher := step.NewMatcher()
 	stepExporter := step.NewExporter()
-	stepRunner := step.NewRunner(stepHttpClient, *stepInterpolator, stepValidator, stepExporter)
+	stepRunner := step.NewRunner(stepHttpClient, *stepInterpolator, stepMatcher, stepExporter)
 	specRunner := runner.NewParallelSpecRunner(parallelism, stepRunner, w)
 
 	w.Prelude()

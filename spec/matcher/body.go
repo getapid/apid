@@ -1,18 +1,18 @@
-package validator
+package matcher
 
 import (
 	"fmt"
 	"strings"
 )
 
-type BodyTextValidator string
+type BodyTextMatcher string
 
-func (v *BodyTextValidator) Set(str string) {
-	val := BodyTextValidator(str)
+func (v *BodyTextMatcher) Set(str string) {
+	val := BodyTextMatcher(str)
 	v = &val
 }
 
-func (v BodyTextValidator) Validate(str string) (pass []string, fail []string) {
+func (v BodyTextMatcher) Validate(str string) (pass []string, fail []string) {
 	if len(v) == 0 {
 		fail = append(fail, "expected body is empty")
 		return

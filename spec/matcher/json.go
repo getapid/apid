@@ -1,4 +1,4 @@
-package validator
+package matcher
 
 import (
 	"encoding/json"
@@ -8,13 +8,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type JSONValidator struct {
+type JSONMatcher struct {
 	Selector *string     `json:"selector"`
 	Subset   *bool       `json:"is_subset"`
 	Is       interface{} `json:"is"`
 }
 
-func (v *JSONValidator) Validate(body []byte) (pass []string, fail []string) {
+func (v *JSONMatcher) Validate(body []byte) (pass []string, fail []string) {
 	message := "body"
 	var received interface{}
 	if v.Selector != nil {

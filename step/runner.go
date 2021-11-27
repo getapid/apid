@@ -8,7 +8,7 @@ import (
 type Runner struct {
 	client       HttpClient
 	interpolator Interpolator
-	validator    Validator
+	matcher      Matcher
 	exporter     Exporter
 }
 
@@ -20,8 +20,8 @@ type Result struct {
 }
 
 // NewRunner instantiates a new HTTPRunner
-func NewRunner(client HttpClient, interpolator Interpolator, validator Validator, exporter Exporter) Runner {
-	return Runner{client, interpolator, validator, exporter}
+func NewRunner(client HttpClient, interpolator Interpolator, matcher Matcher, exporter Exporter) Runner {
+	return Runner{client, interpolator, matcher, exporter}
 }
 
 // Run interpolates, executes and validates an HTTP step
@@ -37,7 +37,7 @@ func (r *Runner) Run(step spec.Step, vars variables.Variables) (Result, variable
 		return res, vars, err
 	}
 
-	ok, passed, failed := r.validator.validate(step.Expect, response)
+	ok, passed, failed := r.matcher.validate(step.Expect, response)
 	exported := r.exporter.export(response, step.Export)
 
 	res.Name = step.Name

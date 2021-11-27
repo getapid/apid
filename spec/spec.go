@@ -1,7 +1,7 @@
 package spec
 
 import (
-	"github.com/getapid/apid/spec/validator"
+	"github.com/getapid/apid/spec/matcher"
 )
 
 type Spec struct {
@@ -26,8 +26,8 @@ type Request struct {
 }
 
 type Expect struct {
-	Code    *validator.StatusCodeValidator `json:"code"`
-	Headers *validator.HeaderValidator     `json:"headers"`
-	JSON    []validator.JSONValidator      `json:"json"`
-	Text    *validator.BodyTextValidator   `json:"text"`
+	Code    *matcher.StatusCodeMatcher `json:"code"`
+	Headers *matcher.HeaderMatcher     `json:"headers"`
+	JSON    []matcher.JSONMatcher      `json:"json"`
+	Text    *matcher.BodyTextMatcher   `json:"text"`
 }

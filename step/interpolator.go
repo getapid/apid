@@ -70,7 +70,7 @@ func (i *Interpolator) interpolate(step spec.Step, vars variables.Variables) (sp
 	// }
 
 	if result.Expect.Headers != nil {
-		headerValidators := make(map[string]string, len(*result.Expect.Headers))
+		headerMatchers := make(map[string]string, len(*result.Expect.Headers))
 		for header, value := range *result.Expect.Headers {
 			header, err := template.Render(string(header), vars)
 			if err != nil {
@@ -84,9 +84,9 @@ func (i *Interpolator) interpolate(step spec.Step, vars variables.Variables) (sp
 				return result, ErrInterpolationError
 			}
 
-			headerValidators[header] = value
+			headerMatchers[header] = value
 		}
-		result.Expect.Headers.Set(headerValidators)
+		result.Expect.Headers.Set(headerMatchers)
 	}
 
 	return result, nil

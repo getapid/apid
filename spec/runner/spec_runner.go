@@ -34,10 +34,10 @@ func NewParallelSpecRunner(parallelism int, runner step.Runner, writer writer.Wr
 	}
 }
 
-func (r *ParallelSpecRunner) Run(specs map[string]spec.Spec) bool {
+func (r *ParallelSpecRunner) Run(specs []spec.Spec) bool {
 	var jobs []job
-	for name, spec := range specs {
-		jobs = append(jobs, job{name: name, spec: spec})
+	for _, spec := range specs {
+		jobs = append(jobs, job{name: spec.Name, spec: spec})
 	}
 	jobsChan := make(chan job)
 	resultsChan := make(chan writer.Result)

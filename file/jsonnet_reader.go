@@ -1,4 +1,4 @@
-package loader
+package file
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 	"github.com/google/go-jsonnet"
 )
 
-type Loader interface {
-	Load(file string, environment env.Vars) (map[string]string, error)
+type Reader interface {
+	Load(file string, environment env.Vars) map[string]string
 }
 
-type JsonnetLoader struct{}
+type JsonnetReader struct{}
 
-func (l JsonnetLoader) Load(path string, environment env.Vars) (map[string]string, error) {
+func (l JsonnetReader) Load(path string, environment env.Vars) map[string]string {
 	vm := jsonnet.MakeVM()
 	vm.StringOutput = true
 
@@ -29,7 +29,7 @@ func (l JsonnetLoader) Load(path string, environment env.Vars) (map[string]strin
 
 	specs, err := vm.EvaluateFileMulti(path)
 	if err != nil {
-		log.L.Errorf("error loading %s: %s", path, err)
+		log.L.Fatalf("error loading %s: %s", path, err)
 	}
 
 	result := make(map[string]string, len(specs))
@@ -37,5 +37,5 @@ func (l JsonnetLoader) Load(path string, environment env.Vars) (map[string]strin
 		result[fmt.Sprintf("%s::%s", filename, name)] = spec
 	}
 
-	return result, err
+	return result
 }

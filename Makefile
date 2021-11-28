@@ -22,5 +22,5 @@ test/positive: build
 
 test/negative: build
 	@docker-compose -f tests/echo/docker-compose.yaml up -d  &>/dev/null
-	$(BIN) check -s "tests/**/*_fail.jsonnet" --silent
+	$(BIN) check -s "tests/**/*_fail.jsonnet"
 	@docker-compose -f tests/echo/docker-compose.yaml down  &>/dev/null

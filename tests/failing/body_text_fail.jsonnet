@@ -24,7 +24,7 @@ local text_body_spec(method, body, expectedBody) = std.manifestJson(
         },
         expect: {
           code: 200,
-          text: expectedBody,
+          body: expectedBody,
         },
       }
     ]

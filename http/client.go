@@ -89,7 +89,7 @@ func (t *Tracer) Done() {
 // Do executes a http request
 func (c Client) Do(ctx context.Context, request spec.Request) (*Response, error) {
 	// Prepare request
-	r, err := http.NewRequest(request.Type, request.URL, strings.NewReader(request.Body))
+	r, err := http.NewRequest(request.Type, request.URL, strings.NewReader(string(request.Body)))
 	if err != nil {
 		log.Fatalf("error preparing request: %s", err)
 		return nil, err

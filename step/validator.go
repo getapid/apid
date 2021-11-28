@@ -14,7 +14,7 @@ func NewMatcher() Matcher {
 
 func (v Matcher) validate(exp spec.Expect, actual *http.Response) (ok bool, passed []string, failed []string) {
 	if exp.Code != nil {
-		pass, fail := exp.Code.Validate(int64(actual.StatusCode))
+		pass, fail := exp.Code.Validate(actual.StatusCode)
 		failed = append(failed, fail...)
 		passed = append(passed, pass...)
 	}
@@ -29,19 +29,19 @@ func (v Matcher) validate(exp spec.Expect, actual *http.Response) (ok bool, pass
 		passed = append(passed, pass...)
 	}
 
-	if exp.Text != nil {
-		pass, fail := exp.Text.Validate(string(actual.Body))
+	if exp.Body != nil {
+		pass, fail := exp.Body.Validate(actual.Body)
 		failed = append(failed, fail...)
 		passed = append(passed, pass...)
 	}
 
-	if len(exp.JSON) > 0 {
-		for _, matcher := range exp.JSON {
-			pass, fail := matcher.Validate(actual.Body)
-			failed = append(failed, fail...)
-			passed = append(passed, pass...)
-		}
-	}
+	// if len(exp.JSON) > 0 {
+	// 	for _, matcher := range exp.JSON {
+	// 		pass, fail := matcher.Validate(actual.Body)
+	// 		failed = append(failed, fail...)
+	// 		passed = append(passed, pass...)
+	// 	}
+	// }
 
 	ok = len(failed) == 0
 	return

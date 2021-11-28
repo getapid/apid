@@ -1,7 +1,7 @@
 package spec
 
 import (
-	"github.com/getapid/apid/spec/matcher"
+	"github.com/getapid/apid/spec/validator"
 )
 
 type Spec struct {
@@ -22,12 +22,19 @@ type Request struct {
 	Type    string            `json:"method"`
 	URL     string            `json:"url"`
 	Headers map[string]string `json:"headers"`
-	Body    string            `json:"body"`
+	Body    Body              `json:"body"`
+}
+
+type Body string
+
+func (b *Body) UnmarshalJSON(data []byte) error {
+	d := string(data)
+	*b = Body(d)
+	return nil
 }
 
 type Expect struct {
-	Code    *matcher.StatusCodeMatcher `json:"code"`
-	Headers *matcher.HeaderMatcher     `json:"headers"`
-	JSON    []matcher.JSONMatcher      `json:"json"`
-	Text    *matcher.BodyTextMatcher   `json:"text"`
+	Code    *validator.StatusCodeValidator `json:"code"`
+	Headers *validator.HeaderValidator     `json:"headers"`
+	Body    *validator.BodyValidator       `json:"body"`
 }

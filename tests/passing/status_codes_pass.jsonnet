@@ -4,35 +4,37 @@ local status_code_spec(method, code) = std.manifestJson(
   {
     steps: [
       {
-        name: "first request",
+        name: 'first request',
         request: {
           type: method,
           url: vars.url,
           headers: {
-            "X-ECHO-STATUSCODE": "%s" % code
+            'X-ECHO-STATUSCODE': '%s' % code,
           },
         },
         expect: {
-          code: code
+          code: code,
         },
       },
       {
-        name: "second request",
+        name: 'second request',
         request: {
           type: method,
           url: vars.url,
           headers: {
-            "X-ECHO-STATUSCODE": "%s" % code
+            'X-ECHO-STATUSCODE': '%s' % code,
           },
         },
         expect: {
-          code: code
+          code: code,
         },
-      }
-    ]
+      },
+    ],
   }
 );
 
 {
-  ["%s-%d" % [method, code]]: status_code_spec(method, code) for method in ["GET", "POST", "PUT", "PATCH", "DELETE"] for code in [200, 300, 400, 500]
+  ['%s-%d' % [method, code]]: status_code_spec(method, code)
+  for method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  for code in [200, 300, 400, 500]
 }

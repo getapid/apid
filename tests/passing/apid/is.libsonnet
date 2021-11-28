@@ -51,6 +51,12 @@ local array_matcher(array, subset=false) =
     },
   };
 
+local len_matcher(len) =
+  {
+    '$$matcher_type$$': 'len',
+    '$$matcher_params$$': len,
+  };
+
 local json_to_string(json) = std.manifestJsonEx(json, '');
 
 {
@@ -59,6 +65,7 @@ local json_to_string(json) = std.manifestJsonEx(json, '');
     string(string, case_sensitive=true):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(string_matcher(string, case_sensitive))],
     int(int):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(int_matcher(int))],
     float(float):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(float_matcher(float))],
+    len(len):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(len_matcher(len))],
   },
 
   any():: any_matcher(),
@@ -68,4 +75,5 @@ local json_to_string(json) = std.manifestJsonEx(json, '');
   float(float):: float_matcher(float),
   json(json, subset=false):: json_matcher(json, subset),
   array(array, subset=false):: array_matcher(array, subset),
+  len(len):: len_matcher(len),
 }

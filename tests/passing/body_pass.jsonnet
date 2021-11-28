@@ -53,6 +53,7 @@ local steps(method, body, expected) = [
         'Marline',
         'Catharine',
       ],
+      countryCode: is.len(2),
     },
   ]
 }

@@ -50,6 +50,8 @@ func tryGetMatcherFromMap(m map[string]interface{}) Matcher {
 		return JSONMatcherWithOptions(params)
 	case "array":
 		return ArrayMatcherWithOptions(params)
+	case "len":
+		return LenMatcherWithOptions(params)
 	default:
 		log.L.Fatalf("unknown matcher type %s", t)
 		return nil

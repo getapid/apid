@@ -67,7 +67,7 @@ func (m jsonMatcher) Match(data interface{}, location string) (ok bool, pass []s
 					keysMatched[name] = true
 					break
 				} else {
-					errStr = fmt.Sprintf("%s does not match %s, got %v", key, valueMatcher, value)
+					errStr = fmt.Sprintf("%s is not %s, got %v", key, valueMatcher, value)
 				}
 			}
 			if !found {

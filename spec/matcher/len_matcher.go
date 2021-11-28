@@ -45,7 +45,6 @@ func (m lenMatcher) Match(data interface{}, location string) (bool, []string, []
 	default:
 		return false, nil, []string{fmt.Sprintf("`%s` not a map, array or string", location)}
 	}
-
 }
 
 func (m lenMatcher) String() string {

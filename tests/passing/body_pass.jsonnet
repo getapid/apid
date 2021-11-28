@@ -1,5 +1,5 @@
 local apid = import 'apid/apid.libsonnet';
-local is = import 'apid/is.libsonnet';
+local _ = import 'apid/is.libsonnet';
 
 local vars = import 'vars.libsonnet';
 
@@ -38,12 +38,15 @@ local steps(method, body, expected) = [
   for body in [vars.json]
   for expected in [
     {
-      'random float': is.float(66.861),
-      [is.key.string('random')]: is.int(88),
-      [is.key.regex('first\\w+')]: 'Lilith',
-      Stephanie: {
+      'random float': _.float(66.861),
+      [_.key.string('random')]: _.int(88),
+      [_.key.regex('first\\w+')]: 'Lilith',
+      [_.key.or([
+        _.string("Stephanie"),
+         _.len(9)
+         ])]: {
         age: 93,
-        address: is.json({
+        address: _.json({
           city: 'Kobe',
           country: 'Australia',
           countryCode: 'VE',
@@ -53,126 +56,12 @@ local steps(method, body, expected) = [
         'Marline',
         'Catharine',
       ],
-      countryCode: is.len(2),
+      countryCode: _.and(
+        [
+          _.len(2),
+          _.string('VE')
+        ]
+      )
     },
   ]
 }
-//  + {
-//   ['string-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'firstname',
-//         is: 'Lilith',
-//       },
-//     ],
-//   ]
-// } + {
-//   ['json-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'Stephanie',
-//         is: {
-//           age: 93,
-//         },
-//       },
-//     ],
-//   ]
-// } + {
-//   ['array-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'array of objects',
-//         is: [
-//           {
-//             index: 0,
-//             'index start at 5': 5,
-//           },
-//           {
-//             index: 1,
-//             'index start at 5': 6,
-//           },
-//           {
-//             index: 2,
-//             'index start at 5': 7,
-//           },
-//         ],
-//       },
-//     ],
-//   ]
-// } + {
-//   ['unordered-array-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'array of objects',
-//         is: [
-//           {
-//             index: 2,
-//             'index start at 5': 7,
-//           },
-//           {
-//             index: 0,
-//             'index start at 5': 5,
-//           },
-//           {
-//             index: 1,
-//             'index start at 5': 6,
-//           },
-//         ],
-//       },
-//     ],
-//   ]
-// } + {
-//   ['array-index-array-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'array of objects.1',
-//         is: {
-//           index: 1,
-//           'index start at 5': 6,
-//         },
-//       },
-//     ],
-//   ]
-// } + {
-//   ['regex-simple-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'regEx',
-//         is: 'hello+ to you',
-//       },
-//     ],
-//   ]
-// } + {
-//   ['regex-email-%s-%s-%s' % [method, 'body', expected]]: json_body_spec(method, body, expected)
-//   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
-//   for body in [vars.json]
-//   for expected in [
-//     [
-//       {
-//         selector: 'email uses current data',
-//         is: '^\\S+@\\S+\\.\\S+$',
-//       },
-//     ],
-//   ]
-// }
-
-
-

@@ -1,5 +1,4 @@
-local apid = import 'apid/apid.libsonnet';
-local _ = import 'apid/is.libsonnet';
+local _ = import 'apid/apid.libsonnet';
 
 local vars = import 'vars.libsonnet';
 
@@ -31,7 +30,7 @@ local steps(method, body, expected) = [
 ];
 
 {
-  ['float-%s-%s-%s' % [method, 'body', expected]]: apid.spec(
+  ['float-%s-%s-%s' % [method, 'body', expected]]: _.spec(
     steps=steps(method, body, expected),
   )
   for method in ['POST', 'PUT', 'PATCH', 'DELETE']

@@ -35,5 +35,5 @@ func (m andMatcher) Match(data interface{}, location string) (ok bool, pass []st
 }
 
 func (m andMatcher) String() string {
-	return fmt.Sprintf("%d", m.matchers)
+	return fmt.Sprintf("%v", m.matchers)
 }

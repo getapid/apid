@@ -69,18 +69,31 @@ local or_matcher(matchers) =
     '$$matcher_params$$': matchers,
   };
 
-local json_to_string(json) = std.manifestJsonEx(json, '');
+local range_matcher(from, to) =
+  {
+    '$$matcher_type$$': 'range',
+    '$$matcher_params$$': {
+      from: from,
+      to: to,
+    },
+  };
+
+local type_matcher(type) =
+  {
+    '$$matcher_type$$': 'type::%s' % type,
+    '$$matcher_params$$': null,
+  };
 
 {
-  key: {
-    regex(regex):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(regex_matcher(regex))],
-    string(string, case_sensitive=true):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(string_matcher(string, case_sensitive))],
-    int(int):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(int_matcher(int))],
-    float(float):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(float_matcher(float))],
-    len(len):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(len_matcher(len))],
-    or(matchers):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, json_to_string(or_matcher(matchers))],
+  type: {
+    int():: type_matcher('int'),
+    float():: type_matcher('float'),
+    string():: type_matcher('string'),
+    object():: type_matcher('object'),
+    array():: type_matcher('array'),
   },
 
+  key(matcher):: '%s%s' % [SHORTHAND_MATCHER_PREFIX, std.manifestJsonEx(matcher, '')],
   any():: any_matcher(),
   regex(regex):: regex_matcher(regex),
   string(string, case_sensitive=true):: string_matcher(string, case_sensitive),
@@ -91,4 +104,5 @@ local json_to_string(json) = std.manifestJsonEx(json, '');
   len(len):: len_matcher(len),
   and(matchers):: and_matcher(matchers),
   or(matchers):: or_matcher(matchers),
+  range(from, to):: range_matcher(from, to),
 }

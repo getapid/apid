@@ -56,6 +56,18 @@ func tryGetMatcherFromMap(m map[string]interface{}) Matcher {
 		return AndMatcherWithOptions(params)
 	case "or":
 		return OrMatcherWithOptions(params)
+	case "range":
+		return RangeMatcherWithOptions(params)
+	case "type::int":
+		return TypeIntMatcherWithOptions(params)
+	case "type::float":
+		return TypeFloatMatcherWithOptions(params)
+	case "type::string":
+		return TypeStringMatcherWithOptions(params)
+	case "type::object":
+		return TypeObjectMatcherWithOptions(params)
+	case "type::array":
+		return TypeArrayMatcherWithOptions(params)
 	default:
 		log.L.Fatalf("unknown matcher type %s", t)
 		return nil

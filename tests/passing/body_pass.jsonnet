@@ -38,30 +38,49 @@ local steps(method, body, expected) = [
   for body in [vars.json]
   for expected in [
     {
-      'random float': _.float(66.861),
-      [_.key.string('random')]: _.int(88),
-      [_.key.regex('first\\w+')]: 'Lilith',
-      [_.key.or([
-        _.string("Stephanie"),
-         _.len(9)
-         ])]: {
-        age: 93,
-        address: _.json({
-          city: 'Kobe',
-          country: 'Australia',
-          countryCode: 'VE',
-        }),
+      'random float': _.and([
+        _.float(66.861),
+        _.type.float(),
+      ]),
+      [_.key(_.string('random'))]: _.int(88),
+      [_.key(_.regex('first\\w+'))]: 'Lilith',
+      [_.key(
+        _.or([
+          _.string('Stephanie'),
+          _.len(9),
+        ])
+      )]: {
+        age: _.and([
+          _.range(90, 94),
+          _.type.int()
+        ]),
+        address: _.and([
+          _.json({
+            city: 'Kobe',
+            country: 'Australia',
+            countryCode: 'VE',
+          }),
+          _.type.object()
+        ]),
       },
-      array: [
-        'Marline',
-        'Catharine',
-      ],
+      array: _.and(
+        [
+          _.type.array(),
+          [
+            _.and([
+              'Marline',
+              _.type.string(),
+            ]),
+            'Catharine',
+          ],
+        ]
+      ),
       countryCode: _.and(
         [
           _.len(2),
-          _.string('VE')
+          _.string('VE'),
         ]
-      )
+      ),
     },
   ]
 }

@@ -2,6 +2,7 @@ package file
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -27,7 +28,13 @@ func (l JsonnetReader) Load(path string, environment env.Vars) map[string]string
 	baseFileName := filepath.Base(path)
 	filename := strings.TrimSuffix(baseFileName, filepath.Ext(baseFileName))
 
-	specs, err := vm.EvaluateFileMulti(path)
+	fileContent, err := os.ReadFile(path)
+	if err != nil {
+		log.L.Fatalf("error loading %s: %s", path, err)
+	}
+
+	content := apidLib + string(fileContent)
+	specs, err := vm.EvaluateSnippetMulti(path, content)
 	if err != nil {
 		log.L.Fatalf("error loading %s: %s", path, err)
 	}

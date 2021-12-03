@@ -1,5 +1,3 @@
-local _ = import 'apid/apid.libsonnet';
-
 local vars = import 'vars.libsonnet';
 
 local steps(method, body, expected) = [
@@ -30,54 +28,54 @@ local steps(method, body, expected) = [
 ];
 
 {
-  ['float-%s-%s-%s' % [method, 'body', expected]]: _.spec(
+  ['float-%s-%s-%s' % [method, 'body', expected]]: spec(
     steps=steps(method, body, expected),
   )
   for method in ['POST', 'PUT', 'PATCH', 'DELETE']
   for body in [vars.json]
   for expected in [
     {
-      'random float': _.and([
-        _.float(66.861),
-        _.type.float(),
+      'random float': and([
+        float(66.861),
+        type.float,
       ]),
-      [_.key(_.string('random'))]: _.int(88),
-      [_.key(_.regex('first\\w+'))]: 'Lilith',
-      [_.key(
-        _.or([
-          _.string('Stephanie'),
-          _.len(9),
+      [key(string('random'))]: int(88),
+      [key(regex('first\\w+'))]: 'Lilith',
+      [key(
+        or([
+          string('Stephanie'),
+          len(9),
         ])
       )]: {
-        age: _.and([
-          _.range(90, 94),
-          _.type.int()
+        age: and([
+          range(90, 94),
+          type.int,
         ]),
-        address: _.and([
-          _.json({
+        address: and([
+          json({
             city: 'Kobe',
             country: 'Australia',
             countryCode: 'VE',
           }),
-          _.type.object()
+          type.object,
         ]),
       },
-      array: _.and(
+      array: and(
         [
-          _.type.array(),
+          type.array,
           [
-            _.and([
+            and([
               'Marline',
-              _.type.string(),
+              type.string,
             ]),
             'Catharine',
           ],
         ]
       ),
-      countryCode: _.and(
+      countryCode: and(
         [
-          _.len(2),
-          _.string('VE'),
+          len(2),
+          string('VE'),
         ]
       ),
     },

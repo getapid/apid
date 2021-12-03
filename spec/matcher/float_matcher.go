@@ -26,7 +26,14 @@ func (m floatMatcher) Match(data interface{}, location string) (bool, []string, 
 		if m.value == val {
 			return true, []string{fmt.Sprintf("%s is %.f", location, m.value)}, nil
 		}
-		return false, nil, []string{fmt.Sprintf("%s: wanted %f, got %.f", location, m.value, data)}
+	case int64:
+		if m.value == float64(val) {
+			return true, []string{fmt.Sprintf("%s is %f", location, m.value)}, nil
+		}
+	case int:
+		if m.value == float64(val) {
+			return true, []string{fmt.Sprintf("%s is %f", location, m.value)}, nil
+		}
 	}
 
 	return false, nil, []string{fmt.Sprintf("%s: wanted %f, got %v", location, m.value, data)}

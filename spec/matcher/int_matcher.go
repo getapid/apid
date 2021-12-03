@@ -19,6 +19,8 @@ func IntMatcherWithOptions(params interface{}) Matcher {
 			return intMatcher{int64(v)}
 		}
 		log.L.Fatalf("invalid int matcher, got %v", params)
+	case int64:
+		return intMatcher{v}
 	default:
 		log.L.Fatalf("invalid int matcher, got %v", params)
 	}
@@ -32,7 +34,7 @@ func (m intMatcher) Match(data interface{}, location string) (bool, []string, []
 	case int:
 		return m.checkInt(int64(val), location)
 	case float64:
-		if val == float64(int(val)) {
+		if val == float64(int64(val)) {
 			return m.checkInt(int64(val), location)
 		}
 	}

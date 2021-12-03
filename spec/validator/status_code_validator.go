@@ -16,7 +16,7 @@ func (m *StatusCodeValidator) UnmarshalJSON(data []byte) (err error) {
 	var i interface{}
 	err = json.Unmarshal(data, &i)
 	if err == nil {
-		m.root = matcher.IntMatcherWithOptions(i)
+		m.root = matcher.GetMatcher(i)
 		return
 	}
 

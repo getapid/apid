@@ -42,6 +42,7 @@ dockers:
       - apid
 
     image_templates:
-      - "getapid/apid:latest"
-      - "getapid/apid:{{ .Version }}"
+      - "gcr.io/getapid/apid:{{ .Version }}"
+      - "gcr.io/getapid/apid:latest"
+
     dockerfile: dockerfile

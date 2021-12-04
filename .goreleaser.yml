@@ -42,7 +42,14 @@ dockers:
       - apid
 
     image_templates:
-      - "gcr.io/getapid/apid:{{ .Version }}"
-      - "gcr.io/getapid/apid:latest"
+      - "ghcr.io/getapid/apid:{{ .Version }}"
+      - "ghcr.io/getapid/apid:latest"
+
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
 
     dockerfile: dockerfile

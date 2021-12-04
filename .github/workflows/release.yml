@@ -22,6 +22,8 @@ jobs:
           make test/ci
 
       - name: Release CLI executables
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
           PATH=$PATH:./bin/ goreleaser release

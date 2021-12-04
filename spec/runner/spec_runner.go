@@ -89,6 +89,9 @@ func (r *ParallelSpecRunner) doJob(j job) writer.Result {
 
 		var exported variables.Variables
 		res, exported, err = r.runner.Run(step, vars)
+		if err != nil {
+			res.FailedChecks = append(res.FailedChecks, fmt.Sprintf("error while making request %v", err))
+		}
 		results = append(results, res)
 
 		if err != nil || !res.Pass {

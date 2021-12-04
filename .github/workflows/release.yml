@@ -22,11 +22,6 @@ jobs:
           make test/ci
 
       - name: Release CLI executables
-        env:
-          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
-          DOCKER_HUB_USERNAME: getapid
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: |
           curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
-          docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
-          PATH=$PATH:./bin/ make release
+          PATH=$PATH:./bin/ goreleaser release

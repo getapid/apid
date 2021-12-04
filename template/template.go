@@ -6,9 +6,8 @@ import (
 	"strings"
 
 	"github.com/getapid/apid/log"
-	"github.com/tidwall/gjson"
-
 	"github.com/getapid/apid/variables"
+	"github.com/tidwall/gjson"
 	"go.uber.org/multierr"
 )
 
@@ -23,7 +22,7 @@ func Render(template string, data variables.Variables) (string, error) {
 		case tokenError:
 			multiErr = multierr.Append(multiErr, fmt.Errorf("parsing error: %v : %v", template, token.val))
 		case tokenEnd:
-			goto EXIT
+			return renderer.String(), multiErr
 		case tokenText:
 			if _, err := renderer.WriteString(token.val); err != nil {
 				multiErr = multierr.Append(multiErr, fmt.Errorf("write string: %v : %v", template, err))
@@ -42,6 +41,4 @@ func Render(template string, data variables.Variables) (string, error) {
 			renderer.WriteString(val.String())
 		}
 	}
-EXIT:
-	return renderer.String(), multiErr
 }

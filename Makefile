@@ -7,9 +7,6 @@ all: test
 build:
 	go build $(GOFLAGS) -o $(BIN) main.go
 
-release:
-	goreleaser release
-
 test: test/positive test/negative
 
 test/ci: 

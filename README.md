@@ -1,5 +1,7 @@
 # User Focused API testing
 
+[![Gitter](https://badges.gitter.im/getapid/community.svg)](https://gitter.im/getapid/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## 🔭 What is APId?
 
 APId is a framework that lets you write declarative, end-to-end collections of requests and make sure your API behaves the way you expect.

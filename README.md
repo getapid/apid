@@ -6,7 +6,7 @@ APId is a framework that lets you write declarative, end-to-end collections of r
 
 ## ⬇️ Installation
 
-APId comes in both binary packages and docker image. You can find the docker image [here](https://hub.docker.com/r/getapid/apid), while the binaries can be found [here](https://github.com/getapid/apid/releases)
+APId comes in both binary packages and docker image. You can find the docker image [here](https://github.com/getapid/apid/pkgs/container/apid), while the binaries can be found [here](https://github.com/getapid/apid/releases)
 
 Here's how to install the latest binary on UNIX based systems:
 
@@ -72,55 +72,6 @@ specs failed: 1
 For more examples please check the [`examples`](examples) folder in this repository.
 
 ## 📚 Documentation
-
-APId tests, or specs, are written in `jsonnet`. There are a number of built-in useful functions to make it easier to make and validate requests to your API.
-
-```jsonnet
-// contents of `example.jsonnet`
-
-{
-  simple_spec: spec([
-    {
-      name: "google homepage",
-      request: {
-        method: "GET",
-        url: "https://www.google.com/"
-      },
-      expect: {
-        code: 200
-      }
-    }
-  ])
-}
-```
-
-To run the test, issue
-
-```bash
-> apid check -s "example.jsonnet"
-
-example::simple_spec
-    google homepage
-        + status code is 200
-
-specs passed: 1
-specs failed: 0
-```
-
-Success! You've just written your first APId test! If you change the `expect.code` from `200` to lets say `500` the test will fail and this will be the output:
-
-```bash
-> apid check -s "example.jsonnet"
-
-example::simple_spec
-    google homepage
-        o status code: wanted 500, got 200  
-
-specs passed: 0
-specs failed: 1
-```
-
-## Structure
 
 APId comes with a list of helpful functions that let you define what to expect from each response. Before looking into that, lets see what's the basic structure of a spec file.
 

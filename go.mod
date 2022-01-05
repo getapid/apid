@@ -8,7 +8,7 @@ require (
 	github.com/spf13/cobra v1.3.0
 	github.com/tidwall/gjson v1.12.1
 	go.uber.org/multierr v1.7.0
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.20.0
 )
 
 require (

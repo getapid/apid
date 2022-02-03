@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/google/go-jsonnet v0.18.0
 	github.com/spf13/cobra v1.3.0
-	github.com/tidwall/gjson v1.12.1
+	github.com/tidwall/gjson v1.14.0
 	go.uber.org/multierr v1.7.0
 	go.uber.org/zap v1.21.0
 )

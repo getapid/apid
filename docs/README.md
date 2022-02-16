@@ -141,6 +141,7 @@ APId implicitly transforms raw values to matchers the following way
 | Number    | `float`  |
 | String    | `string` |
 | Array     | `array`  |
+| Bool      | `bool`   |
 
 If you want to enforce checks for a specific type you can manually specify which checker to use.
 
@@ -259,6 +260,7 @@ Here is a list of the type matchers available
 | ------------- |
 | `type.int`    |
 | `type.float`  |
+| `type.bool`   |
 | `type.string` |
 | `type.object` |
 | `type.array`  |

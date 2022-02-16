@@ -46,6 +46,8 @@ func tryGetMatcherFromMap(m map[string]interface{}) Matcher {
 		return IntMatcherWithOptions(params)
 	case "float":
 		return FloatMatcherWithOptions(params)
+	case "bool":
+		return BoolMatcherWithOptions(params)
 	case "json":
 		return JSONMatcherWithOptions(params)
 	case "array":
@@ -60,6 +62,8 @@ func tryGetMatcherFromMap(m map[string]interface{}) Matcher {
 		return RangeMatcherWithOptions(params)
 	case "type::int":
 		return TypeIntMatcherWithOptions(params)
+	case "type::bool":
+		return TypeBoolMatcherWithOptions(params)
 	case "type::float":
 		return TypeFloatMatcherWithOptions(params)
 	case "type::string":
@@ -85,7 +89,7 @@ func GetMatcher(i interface{}) Matcher {
 	case []interface{}:
 		return ArrayMatcher(val)
 	case bool:
-		return BoolMatcher(val)
+		return BoolMatcherWithOptions(val)
 	case float64:
 		return FloatMatcherWithOptions(val)
 	case string:

@@ -15,6 +15,7 @@ local spec(steps) = std.manifestJson(
 
 local type = {
   int: type_matcher('int'),
+  bool: type_matcher('bool'),
   float: type_matcher('float'),
   string: type_matcher('string'),
   object: type_matcher('object'),
@@ -42,6 +43,11 @@ local regex(regex) = {
 local int(int) = {
   '$$matcher_type$$': 'int',
   '$$matcher_params$$': int,
+};
+
+local bool(bool) = {
+  '$$matcher_type$$': 'bool',
+  '$$matcher_params$$': bool,
 };
 
 local float(float) = {

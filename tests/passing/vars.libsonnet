@@ -4,6 +4,7 @@
     random: 88,
     'random float': 66.861,
     bool: true,
+    boolFalse: false,
     date: '1990-09-24',
     regEx: 'helloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo to you',
     enum: 'generator',

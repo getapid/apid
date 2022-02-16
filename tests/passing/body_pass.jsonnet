@@ -39,6 +39,14 @@ local steps(method, body, expected) = [
         float(66.861),
         type.float,
       ]),
+      bool: and([
+        true,
+        type.bool,
+      ]),
+      boolFalse: and([
+        false,
+        type.bool,
+      ]),
       [key(string('random'))]: int(88),
       [key(regex('first\\w+'))]: 'Lilith',
       [key(
